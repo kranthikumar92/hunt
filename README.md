@@ -29,7 +29,7 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
 ### по режимам Случайный, Стандартный  
 
 ## Установка:  
-Зависимости: Python 3.7 и выше  
+Зависимости: Python 3.6 и выше  
 sudo apt-get install libgmp-dev  
 sudo apt-get install libmpfr-dev  
 sudo apt-get install libmpc-dev  
@@ -37,18 +37,23 @@ sudo apt-get install libmpc-dev
 sudo pip3 install simplebloomfilter  
 sudo pip3 install bitarray==1.9.2  
 sudo pip3 install mnemonic  
-sudo pip3 install bip-utils  
+sudo pip3 install bip-utils==1.11.1  
+sudo pip3 install colorama
   
   
 или  
 pip install -r requirements.txt  
 или  
 python -m pip install -r requirements.txt
+
+Создаем HASH160 из Адресов:  
+python h160.py <in file> <outfile>
+  in file - текстовый файл с адресами (один адрес на одну срочку)  
+  out file - файл hash160  
   
 создайте BloobFilter (BF create\Cbloom.py)
-пример:
 python Cbloom.py <in file> <outfile>  
-  in file - текстовый файл с адресами (один адрес на одну срочку)  
+  in file - текстовый файл с hash160 (один hash на одну срочку)  
   out file - файл блюм фильтра  
   
 ## Добавлен режим работы  
@@ -60,11 +65,11 @@ Mnemonic->check valid->seed
 
   
 ## Многопоточная версия  
-  python mainMT.py -b <BIP 32 или 44> -d <директория с файлами блюм фильтра> -t <количество ядер> -m <режим работы> -c <описание сервера>  
-  python mainMT.py -b 32 -d BF -t 2 -m s -c Local_win  
-  python mainMT.py -b 44 -d BF -t 3 -m r -c Local_win  
-  python mainMT.py -b 49 -d BF -t 2 -m s -c Local_win  
-  python mainMT.py -b 84 -d BF -t 2 -m s -c Local_win  
+  python mainMT.py -b <BIP 32 или 44> -d <директория с файлами блюм фильтра> -t <количество ядер> -m <режим работы> -w <сколько слов 12 или 24> -c <описание сервера> -e (дебаг без аргумента) 
+  python mainMT.py -b 32 -d BF -t 2 -m s -w 12 -c Local_win  
+  python mainMT.py -b 44 -d BF -t 3 -m r -w 24 -c Local_win  
+  python mainMT.py -b 49 -d BF -t 2 -m s -w 12 -c Local_win  
+
     
 ## Не забудьте настроить параметры своей почты для отправки найденных мнемоник  
     host:str = 'smtp.mail.ru'  

@@ -1,3 +1,5 @@
+# ОПИСАНИЕ В ПРОЦЕССЕ !!!!  
+  
 # mnemonic-colider-2 HASH160
 Brute Force Bitcoin address
 Программа создана в первую очередь для изучения языка PYTHON! 

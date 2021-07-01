@@ -1,5 +1,12 @@
 # ОПИСАНИЕ В ПРОЦЕССЕ !!!!  
   
+  для проверки пользуюсь ресурсами:  
+  https://iancoleman.io/bip39/  
+  https://www.indicrypto.com/bitcointools/  
+  
+  Описание как это работает :  
+  https://learnmeabitcoin.com/technical/derivation-paths
+  
 # mnemonic-colider-2 HASH160
 Brute Force Bitcoin address
 Программа создана в первую очередь для изучения языка PYTHON! 
@@ -22,6 +29,20 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
   
 #### Создан поиск по 11 базам данных (BloomFilter).  
 по организации BIP-32 база данных  '32.bf'  
+сейчас проверяет следующие пути:  
+m/0/0  
+m/0/0'  
+m/0'/0  
+m/0'/0'  
+m/0'/0/0  
+m/0'/0/0'  
+m/0'/0'/0  
+m/0'/0'/0'  
+m/44'/0'/0'/0  
+m/44'/0'/0'/0'  
+m/44'/0'/0'/0'/0  
+m/44'/0'/0'/0'/0'  
+  
 по организации BIP-44 база данных  '44.bf'  
 по организации BIP-49 база данных  '49.bf'  
  

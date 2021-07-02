@@ -58,7 +58,7 @@ def public_to_address(public_key,net_byte:bytes):
 class email:
     host:str = 'smtp.timeweb.ru'
     port:int = 25
-    password:str = '11111111111111'
+    password:str = '1111111111111111'
     subject:str = '--- Find Mnemonic ---'
     to_addr:str = 'info@quadrotech.ru'
     from_addr:str = 'info@quadrotech.ru'
@@ -686,6 +686,48 @@ def work44(bf_44,mode,words,debug,list30):
                 save_rezult(res)
                 send_email(res)
 
+
+#        # DASH
+        bip_obj_mst = Bip44.FromSeed(seed_bytes, Bip44Coins.DASH)
+        bip_obj_acc = bip_obj_mst.Purpose().Coin().Account(0)
+        bip_obj_chain = bip_obj_acc.Change(Bip44Changes.CHAIN_EXT)
+        bip44_hc_b = CryptoUtils.Hash160(bip_obj_chain.PublicKey().RawCompressed().ToBytes()).hex()
+        bip44_huc_b = CryptoUtils.Hash160(bip_obj_chain.PublicKey().RawUncompressed().ToBytes()).hex()
+        inf.count_44 = inf.count_44 + 1
+        
+        for nom in range(20):
+            inf.count_44 = inf.count_44 + 2
+            bip_obj_addr = bip_obj_chain.AddressIndex(nom)
+            bip44_hc = CryptoUtils.Hash160(bip_obj_addr.PublicKey().RawCompressed().ToBytes()).hex()
+            bip44_huc = CryptoUtils.Hash160(bip_obj_addr.PublicKey().RawUncompressed().ToBytes()).hex()
+            if debug > 0:
+                print('* cyrency - {}'.format("DASH - " + str(nom)))
+                print('* Debug Mnemonic : '+ mnemonic)
+                print('* Public RawCompressed begin - {}'.format(bip_obj_chain.PublicKey().RawCompressed().ToHex()))
+                print('* Public RawUnCompressed begin - {}'.format(bip_obj_chain.PublicKey().RawUncompressed().ToHex()))
+                print('* hash Compress begin - {}'.format(bip44_hc_b))
+                print('* hash Uncompress begin - {}'.format(bip44_huc_b))
+                print('* address Compress - {}'.format(bip_obj_chain.PublicKey().ToAddress()))
+                print('* Public RawCompressed - {}'.format(bip_obj_addr.PublicKey().RawCompressed().ToHex()))
+                print('* Public RawUnCompressed - {}'.format(bip_obj_addr.PublicKey().RawUncompressed().ToHex()))
+                print('* hash Compress - {}'.format(bip44_hc))
+                print('* hash Uncompress - {}'.format(bip44_huc))
+                print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
+                print('-'*60)
+            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+                print('============== Find =================')
+                bip44_PK = bip_obj_addr.PrivateKey().ToWif()
+                bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'4C')
+                bip_addr2 = public_to_address(bip_obj_chain.PublicKey().RawUncompressed().ToHex(),b'4C')
+                bip_addr3 = public_to_address(bip_obj_addr.PublicKey().RawCompressed().ToHex(),b'4C')
+                bip_addr4 = public_to_address(bip_obj_addr.PublicKey().RawUncompressed().ToHex(),b'4C')
+                res =bip_addr4+ ' | ' +bip_addr3 + ' | ' +bip44_hc +' | '+bip_addr +' | '+ bip44_huc +' | '+ bip_addr2 +' | TRUE | '+ mnemonic +' | '+ bip44_PK +' | BIP 44 / DASH'
+                print(res)
+                inf.key_found = inf.key_found + 1
+                save_rezult(res)
+                send_email(res)
+
+
 #        # DOGE
         bip_obj_mst = Bip44.FromSeed(seed_bytes, Bip44Coins.DOGECOIN)
         bip_obj_acc = bip_obj_mst.Purpose().Coin().Account(0)
@@ -725,6 +767,7 @@ def work44(bf_44,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
+
 
 #        # sv
         bip_obj_mst = Bip44.FromSeed(seed_bytes, Bip44Coins.BITCOIN_SV)

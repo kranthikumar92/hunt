@@ -1,11 +1,15 @@
+# #!/usr/bin/python3
+# encoding=utf8
+# -*- coding: utf-8 -*-
+
 import sys,time,argparse
 import multiprocessing,hashlib,codecs,secrets,smtplib
 from multiprocessing import Process
-from bip_utils import  Bip44, Bip44Coins, Bip44Changes, Bip49, Bip32, Bip32Utils
+from bip_utils import  Bip44, Bip44Coins, Bip44Changes, Bip49, Bip32
 from bip_utils.utils import CryptoUtils
 from bloomfilter import BloomFilter
 from mnemonic import Mnemonic
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore
 init()
 
 
@@ -27,6 +31,7 @@ def base58(address_hex):
     for one in range(ones):
         b58_string = '1' + b58_string
     return b58_string
+
 
 def public_to_address(public_key,net_byte:bytes):
     public_key_bytes = codecs.decode(public_key, 'hex')
@@ -58,7 +63,7 @@ def public_to_address(public_key,net_byte:bytes):
 class email:
     host:str = 'smtp.timeweb.ru'
     port:int = 25
-    password:str = '1111111111111111'
+    password:str = '----------'
     subject:str = '--- Find Mnemonic ---'
     to_addr:str = 'info@quadrotech.ru'
     from_addr:str = 'info@quadrotech.ru'
@@ -66,7 +71,7 @@ class email:
 
 
 class inf:
-    version:str = ' Pulsar v3.5.5 multiT Hash160'
+    version:str = ' Pulsar v3.6.1 multiT Hash160'
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese']
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french']
     mnemonic_lang = ['english']
@@ -84,20 +89,32 @@ class inf:
     debug:int = 0
 
 
-def load_btc30(file):
+def load_BF(bf_file):
+    BF_:BloomFilter
     try:
-        file = open(file, 'r', encoding='utf-8')
-        
+        fp = open(inf.dir_bf+'/'+bf_file, 'rb')
     except FileNotFoundError:
-        print('\n'+'File: btc30.h160 not found.')
-        print(dir+'/btc30.h160')
+        print('\n'+'File: '+ bf_file + ' not found.')
         sys.exit()
     else:
-        lines = file.readlines()
-        lines = [line.rstrip('\n') for line in lines]
-        file.close()
+        BF_ = BloomFilter.load(fp)
+        print('Bloom Filter '+bf_file+' Loaded')
+    return BF_
+
+
+def load_btc30(file):
+    BTC30_:list
+    try:
+        fp = open(inf.dir_bf+'/'+file, 'r')
+    except FileNotFoundError:
+        print('\n'+'File: btc30.h160 not found.')
+        sys.exit()
+    else:
+        lines = fp.readlines()
+        BTC30_ = [line.rstrip('\n') for line in lines]
+        fp.close()
         print('File address pazzle BTC~30 Loaded.')
-    return lines
+    return BTC30_
 
 
 def createParser ():
@@ -110,25 +127,6 @@ def createParser ():
     parser.add_argument ('-w', '--words', action='store', type=int, help='words 12, 24', default=12)
     parser.add_argument ('-e', '--debug', action='store', type=int, help='debug 0 1 2', default=0)
     return parser.parse_args().bip, parser.parse_args().dir_bf, parser.parse_args().threading, parser.parse_args().mode, parser.parse_args().desc, parser.parse_args().words, parser.parse_args().debug
-
-
-def load_BF(bf_file):
-    global bf_32
-    global bf_44
-    global bf_49
-    try:
-        fp = open(inf.dir_bf+'/'+bf_file, 'rb')
-    except FileNotFoundError:
-        print('\n'+'File: '+ bf_file + ' not found.')
-        sys.exit()
-    else:
-        if bf_file == '32.bf':
-            bf_32 = BloomFilter.load(fp)
-        if bf_file == '44.bf':
-            bf_44 = BloomFilter.load(fp)
-        if bf_file == '49.bf':
-            bf_49 = BloomFilter.load(fp)
-        print('Bloom Filter '+bf_file+' Loaded')
 
 
 def send_email(text):
@@ -163,7 +161,7 @@ def save_rezult(text:str):
             f_rez.close()
 
 
-def work32(bf_32,mode,words,debug,list30):
+def work32(bf_work_32,mode,words,debug,list_btc):
     inf.count_32 = 0
     for mem in inf.mnemonic_lang:
         if mode == 'r':
@@ -194,23 +192,22 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0/" + str(num)))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
                 bip_addr2 = public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
-                res = bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | TRUE | '+ mnemonic +' | '+ bip32_PK +' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
-                # bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | TRUE | '+ mnemonic +' | '+ bip32_PK +' | BIP 32 / BTC'
+                res = bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | '+ mnemonic +' | '+ bip32_PK +' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
                 bip_addr2 = public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
-                res = bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | TRUE | '+ mnemonic +' | '+ bip32_PK +' | BIP 32 / BTC'
+                res = bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | '+ mnemonic +' | '+ bip32_PK +' | BIP 32 / BTC'
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
@@ -229,7 +226,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0/" + str(num)+"'"))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -239,7 +236,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -263,7 +260,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0'/" + str(num)))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -273,7 +270,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -297,7 +294,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0'/" + str(num)+"'"))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -307,7 +304,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -331,7 +328,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0'/0/" + str(num)))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -341,7 +338,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -365,7 +362,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0'/0/" + str(num)+"'"))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -375,7 +372,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -399,7 +396,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0'/0'/" + str(num)))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -409,7 +406,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -433,7 +430,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/0'/0'/" + str(num)+"'"))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -443,7 +440,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -467,7 +464,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/44'/0'/0'/" + str(num)))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -477,7 +474,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -501,7 +498,7 @@ def work32(bf_32,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip32_h160_2))
                 print('* Path - {}'.format("m/44'/0'/0'/" + str(num)+"'"))
                 print('* address Compress - {}'.format(bip32_ctx.PublicKey().ToAddress()))
-            if any(element in bip32_h160_1 for element in list30) or any(element in bip32_h160_2 for element in list30):
+            if any(element in bip32_h160_1 for element in list_btc) or any(element in bip32_h160_2 for element in list_btc):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -511,7 +508,7 @@ def work32(bf_32,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip32_h160_1 in bf_32) or (bip32_h160_2 in bf_32):
+            if (bip32_h160_1 in bf_work_32) or (bip32_h160_2 in bf_work_32):
                 print('============== Find =================')
                 bip32_PK = bip32_ctx.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
@@ -523,7 +520,7 @@ def work32(bf_32,mode,words,debug,list30):
                 send_email(res)
 
 
-def work44(bf_44,mode,words,debug,list30):
+def work44(bf_work_44,mode,words,debug,list_btc):
     inf.count_44 = 0
     for mem in inf.mnemonic_lang:
         if mode == 'r':
@@ -568,7 +565,7 @@ def work44(bf_44,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip44_huc))
                 print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
                 print('-'*60)
-            if any(element in bip44_hc for element in list30) or any(element in bip44_huc for element in list30) or any(element in bip44_hc_b for element in list30) or any(element in bip44_huc_b for element in list30):
+            if any(element in bip44_hc for element in list_btc) or any(element in bip44_huc for element in list_btc) or any(element in bip44_hc_b for element in list_btc) or any(element in bip44_huc_b for element in list_btc):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'00')
@@ -580,7 +577,7 @@ def work44(bf_44,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+            if (bip44_hc_b in bf_work_44) or (bip44_huc_b in bf_work_44) or (bip44_hc in bf_work_44) or (bip44_huc in bf_work_44):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'00')
@@ -620,7 +617,7 @@ def work44(bf_44,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip44_huc))
                 print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
                 print('-'*60)
-            if any(element in bip44_hc for element in list30) or any(element in bip44_huc for element in list30) or any(element in bip44_hc_b for element in list30) or any(element in bip44_huc_b for element in list30):
+            if any(element in bip44_hc for element in list_btc) or any(element in bip44_huc for element in list_btc) or any(element in bip44_hc_b for element in list_btc) or any(element in bip44_huc_b for element in list_btc):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'00')
@@ -632,7 +629,7 @@ def work44(bf_44,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+            if (bip44_hc_b in bf_work_44) or (bip44_huc_b in bf_work_44) or (bip44_hc in bf_work_44) or (bip44_huc in bf_work_44):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'00')
@@ -673,7 +670,7 @@ def work44(bf_44,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip44_huc))
                 print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
                 print('-'*60)
-            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+            if (bip44_hc_b in bf_work_44) or (bip44_huc_b in bf_work_44) or (bip44_hc in bf_work_44) or (bip44_huc in bf_work_44):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'30')
@@ -714,7 +711,7 @@ def work44(bf_44,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip44_huc))
                 print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
                 print('-'*60)
-            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+            if (bip44_hc_b in bf_work_44) or (bip44_huc_b in bf_work_44) or (bip44_hc in bf_work_44) or (bip44_huc in bf_work_44):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'4C')
@@ -755,7 +752,7 @@ def work44(bf_44,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip44_huc))
                 print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
                 print('-'*60)
-            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+            if (bip44_hc_b in bf_work_44) or (bip44_huc_b in bf_work_44) or (bip44_hc in bf_work_44) or (bip44_huc in bf_work_44):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'1E')
@@ -796,7 +793,7 @@ def work44(bf_44,mode,words,debug,list30):
                 print('* hash Uncompress - {}'.format(bip44_huc))
                 print('* address Compress - {}'.format(bip_obj_addr.PublicKey().ToAddress()))
                 print('-'*60)
-            if any(element in bip44_hc for element in list30) or any(element in bip44_huc for element in list30) or any(element in bip44_hc_b for element in list30) or any(element in bip44_huc_b for element in list30):
+            if any(element in bip44_hc for element in list_btc) or any(element in bip44_huc for element in list_btc) or any(element in bip44_hc_b for element in list_btc) or any(element in bip44_huc_b for element in list_btc):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'00')
@@ -808,7 +805,7 @@ def work44(bf_44,mode,words,debug,list30):
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
                 send_email(res)
-            if (bip44_hc_b in bf_44) or (bip44_huc_b in bf_44) or (bip44_hc in bf_44) or (bip44_huc in bf_44):
+            if (bip44_hc_b in bf_work_44) or (bip44_huc_b in bf_work_44) or (bip44_hc in bf_work_44) or (bip44_huc in bf_work_44):
                 print('============== Find =================')
                 bip44_PK = bip_obj_addr.PrivateKey().ToWif()
                 bip_addr = public_to_address(bip_obj_chain.PublicKey().RawCompressed().ToHex(),b'00')
@@ -1022,12 +1019,12 @@ def run44(bf_44,mode,words,debug,process_count_work,list30):
         print('\n'+'Interrupted by the user.')
         sys.exit()
 
-def run49(bf_49,mode,words,debug,process_count_work,list30):
+def run49(bf_49,mode,words,debug,process_count_work):
     try:
         ind:int = 1
         while ind > 0:
             start_time = time.time()
-            work49(bf_49,mode,words,debug,list30)
+            work49(bf_49,mode,words,debug)
             inf.process_time_work = time.time() - start_time
             if process_count_work == 1:
                 print(Fore.YELLOW+'[*] Cycle: {:d} | Total key: {:d} | key/s: {:d} | Found {:d}'.format(ind, inf.count_49*(ind), int(inf.count_49/inf.process_time_work), inf.key_found),end='\r')
@@ -1075,17 +1072,16 @@ if __name__ == "__main__":
     print('* Mode Search: BIP-{} {} '.format (inf.type_bip,inf.mode_text))
     print('* Dir database Bloom Filter: {} '.format (inf.dir_bf))
     print('* Languages at work: {} '.format(inf.mnemonic_lang))
-    
 #--------------------------------------------------
     if inf.type_bip == 32:
         print('---------------Load BF---------------')
-        load_BF('32.bf')
-        list_btc30 = load_btc30(inf.dir_bf+'/btc30.h160')
+        bf = load_BF('32.bf')
+        btc30 = load_btc30('btc30.h160')
         print('-------------------------------------',end='\n')
         procs = []
         try:
             for index in range(inf.process_count_work):
-                proc = Process(target=run32, name= 'CPU/'+str(index), args = (bf_32, inf.mode, inf.words, inf.debug, inf.process_count_work,list_btc30,))
+                proc = Process(target=run32, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,btc30,))
                 proc.start()
                 procs.append(proc)
         except KeyboardInterrupt:
@@ -1100,13 +1096,13 @@ if __name__ == "__main__":
 #--------------------------------------------------
     if inf.type_bip == 44:
         print('---------------Load BF---------------')
-        load_BF('44.bf')
-        list_btc30 = load_btc30(inf.dir_bf+'/btc30.h160')
+        bf = load_BF(bf_file='44.bf')
+        btc30 = load_btc30('btc30.h160')
         print('-------------------------------------',end='\n')
         procs = []
         try:
             for index in range(inf.process_count_work):
-                proc = Process(target=run44, name= 'CPU/'+str(index), args = (bf_44, inf.mode, inf.words, inf.debug, inf.process_count_work,list_btc30, ))
+                proc = Process(target=run44, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,btc30, ))
                 proc.start()
                 procs.append(proc)
         except KeyboardInterrupt:
@@ -1121,13 +1117,12 @@ if __name__ == "__main__":
 #--------------------------------------------------
     if inf.type_bip == 49:
         print('---------------Load BF---------------')
-        load_BF('49.bf')
-        list_btc30 = load_btc30(inf.dir_bf+'/btc30.h160')
+        bf = load_BF('49.bf')
         print('-------------------------------------',end='\n')
         procs = []
         try:
             for index in range(inf.process_count_work):
-                proc = Process(target=run49, name= 'CPU/'+str(index), args = (bf_49, inf.mode, inf.words, inf.debug, inf.process_count_work,list_btc30, ))
+                proc = Process(target=run49, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work, ))
                 proc.start()
                 procs.append(proc)
         except KeyboardInterrupt:

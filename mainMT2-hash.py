@@ -71,7 +71,7 @@ class email:
 
 
 class inf:
-    version:str = ' Pulsar v3.6.1 multiT Hash160'
+    version:str = ' Pulsar v3.6.2 multiT Hash160'
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese']
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french']
     mnemonic_lang = ['english']
@@ -87,6 +87,7 @@ class inf:
     key_found = 0
     words = 0
     debug:int = 0
+    mail = ''
 
 
 def load_BF(bf_file):
@@ -126,7 +127,8 @@ def createParser ():
     parser.add_argument ('-c', '--desc', action='store', type=str, help='description', default='local')
     parser.add_argument ('-w', '--words', action='store', type=int, help='words 12, 24', default=12)
     parser.add_argument ('-e', '--debug', action='store', type=int, help='debug 0 1 2', default=0)
-    return parser.parse_args().bip, parser.parse_args().dir_bf, parser.parse_args().threading, parser.parse_args().mode, parser.parse_args().desc, parser.parse_args().words, parser.parse_args().debug
+    parser.add_argument ('-em', '--mail', action='store', type=str, help='send mail or not ', default='yes')
+    return parser.parse_args().bip, parser.parse_args().dir_bf, parser.parse_args().threading, parser.parse_args().mode, parser.parse_args().desc, parser.parse_args().words, parser.parse_args().debug, parser.parse_args().mail
 
 
 def send_email(text):
@@ -134,8 +136,9 @@ def send_email(text):
     BODY:str = '\r\n'.join(('From: %s' % email.from_addr, 'To: %s' % email.to_addr, 'Subject: %s' % email.subject, '', text)).encode('utf-8')
     try:
         server = smtplib.SMTP(email.host,email.port)
-    except (ConnectionRefusedError, ConnectionError) as err:
+    except (OSError) as err:
         print("[*] could not connect to the mail server")
+        inf.mail = 'no'
     else:
         server.login(email.from_addr, email.password)
         try:
@@ -211,7 +214,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -245,7 +249,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -279,7 +284,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -313,7 +319,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -347,7 +354,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -381,7 +389,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -415,7 +424,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -449,7 +459,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -483,7 +494,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         for num in range(20):
             inf.count_32 = inf.count_32 + 2
@@ -517,7 +529,8 @@ def work32(bf_work_32,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
 
 def work44(bf_work_44,mode,words,debug,list_btc):
@@ -588,7 +601,8 @@ def work44(bf_work_44,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         # btc_cash
         bip_obj_mst = Bip44.FromSeed(seed_bytes, Bip44Coins.BITCOIN_CASH)
@@ -640,7 +654,8 @@ def work44(bf_work_44,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
 
 #        # ltc
@@ -681,7 +696,8 @@ def work44(bf_work_44,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
 
 #        # DASH
@@ -722,7 +738,8 @@ def work44(bf_work_44,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
 
 #        # DOGE
@@ -763,7 +780,8 @@ def work44(bf_work_44,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
 
 #        # sv
@@ -816,7 +834,8 @@ def work44(bf_work_44,mode,words,debug,list_btc):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
                 
 
 
@@ -872,7 +891,8 @@ def work49(bf_49,mode,words,debug):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         # ltc 49
         bip_obj_mst = Bip49.FromSeed(seed_bytes, Bip44Coins.LITECOIN)
@@ -908,7 +928,8 @@ def work49(bf_49,mode,words,debug):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         # CASH 49
         bip_obj_mst = Bip49.FromSeed(seed_bytes, Bip44Coins.BITCOIN_CASH)
@@ -944,7 +965,8 @@ def work49(bf_49,mode,words,debug):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
         # SV 49
         bip_obj_mst = Bip49.FromSeed(seed_bytes, Bip44Coins.BITCOIN_SV)
@@ -980,11 +1002,13 @@ def work49(bf_49,mode,words,debug):
                 print(res)
                 inf.key_found = inf.key_found + 1
                 save_rezult(res)
-                send_email(res)
+                if inf.mail == 'yes':
+                    send_email(res)
 
-def run32(bf_32,mode,words,debug,process_count_work,list30):
+def run32(bf_32,mode,words,debug,process_count_work,list30,mail):
     try:
         ind:int = 1
+        inf.mail = mail
         while ind > 0:
             start_time = time.time()
             work32(bf_32,mode,words,debug,list30)
@@ -1001,9 +1025,10 @@ def run32(bf_32,mode,words,debug,process_count_work,list30):
         sys.exit()
 
 
-def run44(bf_44,mode,words,debug,process_count_work,list30):
+def run44(bf_44,mode,words,debug,process_count_work,list30,mail):
     try:
         ind:int = 1
+        inf.mail = mail
         while ind > 0:
             start_time = time.time()
             work44(bf_44,mode,words,debug,list30)
@@ -1018,9 +1043,10 @@ def run44(bf_44,mode,words,debug,process_count_work,list30):
         print('\n'+'Interrupted by the user.')
         sys.exit()
 
-def run49(bf_49,mode,words,debug,process_count_work):
+def run49(bf_49,mode,words,debug,process_count_work,mail):
     try:
         ind:int = 1
+        inf.mail = mail
         while ind > 0:
             start_time = time.time()
             work49(bf_49,mode,words,debug)
@@ -1037,10 +1063,11 @@ def run49(bf_49,mode,words,debug,process_count_work):
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
-    inf.type_bip, inf.dir_bf, inf.process_count_work, inf.mode, email.des_mail, inf.words, inf.debug  = createParser()
+    inf.type_bip, inf.dir_bf, inf.process_count_work, inf.mode, email.des_mail, inf.words, inf.debug, inf.mail  = createParser()
     print('-'*60,end='\n')
     print('* Version: {} '.format(inf.version))
-
+    if inf.mail !='yes':
+        inf.mail='no'
     if inf.words == 12:
         inf.words = 128
     else:
@@ -1081,7 +1108,7 @@ if __name__ == "__main__":
         procs = []
         try:
             for index in range(inf.process_count_work):
-                proc = Process(target=run32, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,btc30,))
+                proc = Process(target=run32, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,btc30,inf.mail,))
                 proc.start()
                 procs.append(proc)
         except KeyboardInterrupt:
@@ -1102,7 +1129,7 @@ if __name__ == "__main__":
         procs = []
         try:
             for index in range(inf.process_count_work):
-                proc = Process(target=run44, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,btc30, ))
+                proc = Process(target=run44, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,btc30,inf.mail, ))
                 proc.start()
                 procs.append(proc)
         except KeyboardInterrupt:
@@ -1122,7 +1149,7 @@ if __name__ == "__main__":
         procs = []
         try:
             for index in range(inf.process_count_work):
-                proc = Process(target=run49, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work, ))
+                proc = Process(target=run49, name= 'CPU/'+str(index), args = (bf, inf.mode, inf.words, inf.debug, inf.process_count_work,inf.mail, ))
                 proc.start()
                 procs.append(proc)
         except KeyboardInterrupt:

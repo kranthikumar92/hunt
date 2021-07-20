@@ -1,0 +1,362 @@
+Mainnet
+Symbol	Name	Privkey	Pubkey	P2SH	Ext Privkey	Ext Pubkey	Bip44	Bech32
+$PAC	PACcoin - Mainnet	204	55	10				
+1337	Elite - Mainnet	176	48	28				
+42	42-coin - Mainnet	136	8	20				
+ABJC	Abjcoin Commerce - Mainnet	151	23	85				
+ACC	AdCoin - Mainnet	176	23	5			161	
+ACES	Aces - Mainnet	151	23	85				
+ACP	AnarchistsPrime - Mainnet	128	0	5				
+ADC	AudioCoin - Mainnet	151	23	125				
+ADZ	Adzcoin - Mainnet	148	20	5				
+AIB	Advanced Internet Blocks - Mainnet	0	0	0			55	
+ALL	Allion - Mainnet	154	26	8				
+ALQO	ALQO - Mainnet	193	23	16				
+AMMO	Ammo Reloaded - Mainnet	142	14	30				
+AMS	AmsterdamCoin - Mainnet	212	23	13				
+ANI	Animecoin - Mainnet	151	23	9				
+ANTX	Antimatter - Mainnet	203	75	85				
+APR	APR Coin - Mainnet	46	12	6				
+ARB	ARbit - Mainnet	151	23	28				
+ARC	Advanced Technology Coin - Mainnet	176	23	8				
+ARCO	AquariusCoin - Mainnet	151	23	5				
+ARG	Argentum - Mainnet	151	23	5			45	
+ASAFE2	AllSafe - Mainnet	151	23	85				
+ATC	Arbitracoin - Mainnet	155	23	5				
+AU	AurumCoin - Mainnet	128	0	5				
+AUR	Auroracoin - Mainnet	176	23	5			85	
+AV	AvatarCoin - Mainnet	151	23	41				
+AXIOM	Axiom - Mainnet	153	23	85				
+BAY	BitBay - Mainnet	153	25	85				
+BCA	Bitcoin Atom - Mainnet	128	23	10			185	bca
+BCC	BitConnect - Mainnet	146	18	85				
+BCD	Bitcoin Diamond - Mainnet	128	0	5			999	
+BCF	Bitcoin Fast - Mainnet	153	25	8				
+BCH	Bitcoin Cash - Mainnet	128	0	5			145	
+BCI	Bitcoin Interest - Mainnet	128	102	23				
+BCO	BridgeCoin - Mainnet	176	27	5			162	
+BENJI	BenjiRolls - Mainnet	383	255	253				
+BERN	BERNcash - Mainnet	153	25	85				
+BIO	BioCoin - Mainnet	153	25	20			154	
+BIOB	BioBar - Mainnet	153	25	50				
+BIRDS	Birds - Mainnet	153	25	85				
+BITG	Bitcoin Green - Mainnet	46	38	6			222	
+BITOK	Bitok - Mainnet	125	25	191				
+BITS	Bitstar - Mainnet	153	25	8				
+BLAZR	BlazerCoin - Mainnet	153	25	125				
+BLK	BlackCoin - Mainnet	153	25	85			10	
+BLOCK	Blocknet - Mainnet	154	26	28			328	
+BLU	BlueCoin - Mainnet	176	26	28				
+BOAT	BOAT - Mainnet	153	25	50				
+BOLI	Bolivarcoin - Mainnet	213	85	5				
+BRO	Bitradio - Mainnet	128	26	102				
+BSC	BowsCoin - Mainnet	153	25	5				
+BSD	BitSend - Mainnet	204	102	5			91	
+BSR	BitSoar - Mainnet	154	26	5				
+BSTY	GlobalBoost-Y - Mainnet	205	77	139				
+BTA	Bata - Mainnet	188	25	5			89	
+BTB	BitBar - Mainnet	153	25	30				
+BTC	Bitcoin - Mainnet	128	0	5			0	bc
+BTCD	BitcoinDark - Mainnet	188	60	85			52	
+BTCP	Bitcoin Private - Mainnet	128	4901	5039			183	
+BTCR	Bitcurrency - Mainnet	153	25	8				
+BTCZ	BitcoinZ - Mainnet	128	7352	7357			177	
+BTDX	Bitcloud - Mainnet	153	25	5			218	
+BTG	Bitcoin Gold - Mainnet	128	38	23			156	
+BTGEM	Bitgem - Mainnet	226	98	8				
+BTX	Bitcore - Mainnet	128	3	125			160	btx
+BUB	Bubble - Mainnet	128	53	5				
+BUMBA	BumbaCoin - Mainnet	153	25	28				
+BUZZ	BuzzCoin - Mainnet	153	25	85			169	
+BWK	Bulwark - Mainnet	212	85	18				
+CANN	CannabisCoin - Mainnet	156	28	5				
+CARBON	Carboncoin - Mainnet	175	47	5				
+CAT	Catcoin - Mainnet	149	21	88				
+CAZ	Cazcoin - Mainnet	144	28	43				
+CBX	Bullion - Mainnet	0	11	8				
+CHAN	ChanCoin - Mainnet	156	28	5				
+CHEAP	Cheapcoin - Mainnet	173	45	142				
+CHESS	ChessCoin - Mainnet	156	28	85				
+CHIPS	CHIPS - Mainnet	188	60	85				
+CJ	Cryptojacks - Mainnet	156	28	85				
+CLAM	Clams - Mainnet	133	137	13			23	
+CLUB	ClubCoin - Mainnet	153	28	85			79	
+CMPCO	CampusCoin - Mainnet	156	28	5				
+CNNC	Cannation - Mainnet	156	28	85				
+CNX	Cryptonex - Mainnet	166	38	85				
+COLX	ColossusXT - Mainnet	212	30	13				
+CON	PayCon - Mainnet	183	55	8				
+CPC	Capricoin - Mainnet	156	28	35				
+CRAVE	Crave - Mainnet	153	70	85			186	
+CRC	CrowdCoin - Mainnet	0	28	88				
+CRM	Cream - Mainnet	155	28	5				
+CROP	Cropcoin - Mainnet	153	87	85				
+CRW	Crown - Mainnet	128	0	28			72	
+CTO	Crypto - Mainnet	156	28	5				
+CURE	Curecoin - Mainnet	153	25	30				
+CYDER	Cyder - Mainnet	148	20	142				
+DASH	Dash - Mainnet	204	76	16			5	
+DCR	Decred - Mainnet	8926	1855	1818			42	
+DEM	Deutsche eMark - Mainnet	181	53	30				
+DEV	DeviantCoin - Mainnet	137	90	10				
+DGB	DigiByte - Mainnet	128	30	5			20	dgb
+DGC	Digitalcoin - Mainnet	128	30	5			18	
+DIME	Dimecoin - Mainnet	143	15	9				
+DLC	Dollarcoin - Mainnet	158	30	5			102	
+DMB	Digital Money Bits - Mainnet	153	137	85				
+DMD	Diamond - Mainnet	218	90	8			152	
+DNR	Denarius - Mainnet	158	30	90			116	
+DOGE	Dogecoin - Mainnet	158	30	22			3	
+DOLLAR	Dollar Online - Mainnet	158	30	90				
+DRXNE	DROXNE - Mainnet	159	31	20				
+ECN	E-coin - Mainnet	220	92	20			115	
+EGC	EverGreenCoin - Mainnet	161	33	85				
+EGG	EggCoin - Mainnet	153	33	85				
+EMB	EmberCoin - Mainnet	50	92	110				
+EMC	Emercoin - Mainnet	128	33	92				
+EMC2	Einsteinium - Mainnet	176	33	5			41	
+EMD	Emerald Crypto - Mainnet	162	34	5				
+ENRG	Energycoin - Mainnet	220	92	8				
+ENT	Eternity - Mainnet	101	33	8				
+EQT	EquiTrader - Mainnet	161	33	20				
+ERA	ERA - Mainnet	154	26	5				
+ERC	EuropeCoin - Mainnet	41	33	5			151	
+ETH	Ethereum - Mainnet						60	
+EVIL	Evil Coin - Mainnet	203	75	5				
+EXCL	ExclusiveCoin - Mainnet	161	33	137			190	
+FAIR	FairCoin - Mainnet	223	95	36				
+FGC	FantasyGold - Mainnet	212	35	18				
+FJC	FujiCoin - Mainnet	164	36	16			75	fc
+FLO	FlorinCoin - Mainnet	163	35	8				
+FLT	FlutterCoin - Mainnet	163	35	20				
+FRC	Freicoin - Mainnet	128	0	5				
+FREE	Freecoin - Mainnet	128	35	57			252	
+FST	Fastcoin - Mainnet	224	96	20				
+FTC	Feathercoin - Mainnet	142	14	5			8	fc
+FTO	FuturoCoin - Mainnet	164	36	13				
+FUNK	The Cypherfunks - Mainnet	176	28	5				
+GAIN	UGAIN - Mainnet	166	38	5				
+GAM	Gambit - Mainnet	166	38	97				
+GAME	GameCredits - Mainnet	166	38	5			101	
+GB	GoldBlocks - Mainnet	155	38	85			94	
+GBX	GoByte - Mainnet	198	38	10			176	
+GEERT	GeertCoin - Mainnet	166	38	5				
+GIN	GINcoin - Mainnet	198	38	10				
+GLD	GoldCoin - Mainnet	176	48	5				
+GLT	GlobalToken - Mainnet	166	38	5				gt
+GPL	Gold Pressed Latinum - Mainnet	163	35	140				
+GRC	GridCoin - Mainnet	190	62	85			84	
+GRIM	Grimcoin - Mainnet	166	38	85				
+GRLC	Garlicoin - Mainnet	176	38	50				grlc
+GRN	Granite - Mainnet	166	38	5				
+GRS	Groestlcoin - Mainnet	128	0	5			17	bc
+GSR	GeyserCoin - Mainnet	171	38	63				
+GTC	Global Tour Coin - Mainnet	139	11	5				
+HAL	Halcyon - Mainnet	168	40	28				
+HALLO	Halloween Coin - Mainnet	168	40	85				
+HBN	HoboNickels - Mainnet	162	34	8				
+HC	Harvest Masternode Coin - Mainnet	153	40	85				
+HOLD	Interstellar Holdings - Mainnet	153	40	100				
+HPC	Happycoin - Mainnet	169	41	20				
+HTML	HTMLCOIN - Mainnet	169	41	100			172	
+HVCO	High Voltage - Mainnet	168	40	85				
+HWC	HollyWoodCoin - Mainnet	168	40	85				
+HXX	Hexx - Mainnet	210	40	10				
+HYP	HyperStake - Mainnet	245	117	8				
+HYPER	Hyper - Mainnet	104	100	101				
+I0C	I0Coin - Mainnet	128	105	5				
+IBANK	iBank - Mainnet	138	10	85				
+ICON	Iconic - Mainnet	230	102	85				
+IFC	Infinitecoin - Mainnet	230	102	5				
+IFLT	InflationCoin - Mainnet	230	102	7				
+IMS	Independent Money System - Mainnet	131	3	85				
+IMX	Impact - Mainnet	204	76	141				
+INFX	Influxcoin - Mainnet	230	102	28				
+INN	Innova - Mainnet	195	102	20				
+IOC	I/O Coin - Mainnet	231	103	85				
+ION	ION - Mainnet	153	103	88				
+IRL	IrishCoin - Mainnet	161	33	5				
+ISL	IslaCoin - Mainnet	230	102	28				
+ITI	iTicoin - Mainnet	193	65	20				
+IXC	Ixcoin - Mainnet	128	138	5			86	
+JIYO	Jiyo - Mainnet	212	43	12				
+KEK	KekCoin - Mainnet	133	45	88				
+KMD	Komodo - Mainnet	188	60	85			141	
+KNC	KingN Coin - Mainnet	173	45	85				
+KOBO	Kobocoin - Mainnet	163	35	28				
+KUSH	KushCoin - Mainnet	173	45	20				
+LANA	LanaCoin - Mainnet	176	48	5				
+LBC	LBRY Credits - Mainnet	28	85	122			140	
+LBTC	LiteBitcoin - Mainnet	131	3	5				
+LCC	Litecoin Cash - Mainnet	176	28	5			192	lcc
+LCP	Litecoin Plus - Mainnet	203	75	8				
+LEO	LEOcoin - Mainnet	144	18	88				
+LINDA	Linda - Mainnet	153	48	85				
+LIR	LetItRide - Mainnet	153	48	5				
+LOG	Woodcoin - Mainnet	74	73	5				
+LTC	Litecoin - Mainnet	176	48	5			2	ltc
+LUX	LUXCoin - Mainnet	155	48	63				bc
+MAC	Machinecoin - Mainnet	178	50	5				mc
+MAGN	Magnetcoin - Mainnet	179	51	50				
+MAO	Mao Zedong - Mainnet	178	50	28				
+MARX	MarxCoin - Mainnet	179	51	5				
+MAX	MaxCoin - Mainnet	128	110	112				
+MAY	Theresa May Coin - Mainnet	178	50	85				
+MAZA	MAZA - Mainnet	224	50	9				
+MCRN	MACRON - Mainnet	140	12	85				
+MEC	Megacoin - Mainnet	178	50	5			217	
+MEDIC	MedicCoin - Mainnet	153	50	85				
+MEME	Memetic / PepeCoin - Mainnet	153	55	85				
+METAL	MetalCoin - Mainnet	178	50	28				
+MINT	Mintcoin - Mainnet	179	51	8				
+MLM	MktCoin - Mainnet	238	110	115				
+MNM	Mineum - Mainnet	179	51	85				
+MNX	MinexCoin - Mainnet	128	75	5			182	
+MOJO	MojoCoin - Mainnet	153	50	28				
+MONA	MonaCoin - Mainnet	176	50	5			22	
+MONK	Monkey Project - Mainnet	55	51	28				
+MOON	Mooncoin - Mainnet	131	3	22				
+MRQ	MIRQ - Mainnet	138	110	40				
+MST	MustangCoin - Mainnet	176	48	28				
+MTNC	Masternodecoin - Mainnet	178	50	5				
+MUE	MonetaryUnit - Mainnet	126	16	76			31	
+MXT	MarteXcoin - Mainnet	0	50	5			180	
+NAV	NavCoin - Mainnet	150	53	85			130	
+NEVA	NevaCoin - Mainnet	177	53	5				
+NLC2	NoLimitCoin - Mainnet	181	53	85			149	
+NLG	Gulden - Mainnet	39	38	98			87	
+NLX	Nullex - Mainnet	166	38	85				
+NMC	Namecoin - Mainnet	180	52	13			7	nc
+NMS	Numus - Mainnet	25	21	20				
+NUMUS	NumusCash - Mainnet	181	53	85				
+NVC	Novacoin - Mainnet	136	8	20			50	
+NYC	NewYorkCoin - Mainnet	188	60	22			179	
+OCC	Octoin Coin - Mainnet	128	115	83				
+ODN	Obsidian - Mainnet	0	75	125			173	
+OK	OKCash - Mainnet	183	55	28			69	
+OMC	Omicron - Mainnet	143	15	85				
+ONION	DeepOnion - Mainnet	159	31	78				
+OPC	OP Coin - Mainnet	156	28	85				
+ORE	Galactrum - Mainnet	204	38	16				
+PAK	Pakcoin - Mainnet	183	55	5				
+PART	Particl - Mainnet	108	0	0			44	bc
+PHR	Phore - Mainnet	212	55	13			444	ph
+PHS	Philosopher Stones - Mainnet	149	21	8				
+PIGGY	Piggycoin - Mainnet	246	118	28			118	
+PINK	PinkCoin - Mainnet	131	3	28			117	
+PIVX	PIVX - Mainnet	212	30	13			119	
+PLACO	PlayerCoin - Mainnet	183	55	85				
+PND	Pandacoin - Mainnet	183	55	22			37	
+PNX	Phantomx - Mainnet	155	55	5				
+POLIS	Polis - Mainnet	60	55	56				
+POP	PopularCoin - Mainnet	184	56	5				
+POST	PostCoin - Mainnet	183	55	28				
+POT	PotCoin - Mainnet	183	55	5			81	
+PPC	Peercoin - Mainnet	183	55	117			6	
+PROUD	PROUD Money - Mainnet	225	97	38				
+PURA	Pura - Mainnet	150	55	16				
+PURE	Pure - Mainnet	153	55	85				
+PUT	PutinCoin - Mainnet	183	55	20			122	
+Q2C	QubitCoin - Mainnet	224	38	9				
+QBC	Quebecoin - Mainnet	186	58	5				
+QTL	Quatloo - Mainnet	186	58	5				
+QTUM	Qtum - Mainnet	128	58	50			2301	
+RADS	Radium - Mainnet	121	76	58				
+RBY	Rubycoin - Mainnet	188	60	85			16	
+RC	RussiaCoin - Mainnet	188	60	75				
+RDD	ReddCoin - Mainnet	189	61	5			4	
+REGA	Regacoin - Mainnet	189	61	5				
+RIC	Riecoin - Mainnet	128	60	5			143	
+RNS	Renos - Mainnet	150	60	28				
+ROOFS	Roofs - Mainnet	188	60	85				
+RPC	RonPaulCoin - Mainnet	188	60	3				
+RUP	Rupee - Mainnet	188	60	5				
+RUPX	Rupaya - Mainnet	212	15	8				
+RVN	Ravencoin - Mainnet	128	60	122			175	rc
+SAGA	SagaCoin - Mainnet	142	125	44				
+SAK	Sharkcoin - Mainnet	191	63	9				
+SBC	StrikeBitClub - Mainnet	141	13	85				
+SEQ	Sequence - Mainnet	170	63	64				
+SIB	SIBCoin - Mainnet	128	63	40				
+SKC	Skeincoin - Mainnet	226	63	12				
+SLR	SolarCoin - Mainnet	146	18	5			58	
+SLS	SaluS - Mainnet	191	63	23				
+SMART	SmartCash - Mainnet	191	63	18			224	
+SOCC	SocialCoin - Mainnet	191	63	5				
+SONG	SongCoin - Mainnet	191	63	5				
+SPACE	SpaceCoin - Mainnet	191	63	52				
+SPD	Stipend - Mainnet	23	63	21				
+SPHR	Sphere - Mainnet	153	25	85				
+SPK	Sparks - Mainnet	198	38	10				
+SRC	SecureCoin - Mainnet	128	125	9				
+STAK	STRAKS - Mainnet	204	63	5			187	
+STN	Steneum Coin - Mainnet	191	63	5				
+STRAT	Stratis - Mainnet	191	63	125			158	
+STV	Sativacoin - Mainnet	191	63	28				
+SUPER	SuperCoin - Mainnet	191	63	28				
+SWING	Swing - Mainnet	191	63	85				
+SXC	Sexcoin - Mainnet	190	62	5				
+SYS	Syscoin - Mainnet	128	63	5			57	
+TAJ	TajCoin - Mainnet	111	65	5				
+TELL	Tellurion - Mainnet	193	65	50				
+THC	HempCoin - Mainnet	168	40	8				
+TOA	ToaCoin - Mainnet	193	65	23			159	
+TOKC	TOKYO - Mainnet	193	65	85				
+TOP	TopCoin - Mainnet	255	127	8				
+TPAY	TokenPay - Mainnet	179	65	126				
+TRC	Terracoin - Mainnet	128	0	5			83	
+TRK	Truckcoin - Mainnet	245	117	8				
+TX	TransferCoin - Mainnet	153	66	85				
+UIS	Unitus - Mainnet	132	68	10				
+ULA	Ulatech - Mainnet	196	68	5				
+UNIFY	Unify - Mainnet	196	68	5			124	
+UNIT	Universal Currency - Mainnet	183	55	85				
+UNO	Unobtanium - Mainnet	224	130	30			92	
+USC	Ultimate Secure Cash - Mainnet	191	68	125			112	
+VEC2	VectorAI - Mainnet	186	70	45				
+VIA	Viacoin - Mainnet	199	71	33			14	
+VIDZ	PureVidz - Mainnet	153	71	75				
+VIPS	Vipstar Coin - Mainnet	128	70	50				
+VISIO	Visio - Mainnet	0	71	125				
+VIVO	VIVO - Mainnet	198	70	10			166	
+VOLT	Bitvolt - Mainnet	166	70	85				
+VOT	VoteCoin - Mainnet	128	7352	7357				
+VRC	VeriCoin - Mainnet	198	70	132				
+VSX	Vsync - Mainnet	212	70	13				
+VTA	Virtacoin - Mainnet	128	0	5				
+VTC	Vertcoin - Mainnet	128	71	5			28	vtc
+VULC	Vulcano - Mainnet	198	70	85				
+WC	WINCOIN - Mainnet	201	73	83			181	
+WINK	Wink - Mainnet	176	48	142				
+WOMEN	WomenCoin - Mainnet	201	73	85				
+XBTC21	Bitcoin 21 - Mainnet	131	3	20				
+XBTS	Beatcoin - Mainnet	153	25	28				
+XCO	X-Coin - Mainnet	203	75	85				
+XCT	C-Bit - Mainnet	128	0	5				
+XGOX	XGOX - Mainnet	166	38	85				
+XJO	Joulecoin - Mainnet	143	43	11				
+XLR	Solaris - Mainnet	212	63	13				
+XMR	Monero - Mainnet		18				60	
+XMY	Myriad - Mainnet	178	50	9			90	
+XP	Experience Points - Mainnet	203	75	20				
+XPM	Primecoin - Mainnet	151	23	83			24	
+XPTX	PlatinumBAR - Mainnet	214	55	117				
+XQN	Quotient - Mainnet	186	58	125				
+XRA	Ratecoin - Mainnet	188	60	28				
+XRE	RevolverCoin - Mainnet	128	0	5				
+XSN	Stakenet - Mainnet	204	76	16				xc
+XSPEC	Spectrecoin - Mainnet	179	63	136				
+XTO	Tao - Mainnet	76	66	3				
+XVG	Verge - Mainnet	158	30	33			77	
+XWC	WhiteCoin - Mainnet	74	73	87			155	
+XZC	ZCoin - Mainnet	210	82	7			136	
+YTN	YENTEN - Mainnet	123	78	10				
+ZCL	ZClassic - Mainnet	128	7352	7357			147	
+ZEC	Zcash - Mainnet	128	7352	7357			133	
+ZEIT	Zeitcoin - Mainnet	179	51	8				
+ZEN	ZenCash - Mainnet	128	8329	8342			121	
+ZENI	Zennies - Mainnet	142	80	72				
+ZET	Zetacoin - Mainnet	224	80	9				
+ZOI	Zoin - Mainnet	208	80	7				
+ZYD	Zayedcoin - Mainnet	209	81	5			103	
+ZZC	ZoZoCoin - Mainnet	204	76	16				

@@ -7,7 +7,7 @@
   Описание как это работает :  
   https://learnmeabitcoin.com/technical/derivation-paths
   
-# mnemonic-colider-2 HASH160
+# HUNT to MNEMONIC (HASH160)
 Brute Force Bitcoin address
 Программа создана в первую очередь для изучения языка PYTHON! 
 
@@ -24,6 +24,8 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
   
 #### Планы:  
 [ ] Клиент-сервер  
+[ ]  WEB Сервер статистики  
+[Х] Добавить поиск по ETH, ETC  
 [ ] ini файлы для настройки клиента и сервера  
 [ ] оформить описание ;-)  
   
@@ -43,7 +45,7 @@ m/44'/0'/0'/0'
   
 по организации BIP-44 база данных  '44.bf'  
 по организации BIP-49 база данных  '49.bf'  
- 
+по организации BIP-49 база данных  'eth.bf'  
   
 ### по режимам Случайный, Стандартный  
 
@@ -80,14 +82,14 @@ python Cbloom.py <in file> <outfile>
 Mnemonic->check valid->seed  
 работает с языками 'english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish','czech','korean','japanese'  
 #### Случайный (-m r):  
-Генерирует SEED 64 байта без проверок  
+Генерирует SEED 128-256 ENTROPY  
 
   
 ## Многопоточная версия  
   python mainMT.py -b <BIP 32 или 44> -d <директория с файлами блюм фильтра> -t <количество ядер> -m <режим работы> -w <сколько слов 12 или 24> -c <описание сервера> -e (дебаг без аргумента) 
   python mainMT.py -b 32 -d BF -t 2 -m s -w 12 -c Local_win  
   python mainMT.py -b 44 -d BF -t 3 -m r -w 24 -c Local_win  
-  python mainMT.py -b 49 -d BF -t 2 -m s -w 12 -c Local_win  
+  python mainMT.py -b ETH -d BF -t 2 -m s -w 12 -c Local_win  
 
     
 ## Не забудьте настроить параметры своей почты для отправки найденных мнемоник  

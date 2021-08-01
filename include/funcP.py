@@ -1,29 +1,22 @@
-import hashlib,codecs, sys, smtplib, datetime, socket, secrets
+import sys, smtplib, datetime, socket, secrets
 from bloomfilter import BloomFilter
 from mnemonic import Mnemonic
 from bip_utils.utils import CryptoUtils
-from bip_utils import  Bip44, Bip44Coins, Bip44Changes, Bip49, Bip32
-from multiprocessing import  Value, Lock#Process,
+from bip_utils import  Bip44, Bip44Coins, Bip49, Bip32, Bip39EntropyGenerator, Bip39MnemonicGenerator, Bip39SeedGenerator,P2SH,P2PKH
+from multiprocessing import  Value, Lock
 
-def dbg(nem, pc,puc,hc,huc,p,ac,auc,cc):
-    print('\n* Debug Mnemonic : '+nem)
-    print('* Public RawCompressed - {}'.format(pc))
-    print('* Public RawUnCompressed - {}'.format(puc))
-    print('* Hash Compress - {}'.format(hc))
-    print('* Hash Uncompress - {}'.format(huc))
-    print('* Path or cyrency - {}'.format(p))
-    print('* Address Compress - {}'.format(ac))
-    print('* Address UnCompress - {}'.format(auc),end='\n')
-    print('\n* Found - {}'.format(cc.value()))
 
-def prn(hc,ac,huc,auc,nem,pk,p):
-    print('\n* Debug Mnemonic : '+nem)
-    print('* Private key - {}'.format(pk))
-    print('* Hash Compress - {}'.format(hc))
-    print('* Hash Uncompress - {}'.format(huc))
-    print('* Path - {}'.format(p))
-    print('* Address Compress - {}'.format(ac))
-    print('* Address UnCompress - {}'.format(auc),end='\n')
+def prn(nem,pk_c,pk_uc,pu_c,pu_uc,h_c_b,h_uc_b,h_c,h_uc,a_c_b,a_uc_b,a_c,a_uc,path,count):
+    print('-'*60)
+    print('\n* Mnemonic : '+nem)
+    print('* Private key compress - {} Public RawCompressed - {}'.format(pk_c,pu_c))
+    print('* Private key uncompress- {} Public RawUnCompressed -{}'.format(pk_uc,pu_uc))
+    print('* Hash Compress - {} Address Compress -{}'.format(h_c,a_c))
+    print('* Hash Uncompress - {} Address UnCompress -{}'.format(h_uc,a_uc))
+    print('* Other Hash Compress - {} Other Address Compress -{}'.format(h_c_b,a_c_b))
+    print('* Other Hash Uncompress - {} Other Address UnCompress -{}'.format(h_uc_b,a_uc_b))
+    print('* Path or cyrency - {}'.format(path))
+    print('* Found - {}'.format(count.value()),end='\n')
 
 class Counter(object):
     def __init__(self, initval=0):
@@ -37,51 +30,6 @@ class Counter(object):
     def value(self):
         with self.lock:
             return self.val.value
-
-def base58(address_hex):
-    alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-    b58_string = ''
-    # Get the number of leading zeros and convert hex to decimal
-    leading_zeros = len(address_hex) - len(address_hex.lstrip('0'))
-    # Convert hex to decimal
-    address_int = int(address_hex, 16)
-    # Append digits to the start of string
-    while address_int > 0:
-        digit = address_int % 58
-        digit_char = alphabet[digit]
-        b58_string = digit_char + b58_string
-        address_int //= 58
-    # Add '1' for each 2 leading zeros
-    ones = leading_zeros // 2
-    for one in range(ones):
-        b58_string = '1' + b58_string
-    return b58_string
-
-def public_to_address(public_key,net_byte:bytes):
-    public_key_bytes = codecs.decode(public_key, 'hex')
-    # Run SHA256 for the public key
-    sha256_bpk = hashlib.sha256(public_key_bytes)
-    sha256_bpk_digest = sha256_bpk.digest()
-    # Run ripemd160 for the SHA256
-    ripemd160_bpk = hashlib.new('ripemd160')
-    ripemd160_bpk.update(sha256_bpk_digest)
-    ripemd160_bpk_digest = ripemd160_bpk.digest()
-    ripemd160_bpk_hex = codecs.encode(ripemd160_bpk_digest, 'hex')
-    # Add network byte
-    network_byte = net_byte#b'00'
-    network_bitcoin_public_key = network_byte + ripemd160_bpk_hex
-    network_bitcoin_public_key_bytes = codecs.decode(network_bitcoin_public_key, 'hex')
-    # Double SHA256 to get checksum
-    sha256_nbpk = hashlib.sha256(network_bitcoin_public_key_bytes)
-    sha256_nbpk_digest = sha256_nbpk.digest()
-    sha256_2_nbpk = hashlib.sha256(sha256_nbpk_digest)
-    sha256_2_nbpk_digest = sha256_2_nbpk.digest()
-    sha256_2_hex = codecs.encode(sha256_2_nbpk_digest, 'hex')
-    checksum = sha256_2_hex[:8]
-    # Concatenate public key and checksum to get the address
-    address_hex = (network_bitcoin_public_key + checksum).decode('utf-8')
-    wallet = base58(address_hex)
-    return wallet
 
 def load_BF(dir,bf_file):
     BF_:BloomFilter
@@ -118,9 +66,16 @@ def send_email(i,e,text):
     BODY:str = '\r\n'.join(('From: %s' % e.from_addr, 'To: %s' % e.to_addr, 'Subject: %s' % subject, '', text)).encode('utf-8')
     try:
         server = smtplib.SMTP(e.host,e.port)
-    except (smtplib.SMTPAuthenticationError) or (OSError):
+    except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
         print("\n[*] could not connect to the mail server")
-        i.mail = 'no'
+        i.mail_nom += 1
+        if i.mail_nom >= 3:
+            i.mail = 'no'
+    except ConnectionRefusedError:
+        print("\n[*] could not connect to the mail server")
+        i.mail_nom += 1
+        if i.mail_nom >= 3:
+            i.mail = 'no'
     else:
         server.login(e.from_addr, e.password)
         try:
@@ -157,15 +112,18 @@ def send_stat(s, i, uid,des,bip,process_count_work,speed,total,found):
     found = str(found).encode('utf-8')
     time_t = datetime.datetime.now()
     time_b = time_t.strftime("%y/%m/%d %H:%M").encode('utf-8')
+    ver = i.version
     work = b'Worker online'
     
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         client_sock.connect((s.server, s.port))
         client_sock.sendall(uid+b+name+b+mode+b+thread+b+speed+b+total+b+found+b+time_b+b+work)
-    except (UnboundLocalError, ConnectionError) as msg:
+    except (UnboundLocalError, ConnectionResetError, ConnectionError) as msg:
         print("\nSocket creation error. Send Statictic Stop!")
-        i.socket = 'no'
+        i.sock_nom += 1
+        if i.sock_nom >= 3:
+            i.socket = 'no'
     else:
         data = client_sock.recv(1024)
         client_sock.close()
@@ -173,98 +131,156 @@ def send_stat(s, i, uid,des,bip,process_count_work,speed,total,found):
 
 def b32(i, e, mnemo, seed, counter):
     for path in i.l32:
-        for path_ in i.l32_:
-            for num in range(20):
-                bip32_ctx = Bip32.FromSeedAndPath(seed, path + str(num)+path_)
-                bip32_h160_1 = CryptoUtils.Hash160(bip32_ctx.PublicKey().RawCompressed().ToBytes()).hex()
-                bip32_h160_2 = CryptoUtils.Hash160(bip32_ctx.PublicKey().RawUncompressed().ToBytes()).hex()
-                if i.debug > 0:
-                    dbg(mnemo, bip32_ctx.PublicKey().RawCompressed().ToHex(), bip32_ctx.PublicKey().RawUncompressed().ToHex(), 
-                        bip32_h160_1, bip32_h160_2, path+str(num)+path_,
-                        public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00'),public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00'),counter)
-                if any(element in bip32_h160_1 for element in i.list30) or any(element in bip32_h160_2 for element in i.list30):
-                    print('\n-------------------------- Find --------------------------')
-                    bip32_PK = bip32_ctx.PrivateKey().ToWif()
-                    bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
-                    bip_addr2 = public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
-                    res = bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | '+ mnemo +' | '+ bip32_PK +' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
-                    prn(bip32_h160_1,bip_addr,bip32_h160_2,bip_addr2,mnemo,bip32_PK,path+str(num)+path_)
-                    save_rezult(i, res)
-                    if i.mail == 'yes':
-                        send_email(i,e,res)
-                    counter.increment()
-                if (bip32_h160_1 in i.bf) or (bip32_h160_2 in i.bf):
-                    print('\n-------------------------- Find --------------------------')
-                    bip32_PK = bip32_ctx.PrivateKey().ToWif()
-                    bip_addr = public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
-                    bip_addr2 = public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
-                    res = bip32_h160_1 +' | '+bip_addr +' | '+ bip32_h160_2 +' | '+ bip_addr2 +' | '+ mnemo +' | '+ bip32_PK +' | BIP 32 / BTC'
-                    prn(bip32_h160_1,bip_addr,bip32_h160_2,bip_addr2,mnemo,bip32_PK,path+str(num)+path_)
-                    save_rezult(i, res)
-                    if i.mail == 'yes':
-                        send_email(i,e,res)
-                    counter.increment()
-                i.count = i.count + 2
+        for num in range(20):
+            bip32_ctx = Bip32.FromSeedAndPath(seed, path+'/'+str(num))
+            bip32_h160_c = CryptoUtils.Hash160(bip32_ctx.PublicKey().RawCompressed().ToBytes()).hex()
+            bip32_h160_uc = CryptoUtils.Hash160(bip32_ctx.PublicKey().RawUncompressed().ToBytes()).hex()
+            if i.debug > 0:
+                pk_c = bip32_ctx.PrivateKey().ToWif()
+                pk_uc = bip32_ctx.PrivateKey().ToWif(compr_pub_key = False)
+                pu_c = bip32_ctx.PublicKey().RawCompressed().ToHex()
+                pu_uc = bip32_ctx.PublicKey().RawUncompressed().ToHex()
+                h_c = bip32_h160_c
+                h_uc = bip32_h160_uc
+                a_c = P2PKH.ToAddress(bip32_ctx.PublicKey().RawCompressed().ToBytes(),net_addr_ver=b"\x00")#public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
+                a_uc = P2PKH.ToAddress(bip32_ctx.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=b"\x00")#public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
+                path_ = path+'/'+str(num)
+                prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,path_,counter)
+            if any(element in bip32_h160_c for element in i.list30) or any(element in bip32_h160_uc for element in i.list30):
+                print('\n-------------------------- Find --------------------------')
+                bip32_PK_c = bip32_ctx.PrivateKey().ToWif()
+                bip32_PK_uc = bip32_ctx.PrivateKey().ToWif(compr_pub_key = False)
+                bip_addr_c = P2PKH.ToAddress(bip32_ctx.PublicKey().RawCompressed().ToBytes(),net_addr_ver=b"\x00")#public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
+                bip_addr_uc = P2PKH.ToAddress(bip32_ctx.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=b"\x00")#public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
+                res = bip32_PK_c+' | '+bip32_h160_c +' | '+bip_addr_c +' | '+ bip32_PK_uc+' | '+bip32_h160_uc +' | '+ bip_addr_uc +' | '+ mnemo +' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
+                prn(mnemo,bip32_PK_c,bip32_PK_uc,None,None,None,None,None,None,None,None,bip_addr_c,bip_addr_uc,path+'/'+str(num),counter)
+                save_rezult(i, res)
+                if i.mail == 'yes':
+                    send_email(i,e,res)
+                counter.increment()
+            if (bip32_h160_c in i.bf) or (bip32_h160_uc in i.bf):
+                print('\n-------------------------- Find --------------------------')
+                bip32_PK_c = bip32_ctx.PrivateKey().ToWif()
+                bip32_PK_uc = bip32_ctx.PrivateKey().ToWif(compr_pub_key = False)
+                bip_addr_c = P2PKH.ToAddress(bip32_ctx.PublicKey().RawCompressed().ToBytes(),net_addr_ver=b"\x00")#public_to_address(bip32_ctx.PublicKey().RawCompressed().ToHex(),b'00')
+                bip_addr_uc = P2PKH.ToAddress(bip32_ctx.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=b"\x00")#public_to_address(bip32_ctx.PublicKey().RawUncompressed().ToHex(),b'00')
+                res = bip32_PK_c+' | '+bip32_h160_c +' | '+bip_addr_c +' | '+ bip32_PK_uc+' | '+bip32_h160_uc +' | '+ bip_addr_uc +' | '+ mnemo +' | BIP 32 / BTC'
+                prn(mnemo,bip32_PK_c,bip32_PK_uc,None,None,None,None,None,None,None,None,bip_addr_c,bip_addr_uc,path+'/'+str(num),counter)
+                save_rezult(i, res)
+                if i.mail == 'yes':
+                    send_email(i,e,res)
+                counter.increment()
+            i.count = i.count + 2
 
 def bETH(i, e, mnemo, seed, counter):
-    bip_obj_mst = Bip44.FromSeed(seed,Bip44Coins.ETHEREUM)
-    for nom2 in range(10):
-        bip_obj_acc = bip_obj_mst.Purpose().Coin().Account(nom2)
-        for nom3 in i.l44__:
-            bip_obj_chain = bip_obj_acc.Change(nom3)
-            for nom in range(20):
-                bip_obj_addr = bip_obj_chain.AddressIndex(nom)
-                bip_addr:str = bip_obj_addr.PublicKey().ToAddress()
-                if i.debug > 0:
-                    dbg(mnemo, bip_obj_addr.PublicKey().RawCompressed().ToHex(), '', 
-                        '', '', "ETHEREUM - " + str(nom), bip_addr,'',counter)
-                if bip_addr in i.bf:
-                    print('============== Find =================')
-                    bip44_PK = bip_obj_addr.PrivateKey().ToWif()
-                    res:str = bip_addr + ' | ' + mnemo + ' | ' + bip44_PK +' | BIP 44 / ETHEREUM'
-                    prn('',bip_addr,'','',mnemo,bip44_PK,"ETHEREUM - " + str(nom))
-                    save_rezult(i, res)
-                    if i.mail == 'yes':
-                        send_email(i,e,res)
-                    counter.increment()
-                i.count = i.count + 1
+    for cyr in i.leth:
+        bip_obj_mst_e = Bip44.FromSeed(seed,cyr)
+        for nom2 in range(2):
+            bip_obj_acc_e = bip_obj_mst_e.Purpose().Coin().Account(nom2)
+            for nom3 in i.l44__:
+                bip_obj_chain_e = bip_obj_acc_e.Change(nom3)
+                for nom in range(20):
+                    bip_obj_addr = bip_obj_chain_e.AddressIndex(nom)
+                    bip_addr:str = bip_obj_addr.PublicKey().ToAddress()
+                    if i.debug > 0:
+                        pk_c = bip_obj_addr.PrivateKey().Raw().ToHex()
+                        pu_c = bip_obj_addr.PublicKey().RawCompressed().ToHex()
+                        prn(mnemo,pk_c,None,pu_c,None,None, None,None,None,None,None, bip_addr,None,str(cyr)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
+                    if bip_addr in i.bf:
+                        print('============== Find =================')
+                        bip44_PK = bip_obj_addr.PrivateKey().ToWif()
+                        res:str = bip44_PK + ' | ' + bip_addr +' | ' + mnemo + ' | BIP 44 / '+str(cyr)
+                        prn(mnemo,pk_c,None,pu_c,None,None, None,None,None,None,None, bip_addr,None,str(cyr)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
+                        save_rezult(i, res)
+                        if i.mail == 'yes':
+                            send_email(i,e,res)
+                        counter.increment()
+                    i.count = i.count + 1
 
 def b44(i, e, mnemo, seed, counter):
     no = 0
     for p in i.l44:
         net_code = i.l44_[no]
-        bip_obj_mst = Bip44.FromSeed(seed, p)
-        for nom2 in range(5):
-            bip_obj_acc = bip_obj_mst.Purpose().Coin().Account(nom2)
+        bip_obj_mst_44 = Bip44.FromSeed(seed, p)
+        for nom2 in range(2):
+            bip_obj_acc_44 = bip_obj_mst_44.Purpose().Coin().Account(nom2)
             for nom3 in i.l44__:
-                bip_obj_chain = bip_obj_acc.Change(nom3)
+                bip_obj_chain_44 = bip_obj_acc_44.Change(nom3)
                 for nom in range(20):
-                    bip_obj_addr = bip_obj_chain.AddressIndex(nom)
+                    bip_obj_addr = bip_obj_chain_44.AddressIndex(nom)
                     bip44_hc = CryptoUtils.Hash160(bip_obj_addr.PublicKey().RawCompressed().ToBytes()).hex()
                     bip44_huc = CryptoUtils.Hash160(bip_obj_addr.PublicKey().RawUncompressed().ToBytes()).hex()
                     if i.debug > 0:
-                        dbg(mnemo, bip_obj_addr.PublicKey().RawCompressed().ToHex(), bip_obj_addr.PublicKey().RawUncompressed().ToHex(), 
-                            bip44_hc, bip44_huc, str(p) +" - " + str(nom),
-                            public_to_address(bip_obj_addr.PublicKey().RawCompressed().ToHex(),net_code), public_to_address(bip_obj_addr.PublicKey().RawUncompressed().ToHex(),net_code),counter)
+                        pk_c = bip_obj_addr.PrivateKey().ToWif()
+                        pk_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
+                        pu_c = bip_obj_addr.PublicKey().RawCompressed().ToHex()
+                        pu_uc = bip_obj_addr.PublicKey().RawUncompressed().ToHex()
+                        h_c = bip44_hc
+                        h_uc = bip44_huc
+                        a_c = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
+                        a_uc = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
+                        prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
+                        print(bip_obj_addr.PublicKey().ToAddress())
                     if p==Bip44Coins.BITCOIN:
                         if any(element in bip44_hc for element in i.list30) or any(element in bip44_huc for element in i.list30):
                             print('-------------------------- Find --------------------------',end='\n')
-                            bip44_PK = bip_obj_addr.PrivateKey().ToWif()
-                            bip_addr = public_to_address(bip_obj_addr.PublicKey().RawCompressed().ToHex(),net_code)
-                            bip_addr2 = public_to_address(bip_obj_addr.PublicKey().RawUncompressed().ToHex(),net_code)
-                            res =bip44_hc +' | '+ bip_addr +' | '+ bip44_huc +' | '+ bip_addr2 + ' | '+ mnemo +' | '+ bip44_PK +' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
-                            prn(bip44_hc,bip_addr,bip44_huc,bip_addr2,mnemo,bip44_PK,str(p) +" - " + str(nom))
+                            bip44_PK_c = bip_obj_addr.PrivateKey().ToWif()
+                            bip44_PK_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
+                            bip_addr_c = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
+                            bip_addr_uc = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
+                            res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+  +' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
+                            prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
                             save_rezult(i,res)
                             if i.mail == 'yes':
                                 send_email(i,e,res)
                             counter.increment()
-                    if (bip44_hc in i.bf) or (bip44_huc in i.bf):
+                    if (bip44_huc in i.bf) or (bip44_huc in i.bf):
                         print('-------------------------- Find --------------------------',end='\n')
-                        bip44_PK = bip_obj_addr.PrivateKey().ToWif()
-                        bip_addr = public_to_address(bip_obj_addr.PublicKey().RawCompressed().ToHex(),net_code)
-                        bip_addr2 = public_to_address(bip_obj_addr.PublicKey().RawUncompressed().ToHex(),net_code)
-                        res =bip44_hc +' | '+ bip_addr +' | '+ bip44_huc +' | '+ bip_addr2 + ' | '+ mnemo +' | '+ bip44_PK +' | '+str(p) +" - " + str(nom)
-                        prn(bip44_hc,bip_addr,bip44_huc,bip_addr2,mnemo,bip44_PK,str(p) +" - " + str(nom))
+                        bip44_PK_c = bip_obj_addr.PrivateKey().ToWif()
+                        bip44_PK_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
+                        bip_addr_c = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
+                        bip_addr_uc = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
+                        res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+  +' | BIP 44 /'+str(p)
+                        prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
+                        save_rezult(i,res)
+                        if i.mail == 'yes':
+                            send_email(i, e, res)
+                        counter.increment()
+                    i.count = i.count + 2
+        no += 1
+
+def b49(i, e, mnemo, seed, counter):
+    no = 0
+    for p in i.l49:
+        net_code = i.l49_[no]
+        bip_obj_mst_44 = Bip49.FromSeed(seed, p)
+        for nom2 in range(2):
+            bip_obj_acc_44 = bip_obj_mst_44.Purpose().Coin().Account(nom2)
+            for nom3 in i.l44__:
+                bip_obj_chain_44 = bip_obj_acc_44.Change(nom3)
+                for nom in range(20):
+                    bip_obj_addr = bip_obj_chain_44.AddressIndex(nom)
+                    bip44_hc = CryptoUtils.Hash160(bip_obj_addr.PublicKey().RawCompressed().ToBytes()).hex()
+                    bip44_huc = CryptoUtils.Hash160(bip_obj_addr.PublicKey().RawUncompressed().ToBytes()).hex()
+                    if i.debug > 0:
+                        pk_c = bip_obj_addr.PrivateKey().ToWif()
+                        pk_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
+                        pu_c = bip_obj_addr.PublicKey().RawCompressed().ToHex()
+                        pu_uc = bip_obj_addr.PublicKey().RawUncompressed().ToHex()
+                        h_c = bip44_hc
+                        h_uc = bip44_huc
+                        a_c = P2SH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
+                        a_uc = P2SH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
+                        prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
+                        print(bip_obj_addr.PublicKey().ToAddress())
+                    if (bip44_huc in i.bf) or (bip44_huc in i.bf):
+                        print('-------------------------- Find --------------------------',end='\n')
+                        bip44_PK_c = bip_obj_addr.PrivateKey().ToWif()
+                        bip44_PK_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
+                        bip_addr_c = P2SH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
+                        bip_addr_uc = P2SH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
+                        res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+  +' | BIP 44 /'+str(p)
+                        prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
                         save_rezult(i,res)
                         if i.mail == 'yes':
                             send_email(i, e, res)
@@ -276,13 +292,17 @@ def nnmnem(i, mem):
     if i.mode == 'r':
         seed_bytes:bytes = secrets.token_bytes(64)
         mnemonic = ''
-        #print(seed_bytes.hex())
+    elif i.mode == 'e':
+        entropy_bytes = Bip39EntropyGenerator(i.bit_entropy).Generate()
+        mnemonic = Bip39MnemonicGenerator().FromEntropy(entropy_bytes)
+        seed_bytes = Bip39SeedGenerator(mnemonic).Generate()
     else:
         mnemo = Mnemonic(mem)
         mnemonic:str = mnemo.generate(i.words)
         seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
-        #print(seed_bytes.hex())
+
     if i.debug==1:
+        mnemo = Mnemonic(mem)
         mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
         print('Debug Mnemonic : '+mnemonic)
         seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')

@@ -1,3 +1,7 @@
+## NEWS:
+  Добавлен ZCASH
+  перезалил базы на гугл
+
 # ОПИСАНИЕ В ПРОЦЕССЕ !!!!  
   
   для проверки пользуюсь ресурсами:  
@@ -26,28 +30,22 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
 [ ] Клиент-сервер  
 [ ]  WEB Сервер статистики  
 [Х] Добавить поиск по ETH, ETC  
-[ ] ini файлы для настройки клиента и сервера  
 [ ] оформить описание ;-)  
   
 #### Создан поиск по 11 базам данных (BloomFilter).  
 по организации BIP-32 база данных  '32.bf'  
 сейчас проверяет следующие пути:  
 m/0/0  
-m/0/0'  
 m/0'/0  
-m/0'/0'  
 m/0'/0/0  
-m/0'/0/0'  
 m/0'/0'/0  
-m/0'/0'/0'  
 m/44'/0'/0'/0  
-m/44'/0'/0'/0'  
   
 по организации BIP-44 база данных  '44.bf'  
 по организации BIP-49 база данных  '49.bf'  
 по организации BIP-49 база данных  'eth.bf'  
   
-### по режимам Случайный, Стандартный  
+### по режимам Случайный, Стандартный, Энтропия (рекомендую ее)  
 
 ## Установка:  
 Зависимости: Python 3.6 и выше  
@@ -79,11 +77,11 @@ python Cbloom.py <in file> <outfile>
   
 ## Добавлен режим работы  
 #### Стандартный (-m s):  
-Mnemonic->check valid->seed  
-работает с языками 'english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish','czech','korean','japanese'  
 #### Случайный (-m r):  
-Генерирует SEED 128-256 ENTROPY  
+#### Энтропия (-m e):  
 
+#### Работа со списком слов
+  Сейчас реализовано работа со словами (12,15,18,21,24) (-w 24)
   
 ## Многопоточная версия  
   python mainMT.py -b <BIP 32 или 44> -d <директория с файлами блюм фильтра> -t <количество ядер> -m <режим работы> -w <сколько слов 12 или 24> -c <описание сервера> -e (дебаг без аргумента) 
@@ -106,42 +104,26 @@ https://gz.blockchair.com/
   
 или на моем ресурсе  
 https://drive.google.com/drive/folders/1i7OxFbJ2x-xnqd1ANStF_eIKutAxdfoL?usp=sharing  
-  [*] Update file BTC (35M address)  
+
   
 
-    * Version:  Pulsar v3.3.0 multiT  
-    * Total kernel of CPU: 6  
-    * Used kernel: 2  
-    * Mode Search: BIP-32 Стандартный  
-    * Dir database Bloom Filter: BF  
-    ---------------Load BF---------------  
-    Bloom Filter btc.bf Loaded  
-    -------------All BF loaded-----------  
-    [*] cycle: 1 | total key: 1260 | key/s: 372 in process cpu0 | Found 0  
-    [*] cycle: 1 | total key: 1260 | key/s: 376 in process cpu1 | Found 0  
-  
-------------------------------------------------------------  
-    * Version:  Pulsar v3.3.0 multiT  
-    * Total kernel of CPU: 6  
-    * Used kernel: 2  
-    * Mode Search: BIP-44 Энтропия  
-    * Dir database Bloom Filter: BF  
-    ---------------Load BF---------------  
-    Bloom Filter ltc.bf Loaded  
-    Bloom Filter dash.bf Loaded  
-    Bloom Filter eth.bf Loaded  
-    Bloom Filter doge.bf Loaded  
-    Bloom Filter cash.bf Loaded  
-    Bloom Filter sv.bf Loaded  
-    Bloom Filter btc.bf Loaded  
-    -------------All BF loaded-----------  
-    [*] cycle: 1 | total key: 1260 | key/s: 880 in process cpu0 | Found 0  
-    [*] cycle: 2 | total key: 2520 | key/s: 909 in process cpu0 | Found 0  
-    [*] cycle: 1 | total key: 1260 | key/s: 922 in process cpu1 | Found 0  
+    * Version:  * Pulsar v3.8.4 multiT Hash160 BETA*
+    * Identificator system: b'00000000-0000-0000-0000-74d435f6fa48'
+    * Total kernel of CPU: 4
+    * Used kernel: 2
+    * Mode Search: BIP-44 Standart
+    * Dir database Bloom Filter: bf
+    * Languages at work: ['english']
+    * Description Server: work
+    * Mode debug: Off
+    * Send mail: On
+    * Send Statistic to server: Off
+    * Bloom Filter 44.bf Loaded.
+    * Bloom Filter 44.bf Loaded.
+    * File address pazzle BTC~30 Loaded.
+    * File address pazzle BTC~30 Loaded.
+    [*] Mnemonic: 6 | Total keys 6720 | Speed 2345 key/s | Found 0
     
-
-exe файл завернут:  
-  pyinstaller --runtime-tmpdir .\temp --onefile --clean --name pulsarMT --add-data "mnemonic;mnemonic" --add-data "rezult.txt;." mainMT.py  
 
 ### БОНУС!  
   на облачных серверах ORACLE можно арендовать БЕСПЛАТНО 2 сервера навсегда. Скорось там не большая но для тестов хватит.

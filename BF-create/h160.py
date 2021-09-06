@@ -3,6 +3,7 @@
 import sys
 import base58
 
+
 def count_lines(file):
 	return sum(1 for line in open(file, 'r'))
 
@@ -12,18 +13,24 @@ def convert(file_in,file_out,nom):
     print("===========File output -> " + file_out)
     i = 0
     line_10 = 100000
+    ii = 0
     f = open(file_in,'r')
     fw = open(file_out,'a')
-    while i < nom:
+    while i <= nom:
+        if (i+ii) == nom:
+            print("\n Finish")
+            break
         if line_10 == i:
-            print("Total line ->" + str(line_10), end='\r')
+            print("Error - {} | Total line -> {}".format(ii,line_10),end='\r')
             line_10 += 100000
-        adr58 = f.readline().strip()
-        #print(adr58)
-        adr160 = base58.b58decode_check(adr58).hex()[2:]
-        fw.write(adr160+'\n')
-        #print(adr160)
-        i += 1
+        try:
+            adr58 = f.readline().strip()
+            adr160 = base58.b58decode_check(adr58).hex()[2:]
+        except:
+            ii +=1
+        else:
+            fw.write(adr160+'\n')
+            i += 1
     f.close()
     fw.close()
 

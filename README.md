@@ -55,11 +55,11 @@ sudo apt-get install libmpc-dev
 
 sudo pip3 install simplebloomfilter  
 sudo pip3 install bitarray==1.9.2  
-Убрано sudo pip3 install mnemonic  (использовать из моего репозитория)
-https://github.com/Noname400/python-mnemonic
-убрано sudo pip3 install bip-utils==1.11.1  (использовать из моего репозитория)
-https://github.com/Noname400/bip_utils
-sudo pip3 install colorama
+Убрано sudo pip3 install mnemonic  (использовать из моего репозитория)   
+https://github.com/Noname400/python-mnemonic   
+убрано sudo pip3 install bip-utils==1.11.1  (использовать из моего репозитория)   
+https://github.com/Noname400/bip_utils   
+sudo pip3 install colorama   
   
   
 или  

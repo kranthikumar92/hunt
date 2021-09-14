@@ -179,7 +179,7 @@ def bETH(i, e, mnemo, seed, counter):
             bip_obj_acc_e = bip_obj_mst_e.Purpose().Coin().Account(nom2)
             for nom3 in i.l44__:
                 bip_obj_chain_e = bip_obj_acc_e.Change(nom3)
-                for nom in range(20):
+                for nom in range(10):
                     bip_obj_addr = bip_obj_chain_e.AddressIndex(nom)
                     bip_addr:str = bip_obj_addr.PublicKey().ToAddress()
                     if i.debug > 0:
@@ -202,7 +202,7 @@ def b44(i, e, mnemo, seed, counter):
     for p in i.l44:
         net_code = i.l44_[no]
         bip_obj_mst_44 = Bip44.FromSeed(seed, p)
-        for nom2 in range(2):
+        for nom2 in range(4):
             bip_obj_acc_44 = bip_obj_mst_44.Purpose().Coin().Account(nom2)
             for nom3 in i.l44__:
                 bip_obj_chain_44 = bip_obj_acc_44.Change(nom3)
@@ -222,25 +222,27 @@ def b44(i, e, mnemo, seed, counter):
                         prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
                         print(bip_obj_addr.PublicKey().ToAddress())
                     if p==Bip44Coins.BITCOIN:
-                        if any(element in bip44_hc for element in i.list30) or any(element in bip44_huc for element in i.list30):
+                        if any(element in bip44_hc for element in i.list30):
                             print('-------------------------- Find --------------------------',end='\n')
                             bip44_PK_c = bip_obj_addr.PrivateKey().ToWif()
                             bip44_PK_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
                             bip_addr_c = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
                             bip_addr_uc = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
-                            res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+  +' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
+                            res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+ ' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
                             prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
                             save_rezult(i,res)
                             if i.mail == 'yes':
                                 send_email(i,e,res)
                             counter.increment()
-                    if (bip44_huc in i.bf) or (bip44_huc in i.bf):
+                        i.count = i.count + 1
+                         
+                    if (bip44_hc in i.bf) or (bip44_huc in i.bf):
                         print('-------------------------- Find --------------------------',end='\n')
                         bip44_PK_c = bip_obj_addr.PrivateKey().ToWif()
                         bip44_PK_uc = bip_obj_addr.PrivateKey().ToWif(compr_pub_key = False)
                         bip_addr_c = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawCompressed().ToBytes(),net_addr_ver=net_code)
                         bip_addr_uc = P2PKH.ToAddress(bip_obj_addr.PublicKey().RawUncompressed().ToBytes(),net_addr_ver=net_code)
-                        res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+  +' | BIP 44 /'+str(p)
+                        res = bip44_PK_c +' | '+ bip_addr_c +' | '+ bip44_PK_uc +' | '+ bip_addr_uc + ' | '+ mnemo +' | '+ ' | BIP 44 /'+str(p)
                         prn(mnemo,pk_c,pk_uc,pu_c,pu_uc,None,None,h_c,h_uc,None,None,a_c,a_uc,str(p)+' - account-'+str(nom2)+'/Change '+str(nom3) +'/'+ str(nom),counter)
                         save_rezult(i,res)
                         if i.mail == 'yes':

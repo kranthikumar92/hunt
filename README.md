@@ -35,37 +35,23 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
 [Х] Добавить поиск по ETH, ETC  
 [ ] оформить описание ;-)  
   
-#### Создан поиск по 11 базам данных (BloomFilter).  
-по организации BIP-32 база данных  '32.bf'  
-сейчас проверяет следующие пути:  
-m/0/0  
-m/0'/0  
-m/0'/0/0  
-m/0'/0'/0  
-m/44'/0'/0'/0  
-  
-по организации BIP-44 база данных  '44.bf'  
-по организации BIP-49 база данных  '49.bf'  
-по организации BIP-49 база данных  'eth.bf'  
-  
-### по режимам Случайный, Стандартный, Энтропия (рекомендую ее)  
 
-## Установка:  
+
+## Установка в ручную:  
 Зависимости: Python 3.6 и выше  
 sudo apt-get install libgmp-dev  
 sudo apt-get install libmpfr-dev  
 sudo apt-get install libmpc-dev  
-
 sudo pip3 install simplebloomfilter  
 sudo pip3 install bitarray==1.9.2  
 Убрано sudo pip3 install mnemonic  (использовать из моего репозитория)   
-https://github.com/Noname400/python-mnemonic   
+https://github.com/Noname400/python-mnemonic 
 убрано sudo pip3 install bip-utils==1.11.1  (использовать из моего репозитория)   
-https://github.com/Noname400/bip_utils   
-sudo pip3 install colorama   
+https://github.com/Noname400/bip-utils
+sudo pip3 install bip32
+sudo pip3 install coincurve
   
-  
-или  
+## Установка автоматом  
 pip install -r requirements.txt  
 или  
 python -m pip install -r requirements.txt
@@ -83,10 +69,11 @@ python Cbloom.py <in file> <outfile>
 ## Добавлен режим работы  
 #### Стандартный (-m s):  
 #### Случайный (-m r):  
-#### Энтропия (-m e):  
 
 #### Работа со списком слов
-  Сейчас реализовано работа со словами (12,15,18,21,24) (-w 24)
+  Сейчас реализовано работа со словами (3,6,9,12,15,18,21,24) (-bit)
+  в битах количество слов 32, 64, 96, 128, 160, 192, 224, 256
+  например надо искать по 6 словам (-bit 96)
   
 ## Многопоточная версия  
   python mainMT.py -b <BIP 32 или 44> -d <директория с файлами блюм фильтра> -t <количество ядер> -m <режим работы> -w <сколько слов 12 или 24> -c <описание сервера> -e (дебаг без аргумента) 
@@ -108,7 +95,7 @@ python Cbloom.py <in file> <outfile>
 https://gz.blockchair.com/  
   
 или на моем ресурсе  
-https://drive.google.com/drive/folders/1i7OxFbJ2x-xnqd1ANStF_eIKutAxdfoL?usp=sharing  
+Скоро выложу...
 
   
 

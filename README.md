@@ -1,46 +1,37 @@
-### Выложил Бэту версии 4. (смотрите батники)
+### NEWS:  
+  Выложил Бэту версии 4. (смотрите батники)  
 
-## NEWS:
-  
-  Добавлен ZCASH  
-  перезалил базы на гугл
-
-# ОПИСАНИЕ В ПРОЦЕССЕ !!!!  
+### Ресурсы для проверки работы !!!!  
   
   для проверки пользуюсь ресурсами:  
   https://iancoleman.io/bip39/  
-  https://www.indicrypto.com/bitcointools/  
-  
+  https://kriptokurs.ru/bitcointools/tool/hash-to-address    
+    
   Описание как это работает :  
-  https://learnmeabitcoin.com/technical/derivation-paths
+  https://learnmeabitcoin.com/technical/derivation-paths  
   
-# HUNT to MNEMONIC (HASH160)
-Brute Force Bitcoin address
+### HUNT to MNEMONIC (HASH160)
+Brute Force Bitcoin address и не только Биткоин адресов
 Программа создана в первую очередь для изучения языка PYTHON! 
 
-В чем разница от первой версии?  
-в этой версии ведется поиск по HASH160, то есть мы убираем одно конвертирование (hash160 в адрес)  
-это позволяет объединить все в один файл, так как хеш одинаковый
-так же добавлен поиск ключей в несжатом формате
-
-### Смотрите бонус внизу описания!  
-
 Что реализовано:  
-#### создание BIP39 Mnemonic для 9 языков. Возможно использовать все сразу или какие-то отдельно 
-english, chinese_simplified, chinese_traditional, french, italian, spanish, czech, korean, japanese (список языков редактируйте в файле)  
+#### создание BIP39 Mnemonic для 10 языков. Возможно использовать все сразу или какие-то отдельно 
+-english  
+-chinese_simplified  
+-chinese_traditional  
+-french  
+-italian  
+-spanish  
+-czech  
+-korean  
+-japanese  
+-portuguese  
+(список языков редактируйте в файле consts.py)    
   
-#### Планы:  
-[ ] Клиент-сервер  
-[ ]  WEB Сервер статистики  
-[Х] Добавить поиск по ETH, ETC  
-[ ] оформить описание ;-)  
-  
-
-
-## Установка в ручную:  
-    Удалить предворительно:
-    sudo pip3 uninstall mnemonic
-    sudo pip3 uninstall bip_utils
+### Установка в ручную:  
+    Удалить предворительно:  
+    sudo pip3 uninstall mnemonic  
+    sudo pip3 uninstall bip_utils  
     
 
     sudo pip3 install simplebloomfilter  
@@ -52,32 +43,33 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
     sudo pip3 install bip32   
     sudo pip3 install coincurve   
   
-## Установка автоматом  
+### Установка автоматом  
 pip install -r requirements.txt  
 или  
 python -m pip install -r requirements.txt
 
-Создаем HASH160 из Адресов:  
+#### Создаем HASH160 из Адресов:  
 python h160.py <in file> <outfile>
   in file - текстовый файл с адресами (один адрес на одну срочку)  
   out file - файл hash160  
   
-создайте BloobFilter (BF create\Cbloom.py)
+#### Создайте BloobFilter (BF create\Cbloom.py)
 python Cbloom.py <in file> <outfile>  
   in file - текстовый файл с hash160 (один hash на одну срочку)  
   out file - файл блюм фильтра  
   
-## Добавлен режим работы  
+### Режимы работы:  
 #### Стандартный (-m s):  
 #### Случайный (-m r):  
 
-#### Работа со списком слов
+#### Работа со списком слов   
   Сейчас реализовано работа со словами (3,6,9,12,15,18,21,24) (-bit)
   в битах количество слов 32, 64, 96, 128, 160, 192, 224, 256
   например надо искать по 6 словам (-bit 96)
   
-## Многопоточная версия  
+### Многопоточная версия  
     python3 PulsarMT2-hash.py -b 32 -db BF/work.bf -dbp BF/btc30.h160 -th 2 -des source -m s -bit 128 -em no -sc no
+  
     -b Режим поиска (BIP32, BIP44, ETH)  (-b ETH)
     -db расположение файла ФлюмФильтра (-db BF/work.bf)
     -dbp расположения файла с адресами пазла, нужен для режимов 32 и 44 (-dbp BF/btc30.h160), если не хотите использовать этот режим, просто не указывайте этот параметр

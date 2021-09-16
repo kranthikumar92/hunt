@@ -38,7 +38,11 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
 
 
 ## Установка в ручную:  
-    Зависимости: Python 3.6 и выше  
+    Удалить предворительно:
+    sudo pip3 uninstall mnemonic
+    sudo pip3 uninstall bip_utils
+    
+
     sudo pip3 install simplebloomfilter  
     sudo pip3 install bitarray==1.9.2  
     Убрано sudo pip3 install mnemonic  (использовать из моего репозитория)   

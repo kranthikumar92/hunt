@@ -39,17 +39,14 @@ english, chinese_simplified, chinese_traditional, french, italian, spanish, czec
 
 ## Установка в ручную:  
 Зависимости: Python 3.6 и выше  
-sudo apt-get install libgmp-dev  
-sudo apt-get install libmpfr-dev  
-sudo apt-get install libmpc-dev  
 sudo pip3 install simplebloomfilter  
 sudo pip3 install bitarray==1.9.2  
 Убрано sudo pip3 install mnemonic  (использовать из моего репозитория)   
-https://github.com/Noname400/python-mnemonic 
+https://github.com/Noname400/python-mnemonic  
 убрано sudo pip3 install bip-utils==1.11.1  (использовать из моего репозитория)   
-https://github.com/Noname400/bip-utils
-sudo pip3 install bip32
-sudo pip3 install coincurve
+https://github.com/Noname400/bip-utils   
+sudo pip3 install bip32   
+sudo pip3 install coincurve   
   
 ## Установка автоматом  
 pip install -r requirements.txt  

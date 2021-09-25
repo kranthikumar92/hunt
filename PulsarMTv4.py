@@ -8,6 +8,7 @@ import time, argparse
 import multiprocessing
 from multiprocessing import Process
 from colorama import init,Fore
+import sys
 init()
 
 def createParser ():
@@ -87,7 +88,7 @@ if __name__ == "__main__":
         print('\033[1;31m ERROR: generate mnemonic')
         print('\033[1;31m Please delete (pip uninstall mnemonic)')
         print('\033[1;31m install my mod (https://github.com/Noname400/python-mnemonic)')
-        sys.exit()
+        # sys.exit()
 
     print('-'*59,end='\n')
     if inf.bip in ('32', '44', 'ETH'):

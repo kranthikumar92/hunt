@@ -88,9 +88,9 @@ if __name__ == "__main__":
         print('\033[1;31m ERROR: generate mnemonic')
         print('\033[1;31m Please delete (pip uninstall mnemonic)')
         print('\033[1;31m install my mod (https://github.com/Noname400/python-mnemonic)')
-        # sys.exit()
+        sys.exit()
+    print('\033[32m TEST: OK! \033[0m')
 
-    print('-'*59,end='\n')
     if inf.bip in ('32', '44', 'ETH'):
         pass
     else:

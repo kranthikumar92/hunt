@@ -23,10 +23,10 @@ Brute Force Bitcoin address и не только Биткоин адресов
 -korean  
 -japanese  
 -portuguese  
-(список языков редактируйте в файле consts.py)    
-  
-### Установка в ручную:  
-    Удалить предворительно:  
+(список языков редактируйте в файле consts.py)
+
+### Установка в ручную:
+    Удалить предворительно:
     sudo pip3 uninstall mnemonic  
     sudo pip3 uninstall bip_utils  
     

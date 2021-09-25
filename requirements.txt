@@ -1,5 +1,0 @@
-simplebloomfilter
-bitarray==1.9.2
-bip-utils==1.11.1
-mnemonic
-colorama

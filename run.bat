@@ -1,2 +1,2 @@
-python pulsarmt2-hash.py -b 44 -t 2 -m s -c home -w 12 -s no -em no
+python PulsarMTv4.py -b 44 -db D:\WORK\nem3\BF\work.bf -dbp D:\WORK\nem3\BF\btc30.h160 -th 2 -des source -m s -bit 128 -em no -sc no
 pause

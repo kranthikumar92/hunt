@@ -26,7 +26,7 @@ def bloom_filter():
     print("========== Bloom Filter START==========")
     print("===========File input -> " + file_txt)
     print("===========File output -> " + file_bf)
-    bf = BloomFilter(size=line_count, fp_prob=1e-9)
+    bf = BloomFilter(size=line_count, fp_prob=1e-12)
 
     print("========== ADD Bloom Filter ==========")
     add_to_bf(file_txt, line_count, bf)

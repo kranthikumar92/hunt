@@ -24,7 +24,7 @@ class sockets:
 class email:
     host:str = "smtp.timeweb.ru" # SMTP server
     port:int = 25
-    password:str = "Vfhbyfl66$$$"
+    password:str = "---------------"
     subject:str = "--- Find Mnemonic ---"
     to_addr:str = "info@quadrotech.ru"
     from_addr:str = "info@quadrotech.ru"

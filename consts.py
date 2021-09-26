@@ -18,9 +18,9 @@ class email:
     desc:str = ""
 
 class inf():
-    version:str = " * Pulsar v4.1.0 multiT Hash160 * "
+    version:str = " * Pulsar v4.1.1 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
-    mnemonic_lang:list = ['english', 'spanish', 'chinese_simplified']
+    mnemonic_lang:list = ['english']
     bip:str = "32"
     count:int = 1
     th:int = 1 #number of processes

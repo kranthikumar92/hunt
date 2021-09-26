@@ -23,7 +23,7 @@ def load_BF(load):
     try:
         fp = open(load, 'rb')
     except FileNotFoundError:
-        print('\n'+'File: '+ load + ' not found.')
+        print('\033[1;31m \n'+'File: '+ load + ' not found. \033[0m')
         sys.exit()
     else:
         inf.bf = BloomFilter.load(fp)
@@ -33,7 +33,7 @@ def load_btc30(load):
     try:
         fp = open(load, 'r')
     except FileNotFoundError:
-        print('\n'+'File: '+load+' not found.')
+        print('\033[1;31m \n'+'File: '+load+' not found. \033[0m')
         sys.exit()
     else:
         lines = fp.readlines()
@@ -51,12 +51,12 @@ def send_email(text):
     try:
         server = smtplib.SMTP(email.host,email.port)
     except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
-        print("\n[*] could not connect to the mail server")
+        print("\033[1;31m \n[*] could not connect to the mail server \033[0m")
         inf.mail_nom += 1
         if inf.mail_nom >= 3:
             inf.mail = 'no'
     except ConnectionRefusedError:
-        print("\n[*] could not connect to the mail server")
+        print("\033[1;31m \n[*] could not connect to the mail server \033[0m")
         inf.mail_nom += 1
         if inf.mail_nom >= 3:
             inf.mail = 'no'
@@ -65,7 +65,7 @@ def send_email(text):
         try:
             server.sendmail(email.from_addr, email.to_addr, BODY)
         except UnicodeError:
-            print('\n[*] Error Encode UTF-8')
+            print('\033[1;31m \n[*] Error Encode UTF-8 \033[0m')
         else:
             server.quit()
 
@@ -76,13 +76,13 @@ def save_rezult(text:str):
     try:
         f_rez = open('rezult.txt', 'a', encoding='utf-8')
     except FileNotFoundError:
-        print('\n'+'file rezult.txt not found.')
+        print('\n'+'file rezult.txt not found. \033[0m')
     else:
         try:
             tf:str = text+'\n'
             f_rez.write(tf)
         except UnicodeError:
-            print('\n'+'Error Encode UTF-8')
+            print('\033[1;31m \n'+'Error Encode UTF-8 \033[0m')
         finally:
             f_rez.close()
 
@@ -105,7 +105,7 @@ def send_stat(speed,total,found):
         client_sock.connect((sockets.server, sockets.port))
         client_sock.sendall(uid+b+name+b+mode+b+thread+b+speed+b+total+b+found+b+time_b+b+work)
     except (UnboundLocalError, ConnectionResetError, ConnectionError) as msg:
-        print("\nSocket creation error. Send Statictic Stop!")
+        print("\033[1;31m \nSocket creation error. Send Statictic Stop! \033[0m")
         inf.sockets_nom += 1
         if inf.sockets_nom >= 3:
             inf.sockets = 'no'

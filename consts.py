@@ -4,19 +4,6 @@
 import uuid
 from bloomfilter import BloomFilter
 
-
-class prn:
-    nem:str = ""
-    privkey_c:str = ""
-    privkey_uc:str = ""
-    pubkey_c:str = ""
-    pubkey_uc:str = ""
-    hash160_c:str = ""
-    hash160_uc:str = ""
-    addr_c:str = ""
-    addr_uc:str = ""
-    path_bip:str = ""
-
 class sockets:
     server:str = "188.225.86.188" # iP server statistic
     port:int = 9009 # port serverstatistic
@@ -29,7 +16,6 @@ class email:
     to_addr:str = "info@quadrotech.ru"
     from_addr:str = "info@quadrotech.ru"
     desc:str = ""
-
 
 class inf():
     version:str = " * Pulsar v4.1.0 multiT Hash160 * "

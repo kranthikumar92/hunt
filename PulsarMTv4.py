@@ -57,7 +57,7 @@ def run(bip, db_bf, db_puzle, puzle, mode, desc, bit, debug, mail, sockets, th, 
             total = inf.count*ind*inf.th
             mm = ind*len(inf.mnemonic_lang)*inf.th
             if multiprocessing.current_process().name == 'CPU/0':
-                print(Fore.YELLOW + '> Mnemonic: {:d} | Total keys {:d} | Speed {:d} key/s | Found {:d} '.format(mm, total,speed, counter.value()),flush=True,end='\r')
+                print('\033[1;33m > Mnemonic: {:d} | Total keys {:d} | Speed {:d} key/s | Found {:d} \033[0m'.format(mm, total,speed, counter.value()),flush=True,end='\r')
                 if (inf.sockets == 'yes') and (soc_count > 30):
                     send_stat(speed,total,counter.value())
                     soc_count = 0
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     except:
         print('\033[1;31m ERROR: no support for converting addresses')
         print('\033[1;31m Please delete (pip uninstall bip_utils)')
-        print('\033[1;31m install my mod (https://github.com/Noname400/bip-utils)')
+        print('\033[1;34m install my mod (https://github.com/Noname400/bip-utils) \033[0m')
         sys.exit()
     try:
         mnemo:Mnemonic = Mnemonic('english')
@@ -87,14 +87,14 @@ if __name__ == "__main__":
     except:
         print('\033[1;31m ERROR: generate mnemonic')
         print('\033[1;31m Please delete (pip uninstall mnemonic)')
-        print('\033[1;31m install my mod (https://github.com/Noname400/python-mnemonic)')
+        print('\033[1;34m install my mod (https://github.com/Noname400/python-mnemonic) \033[0m')
         sys.exit()
     print('\033[32m TEST: OK! \033[0m')
 
     if inf.bip in ('32', '44', 'ETH'):
         pass
     else:
-        print('Wrong BIP selected')
+        print('\033[1;31m Wrong BIP selected \033[0m')
         sys.exit()
 
     if inf.mail !='yes':
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     if inf.bit in (32, 64, 96, 128, 160, 192, 224, 256):
         pass          
     else:
-        print('Wrong words selected')
+        print('\033[1;31m Wrong words selected \033[0m')
         sys.exit()
 
     if inf.mode in ('s', 'r'):
@@ -121,16 +121,16 @@ if __name__ == "__main__":
         elif (inf.mode == 'r'):
             inf.mode_text = 'Random'
     else:
-        print('Wrong mode selected')
+        print('\033[1;31m Wrong mode selected')
         sys.exit()
 
     if inf.th < 1:
-        print('The number of processes must be greater than 0')
+        print('\033[1;31m The number of processes must be greater than 0 \033[0m')
         sys.exit()
 
     if inf.th > multiprocessing.cpu_count():
         print('The specified number of processes exceeds the allowed')
-        print('FIXED for the allowed number of processesв')
+        print('FIXED for the allowed number of processes')
         inf.th = multiprocessing.cpu_count()
 
     print('-'*59,end='\n')

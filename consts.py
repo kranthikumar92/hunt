@@ -32,7 +32,7 @@ class email:
 
 
 class inf():
-    version:str = " * Pulsar v4.0.2 multiT Hash160 * "
+    version:str = " * Pulsar v4.1.0 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_lang:list = ['english', 'spanish', 'chinese_simplified']
     bip:str = "32"

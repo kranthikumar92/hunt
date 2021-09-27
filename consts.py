@@ -67,6 +67,11 @@ class inf:
         inf.ice.free_memory(res)
         return '0x'+addr
     #==============================================================================
+    def pbkdf2_hmac_sha512_dll(words):
+        seed_bytes = (b'\x00') * 64
+    #    words = 'good push broken people salad bar mad squirrel joy dismiss merge jeans token wear boring manual doll near sniff turtle sunset lend invest foil'
+        inf.ice.pbkdf2_hmac_sha512_dll(seed_bytes, words.encode("utf-8"), len(words))
+        return seed_bytes
     def _privatekey_to_h160(addr_type, iscompressed, pvk_int):
         # type = 0 [p2pkh],  1 [p2sh],  2 [bech32]
         pass_int_value = hex(pvk_int)[2:].encode('utf8')

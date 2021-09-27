@@ -132,7 +132,7 @@ def b32(mnemo, seed, counter):
                             bip_addr_uc = P2PKH.ToAddress(pk_uc,net_addr_ver=b"\x00")
                             print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c,bip_addr_c,bip32_h160_uc,bip_addr_uc))
                         if bip32_h160_c in inf.list30:
-                            print('\n-------------------------- Find --------------------------')
+                            print('\n-------------------------- Found --------------------------')
                             bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
                             res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip32_h160_c +' | '+bip_addr_c+' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
                             save_rezult(res)
@@ -141,7 +141,7 @@ def b32(mnemo, seed, counter):
                             counter.increment()
                         inf.count = inf.count + 1
                         if (bip32_h160_c in inf.bf) or (bip32_h160_uc in inf.bf):
-                            print('\n-------------------------- Find --------------------------')
+                            print('\n-------------------------- Found --------------------------')
                             bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
                             bip_addr_uc = P2PKH.ToAddress(pk_uc,net_addr_ver=b"\x00")
                             res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip32_h160_c +' | '+ bip_addr_c +' | '+bip32_h160_uc +' | '+ bip_addr_uc +' | BIP 32'
@@ -164,7 +164,7 @@ def bETH(mnemo, seed, counter):
                     if inf.debug > 0:
                         print("{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
                     if addr in inf.bf:
-                        print('-------------------------- Find --------------------------',end='\n')
+                        print('-------------------------- Found --------------------------',end='\n')
                         res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+addr +' | BIP ETH'
                         print(res)
                         save_rezult(res)
@@ -188,7 +188,7 @@ def b44(mnemo, seed, counter):
                         print("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c,bip44_h160_uc))
                     if (p =="0") and (inf.puzle==True):
                         if bip44_h160_c in inf.list30:
-                            print('-------------------------- Find --------------------------',end='\n')
+                            print('-------------------------- Found --------------------------',end='\n')
                             bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
                             res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+bip_addr_c+' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
                             save_rezult(res)
@@ -197,7 +197,7 @@ def b44(mnemo, seed, counter):
                             counter.increment()
                         inf.count = inf.count + 1
                     if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
-                        print('-------------------------- Find --------------------------',end='\n')
+                        print('-------------------------- Found --------------------------',end='\n')
                         res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ bip44_h160_uc +' | BIP 44'
                         print(res)
                         save_rezult(res)
@@ -214,13 +214,13 @@ def nnmnem(mem):
     else:
         mnemo:Mnemonic = Mnemonic(mem)
         mnemonic:str = mnemo.generate(strength=inf.bit)
-        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
 
     if inf.debug==1:
         mnemo = Mnemonic(mem)
         mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
         print('Debug Mnemonic : '+mnemonic)
-        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
         print('Debug SEED : '+ str(seed_bytes))
     if inf.debug==2:
         print('Debug Mnemonic : '+mnemonic)

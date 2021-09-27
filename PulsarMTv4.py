@@ -88,6 +88,24 @@ if __name__ == "__main__":
         print('\033[1;31m Please delete (pip uninstall mnemonic)')
         print('\033[1;34m install my mod (https://github.com/Noname400/python-mnemonic) \033[0m')
         sys.exit()
+
+    if platform.system().lower().startswith('win'):
+        dllfile = 'ice_secp256k1.dll'
+        if os.path.isfile(dllfile) == True:
+            pass
+        else:
+            print('\033[1;31m File {} not found \033[0m'.format(dllfile))
+        
+    elif platform.system().lower().startswith('lin'):
+        dllfile = 'ice_secp256k1.so'
+        if os.path.isfile(dllfile) == True:
+            pass
+        else:
+            print('\033[1;31m File {} not found \033[0m'.format(dllfile))
+    else:
+        print('\033[1;31m * Unsupported Platform currently for ctypes dll method. Only [Windows and Linux] is working \033[0m')
+        sys.exit()
+
     print('\033[32m TEST: OK! \033[0m')
 
     if inf.bip in ('32', '44', 'ETH'):
@@ -96,17 +114,13 @@ if __name__ == "__main__":
         print('\033[1;31m Wrong BIP selected \033[0m')
         sys.exit()
 
-    if inf.mail !='yes':
-        inf.mail='no'
+    if inf.mail !='yes': inf.mail='no'
 
-    if inf.sockets !='yes':
-        inf.sockets='no'
+    if inf.sockets !='yes': inf.sockets='no'
 
-    if (inf.db_puzle !=""):
-        inf.puzle = True
+    if (inf.db_puzle !=""): inf.puzle = True
 
-    if inf.bip =="ETH":
-        inf.puzle = False
+    if inf.bip =="ETH": inf.puzle = False
 
     if inf.bit in (32, 64, 96, 128, 160, 192, 224, 256):
         pass          
@@ -142,12 +156,10 @@ if __name__ == "__main__":
     if inf.puzle: print('* Dir database Pazzle: {} '.format (inf.db_puzle))
     print('* Languages at work: {} '.format(inf.mnemonic_lang))
     print('* Work BIT: {} '.format(inf.bit))
-    print('* Description Server: {} '.format(email.desc))
+    print('* Description client: {} '.format(email.desc))
 
-    if inf.mail == 'yes':
-        print('* Send mail: On')
-    else:
-        print('* Send mail: Off')
+    if inf.mail == 'yes': print('* Send mail: On')
+    else: print('* Send mail: Off')
     if inf.sockets == 'yes':
         print('* Send Statistic to server: On')
     else:

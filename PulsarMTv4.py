@@ -42,7 +42,6 @@ def run(bip, db_bf, db_puzle, puzle, mode, desc, bit, debug, mail, sockets, th, 
     soc_count = 0
     load_BF(inf.db_bf)
     if inf.puzle: load_btc30(inf.db_puzle)
-    #print(multiprocessing.current_process().name)
     try:
         while True:
             inf.count = 0

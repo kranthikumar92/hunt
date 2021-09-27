@@ -8,6 +8,7 @@ from bip32 import BIP32 as BIP44
 from bip32 import BIP32
 from coincurve import PublicKey
 
+
 class Counter(object):
     def __init__(self, initval=0):
         self.val = Value('i', initval)
@@ -117,9 +118,9 @@ def send_stat(speed,total,found):
 def b32(mnemo, seed, counter):
     bip32 = BIP32.from_seed(seed)
     for path in inf.l32:
-        for num1 in range(5):
+        for num1 in range(2):
             for t in inf.l32_:
-                for num2 in range(20):
+                for num2 in range(10):
                     for t1 in inf.l32_:
                         patchs = path+str(num1)+t+"/"+str(num2)+t1
                         pk_c = bip32.get_pubkey_from_path(patchs)
@@ -153,18 +154,18 @@ def b32(mnemo, seed, counter):
 def bETH(mnemo, seed, counter):
     w = BIP44.from_seed(seed)
     for p in inf.leth:
-        for nom2 in range(5):#accaunt
+        for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
-                for nom in range(20):
+                for nom in range(50):
                     patchs = "m/44'/"+p+"'/"+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
-                    pk_c = w.get_pubkey_from_path(patchs)
-                    pk_uc = PublicKey(pk_c).format(False)
-                    addr = EthAddr.ToAddress(pk_uc[1:])
+                    pvk = w.get_privkey_from_path(patchs)
+                    pvk_int = int(pvk.hex(),16)
+                    addr = inf.privatekey_to_ETH_address(pvk_int)
                     if inf.debug > 0:
                         print("{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
                     if addr in inf.bf:
                         print('-------------------------- Find --------------------------',end='\n')
-                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+addr +' | BIP 44 ETH'
+                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+addr +' | BIP ETH'
                         print(res)
                         save_rezult(res)
                         if inf.mail == 'yes':
@@ -175,9 +176,9 @@ def bETH(mnemo, seed, counter):
 def b44(mnemo, seed, counter):
     w = BIP44.from_seed(seed)
     for p in inf.l44:
-        for nom2 in range(4):#accaunt
+        for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
-                for nom in range(10):
+                for nom in range(20):
                     patchs = "m/44'/"+p+"'/"+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
                     pk_c = w.get_pubkey_from_path(patchs)
                     pk_uc = PublicKey(pk_c).format(False)
@@ -188,7 +189,7 @@ def b44(mnemo, seed, counter):
                     if (p =="0") and (inf.puzle==True):
                         if bip44_h160_c in inf.list30:
                             print('-------------------------- Find --------------------------',end='\n')
-                            bip_addr_c = P2PKH.ToAddress(bip44_h160_c,net_addr_ver=b"\x00")
+                            bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
                             res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+bip_addr_c+' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
                             save_rezult(res)
                             if inf.mail == 'yes':

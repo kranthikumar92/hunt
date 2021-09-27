@@ -210,7 +210,7 @@ def b44(mnemo, seed, counter):
 def nnmnem(mem):
     if inf.mode == 'r':
         mnemonic = ''
-        seed_bytes = os.urandom(inf.bit)
+        seed_bytes = os.urandom(128)
     else:
         mnemo:Mnemonic = Mnemonic(mem)
         mnemonic:str = mnemo.generate(strength=inf.bit)

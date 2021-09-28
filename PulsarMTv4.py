@@ -4,12 +4,8 @@
 
 from funcP import *
 from consts import *
-import time, argparse
-import multiprocessing
-from multiprocessing import Process
-from colorama import init,Fore
-import sys
-init()
+
+#import sys
 
 def createParser ():
     parser = argparse.ArgumentParser(description='Hunt to Mnemonic')

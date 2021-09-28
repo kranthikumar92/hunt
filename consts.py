@@ -3,13 +3,21 @@
 # -*- coding: utf-8 -*-
 import uuid
 from bloomfilter import BloomFilter
-"""
-@author: iceland
-"""
 import platform
 import os
 import sys
 import ctypes
+import smtplib, datetime, socket
+from mnemonic import Mnemonic
+from bip_utils.utils import CryptoUtils
+from bip_utils import  P2PKH
+from multiprocessing import  Value, Lock, Process
+from bip32 import BIP32
+from coincurve import PublicKey
+import time, argparse
+import multiprocessing
+import colorama
+colorama.init()
 
 class sockets:
     server:str = "188.225.86.188" # iP server statistic
@@ -85,7 +93,7 @@ class inf:
     #==============================================================================
 
 
-    version:str = " * Pulsar v4.2.0 multiT Hash160 * "
+    version:str = " * Pulsar v4.3.1 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_lang:list = ['english']
     bip:str = "32"

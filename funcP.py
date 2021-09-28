@@ -2,9 +2,8 @@ from consts import *
 import sys, smtplib, datetime, socket, os
 from mnemonic import Mnemonic
 from bip_utils.utils import CryptoUtils
-from bip_utils import  P2SH,P2PKH,EthAddr
+from bip_utils import  P2PKH
 from multiprocessing import  Value, Lock
-from bip32 import BIP32 as BIP44
 from bip32 import BIP32
 from coincurve import PublicKey
 
@@ -152,7 +151,7 @@ def b32(mnemo, seed, counter):
                         inf.count = inf.count + 2
 
 def bETH(mnemo, seed, counter):
-    w = BIP44.from_seed(seed)
+    w = BIP32.from_seed(seed)
     for p in inf.leth:
         for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
@@ -173,8 +172,9 @@ def bETH(mnemo, seed, counter):
                         counter.increment()
                     inf.count = inf.count + 1
 
+
 def b44(mnemo, seed, counter):
-    w = BIP44.from_seed(seed)
+    w = BIP32.from_seed(seed)
     for p in inf.l44:
         for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
@@ -210,19 +210,22 @@ def b44(mnemo, seed, counter):
 def nnmnem(mem):
     if inf.mode == 'r':
         mnemonic = ''
-        seed_bytes = os.urandom(128)
+        rd=32
+        if inf.bit > 64: rd = 64
+        if inf.bit < 32: rd = 32
+        seed_bytes = os.urandom(rd)
     else:
         mnemo:Mnemonic = Mnemonic(mem)
         mnemonic:str = mnemo.generate(strength=inf.bit)
         seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
-
+ 
     if inf.debug==1:
         mnemo = Mnemonic(mem)
         mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
         print('Debug Mnemonic : '+mnemonic)
         seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
-        print('Debug SEED : '+ str(seed_bytes))
+        print('Debug SEED : {}'.format(seed_bytes.hex()))
     if inf.debug==2:
         print('Debug Mnemonic : '+mnemonic)
-        print('Debug SEED : '+ str(seed_bytes))
+        print('Debug SEED : {}'.format(seed_bytes.hex()))
     return mnemonic, seed_bytes

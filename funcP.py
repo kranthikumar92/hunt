@@ -136,6 +136,7 @@ def b32(mnemo, seed, counter):
                             #     send_email(res)
                             if inf.debug < 1:
                                 print("\033[32m \n Init Rescan... \n \033[0m")
+                                save_rezult("Init Rescan |"+mnemo+"|"+seed)
                                 if re32(bip32,mnemo,seed,path): counter.increment()
                                 print("\033[32m \n Finish Rescan... \n \033[0m")
                         inf.count = inf.count + 1
@@ -149,6 +150,7 @@ def b32(mnemo, seed, counter):
                             #     send_email(res)
                             if inf.debug < 1:
                                 print("\033[32m \n Init Rescan... \n \033[0m")
+                                save_rezult("Init Rescan |"+mnemo+"|"+seed)
                                 if re32(bip32,mnemo,seed,path): counter.increment()
                                 print("\033[32m \n Finish Rescan... \n \033[0m")
                         inf.count = inf.count + 2
@@ -175,6 +177,7 @@ def bETH(mnemo, seed, counter):
                         # counter.increment()
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
+                            save_rezult("Init Rescan |"+mnemo+"|"+seed)
                             if re32(w,mnemo,seed,"m/44'/"+p+"'/"): counter.increment()
                             print("\033[32m \n Finish Rescan... \n \033[0m")
                     inf.count = inf.count + 1

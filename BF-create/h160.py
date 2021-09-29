@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import base58
+import codecs
 
 
 def count_lines(file):
@@ -16,7 +17,7 @@ def convert(file_in,file_out,nom):
     ii = 0
     f = open(file_in,'r')
     fw = open(file_out,'a')
-    while i <= nom:
+    while i < nom:
         if (i+ii) == nom:
             print("\n Finish")
             break
@@ -25,10 +26,14 @@ def convert(file_in,file_out,nom):
             line_10 += 100000
         try:
             adr58 = f.readline().strip()
+            # hash160 = base58.b58decode_check(adr58)
+            # hash160 = codecs.encode(hash160, 'hex').decode()[2:]
+            # print(hash160)
             adr160 = base58.b58decode_check(adr58).hex()[2:]
         except:
             ii +=1
         else:
+            #fw.write(hash160+'\n')
             fw.write(adr160+'\n')
             i += 1
     f.close()
@@ -51,4 +56,3 @@ if __name__ == "__main__":
     line_count = count_lines(file_in)
     print("all lines -> " + str(line_count))
     convert(file_in,file_out,line_count)
-    print('Finish')

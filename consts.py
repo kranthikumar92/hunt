@@ -95,7 +95,7 @@ class inf:
 
     version:str = " * Pulsar v4.3.3 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
-    mnemonic_lang:list = ['english','Japanese','Spanish','chinese_simplified']
+    mnemonic_lang:list = ['english','japanese','spanish','chinese_simplified']
     bip:str = "32"
     count:int = 1
     th:int = 1 #number of processes
@@ -117,7 +117,7 @@ class inf:
     list30:list = []
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]
-    l44:list = ["0","145","236","2","192","3","5","133","147"]#["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]
+    l44:list = ["0","145","236"]#["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]
     leth:list = ["60","61"]
     PATHS_44_49:dict = {
         "BTC": {"CODE":"0","PK":b'\x00',"PS":b'\x05'},

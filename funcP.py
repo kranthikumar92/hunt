@@ -138,7 +138,7 @@ def b32(mnemo, seed, counter):
                         if (bip32_h160_c in inf.bf) or (bip32_h160_uc in inf.bf):
                             if inf.debug < 1:
                                 print("\033[32m \n Init Rescan... \n \033[0m")
-                                save_rezult("Init Rescan |"+mnemo+"|"+seed)
+                                save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
                                 if re32(bip32,mnemo,seed,path): counter.increment()
                                 print("\033[32m \n Finish Rescan... \n \033[0m")
                         inf.count = inf.count + 2
@@ -158,7 +158,7 @@ def bETH(mnemo, seed, counter):
                     if addr in inf.bf:
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
-                            save_rezult("Init Rescan |"+mnemo+"|"+seed)
+                            save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
                             if reETH(w,mnemo,seed,"m/44'/"+p+"'/"): counter.increment()
                             print("\033[32m \n Finish Rescan... \n \033[0m")
                     inf.count = inf.count + 1
@@ -189,7 +189,7 @@ def b44(mnemo, seed, counter):
                     if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
-                            save_rezult("Init Rescan |"+mnemo+"|"+seed)
+                            save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
                             if re44(w,mnemo,seed,"m/44'/"+p+"'/",p): counter.increment()
                             print("\033[32m \n Finish Rescan... \n \033[0m")
                     inf.count = inf.count + 2

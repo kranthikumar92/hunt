@@ -43,7 +43,7 @@ def send_email(text):
     current_date = datetime.datetime.now()
     inf.dt_now = current_date.strftime('%m/%d/%y %H:%M:%S')
     text = str(inf.dt_now) + ' | ' + text
-    subject = email.subject + ' description -> ' + email.des_mail
+    subject = email.subject + ' description -> ' + email.desc
     BODY:str = '\r\n'.join(('From: %s' % email.from_addr, 'To: %s' % email.to_addr, 'Subject: %s' % subject, '', text)).encode('utf-8')
     try:
         server = smtplib.SMTP(email.host,email.port)
@@ -194,28 +194,6 @@ def b44(mnemo, seed, counter):
                             print("\033[32m \n Finish Rescan... \n \033[0m")
                     inf.count = inf.count + 2
 
-def nnmnem(mem):
-    if inf.mode == 'r':
-        mnemonic = ''
-        rd=32
-        if inf.bit > 64: rd = 64
-        if inf.bit < 32: rd = 32
-        seed_bytes = os.urandom(rd)
-    else:
-        mnemo:Mnemonic = Mnemonic(mem)
-        mnemonic:str = mnemo.generate(strength=inf.bit)
-        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
- 
-    if inf.debug==1:
-        mnemo = Mnemonic(mem)
-        mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
-        print('Debug Mnemonic : '+mnemonic)
-        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
-        print('Debug SEED : {}'.format(seed_bytes.hex()))
-    if inf.debug==2:
-        print('Debug Mnemonic : '+mnemonic)
-        print('Debug SEED : {}'.format(seed_bytes.hex()))
-    return mnemonic, seed_bytes
 
 def re32(in_,mnemo,seed,re_path):
     rez = False
@@ -304,3 +282,43 @@ def re44(in_,mnemo,seed,re_path,code):
                 print("Scan: {}".format(scan),end='\r')
                 scan +=1
     return rez
+
+
+def nnmnem(mem):
+    if inf.mode == 'r1':
+        mnemonic = ''
+        rd=32
+        if inf.bit > 64: rd = 64
+        if inf.bit < 32: rd = 32
+        seed_bytes = os.urandom(rd)
+    elif inf.mode =='r2':
+        mnemonic = ''
+        f = open('wl/english.txt','r')
+        list_en = [line.strip() for line in f]
+        #print(list_en)
+        words = ''
+        for wi in (range(12)):
+            r1 = random.randint(0, 2047)
+            #print(r1)
+            if wi == 11:
+                words = words + list_en[r1]
+            else:
+                words = words + list_en[r1]+' '
+        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(words)
+
+    else:
+        mnemo:Mnemonic = Mnemonic(mem)
+        mnemonic:str = mnemo.generate(strength=inf.bit)
+        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
+ 
+    if inf.debug==1:
+        mnemo = Mnemonic(mem)
+        mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
+        print('Debug Mnemonic : '+mnemonic)
+        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
+        print('Debug SEED : {}'.format(seed_bytes.hex()))
+    if inf.debug==2:
+        print('Debug Mnemonic : '+mnemonic)
+        print('Debug SEED : {}'.format(seed_bytes.hex()))
+    return mnemonic, seed_bytes
+

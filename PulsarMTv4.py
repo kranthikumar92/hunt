@@ -124,11 +124,13 @@ if __name__ == "__main__":
         print('\033[1;31m Wrong words selected \033[0m')
         sys.exit()
 
-    if inf.mode in ('s', 'r'):
+    if inf.mode in ('s', 'r1', 'r2'):
         if (inf.mode == 's'):
             inf.mode_text = 'Standart'
-        elif (inf.mode == 'r'):
+        elif (inf.mode == 'r1'):
             inf.mode_text = 'Random'
+        elif (inf.mode == 'r2'):
+            inf.mode_text = 'Random test'
     else:
         print('\033[1;31m Wrong mode selected')
         sys.exit()

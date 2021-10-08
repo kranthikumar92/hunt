@@ -1,42 +1,25 @@
 # #!/usr/bin/python3
 # encoding=utf8
 # -*- coding: utf-8 -*-
+from os import write
 from time import sleep
 from consts import *
+from multiprocessing import  Value, Lock, Process
 
 
-class Counter(object):
-    def __init__(self, initval=0):
-        self.val = Value('i', initval)
-        self.lock = Lock()
-    def increment(self):
-        with self.lock:
-            self.val.value += 1
-    def value(self):
-        with self.lock:
-            return self.val.value
-
-def load_BF(load):
+def load_BF(load, tr1):
     try:
         fp = open(load, 'rb')
     except FileNotFoundError:
         print('\033[1;31m \n'+'File: '+ load + ' not found. \033[0m')
         sys.exit()
     else:
+        n_int = int(multiprocessing.current_process().name)
+        sleep(inf.sleep*n_int)
         inf.bf = BloomFilter.load(fp)
-        print('* Bloom Filter Loaded...')
+        tr1.increment()
+        return tr1.value()
 
-def load_btc30(load):
-    try:
-        fp = open(load, 'r')
-    except FileNotFoundError:
-        print('\033[1;31m \n'+'File: '+load+' not found. \033[0m')
-        sys.exit()
-    else:
-        lines = fp.readlines()
-        inf.leth = [line.rstrip('\n') for line in lines]
-        fp.close()
-        print('* File address pazzle BTC~30 Loaded.')
 
 def send_email(text):
     subject = ''
@@ -116,25 +99,19 @@ def b32(mnemo, seed, counter):
     for path in inf.l32:
         for num1 in range(2):
             for t in inf.l32_:
-                for num2 in range(30):
+                for num2 in range(20):
                     for t1 in inf.l32_:
                         patchs = path+str(num1)+t+"/"+str(num2)+t1
-                        pk_c = bip32.get_pubkey_from_path(patchs)
-                        pk_uc = PublicKey(pk_c).format(False)
-                        bip32_h160_c = CryptoUtils.Hash160(pk_c).hex()
-                        bip32_h160_uc = CryptoUtils.Hash160(pk_uc).hex()
+                        pvk = bip32.get_privkey_from_path(patchs)
+                        pvk_int = int(pvk.hex(),16)
+                        bip32_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int).hex()
+                        bip32_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int).hex()
                         if inf.debug > 0:
-                            bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
-                            bip_addr_uc = P2PKH.ToAddress(pk_uc,net_addr_ver=b"\x00")
-                            print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c,bip_addr_c,bip32_h160_uc,bip_addr_uc))
-                        if bip32_h160_c in inf.list30:
-                            print('\n-------------------------- Found --------------------------')
-                            bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
-                            res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip32_h160_c +' | '+bip_addr_c+' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
-                            save_rezult(res)
-                            if inf.mail == 'yes':
-                                send_email(res)
-                        inf.count = inf.count + 1
+                            h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
+                            h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
+                            addr_c = secp256k1_lib.hash_to_address(0,True,h160_c)
+                            addr_uc = secp256k1_lib.hash_to_address(0,False,h160_uc)
+                            print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c,addr_c,bip32_h160_uc,addr_uc))
                         if (bip32_h160_c in inf.bf) or (bip32_h160_uc in inf.bf):
                             if inf.debug < 1:
                                 print("\033[32m \n Init Rescan... \n \033[0m")
@@ -146,13 +123,13 @@ def b32(mnemo, seed, counter):
 def bETH(mnemo, seed, counter):
     w = BIP32.from_seed(seed)
     for p in inf.leth:
-        for nom2 in range(4):#accaunt
+        for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
-                for nom in range(40):
+                for nom in range(20):
                     patchs = "m/44'/"+p+"'/"+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
-                    addr = inf.privatekey_to_ETH_address(pvk_int)
+                    addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)
                     if inf.debug > 0:
                         print("{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
                     if addr in inf.bf:
@@ -170,22 +147,19 @@ def b44(mnemo, seed, counter):
             for nom3 in range(2):#in/out
                 for nom in range(20):
                     patchs = "m/44'/"+p+"'/"+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
-                    pk_c = w.get_pubkey_from_path(patchs)
-                    pk_uc = PublicKey(pk_c).format(False)
-                    bip44_h160_c = CryptoUtils.Hash160(pk_c).hex()
-                    bip44_h160_uc = CryptoUtils.Hash160(pk_uc).hex()
-                    if inf.debug > 0:
-                        print("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c,bip44_h160_uc))
-                    if (p =="0") and (inf.puzle==True):
-                        if bip44_h160_c in inf.list30:
-                            print('-------------------------- Found --------------------------',end='\n')
-                            bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
-                            res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+bip_addr_c+' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
-                            save_rezult(res)
-                            if inf.mail == 'yes':
-                                send_email(res)
-                            counter.increment()
-                        inf.count = inf.count + 1
+                    pvk = w.get_privkey_from_path(patchs)
+                    pvk_int = int(pvk.hex(),16)
+                    bip44_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int).hex()
+                    bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int).hex()
+                    if inf.debug > 0 :
+                        if p=='0':
+                            h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
+                            h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
+                            addr_c = secp256k1_lib.hash_to_address(0,True,h160_c)
+                            addr_uc = secp256k1_lib.hash_to_address(0,False,h160_uc)
+                            print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
+                        else:
+                            print("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c,bip44_h160_uc))
                     if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
@@ -203,22 +177,16 @@ def re32(in_,mnemo,seed,re_path):
             for num2 in range(2000):
                 for t1 in inf.l32_:
                     patchs = re_path+str(num1)+t+"/"+str(num2)+t1
-                    pk_c = in_.get_pubkey_from_path(patchs)
-                    pk_uc = PublicKey(pk_c).format(False)
-                    bip32_h160_c = CryptoUtils.Hash160(pk_c).hex()
-                    bip32_h160_uc = CryptoUtils.Hash160(pk_uc).hex()
-                    if bip32_h160_c in inf.list30:
-                        print('\n-------------------------- Found --------------------------')
-                        bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
-                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip32_h160_c +' | '+bip_addr_c+' | BIP 32 / BTC PAZZLE !!!!!!!!!!!!!'
-                        save_rezult(res)
-                        if inf.mail == 'yes':
-                            send_email(res)
-                        rez = True
+                    pvk = in_.get_privkey_from_path(patchs)
+                    pvk_int = int(pvk.hex(),16)
+                    bip32_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int).hex()
+                    bip32_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int).hex()
                     if (bip32_h160_c in inf.bf) or (bip32_h160_uc in inf.bf):
                         print('\n-------------------------- Found --------------------------')
-                        bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
-                        bip_addr_uc = P2PKH.ToAddress(pk_uc,net_addr_ver=b"\x00")
+                        h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
+                        h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
+                        bip_addr_c = secp256k1_lib.hash_to_address(0,True,h160_c)
+                        bip_addr_uc = secp256k1_lib.hash_to_address(0,False,h160_uc)
                         res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip32_h160_c +' | '+ bip_addr_c +' | '+bip32_h160_uc +' | '+ bip_addr_uc +' | BIP 32'
                         print(res)
                         save_rezult(res)
@@ -238,10 +206,10 @@ def reETH(in_,mnemo,seed,re_path):
                 patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
                 pvk = in_.get_privkey_from_path(patchs)
                 pvk_int = int(pvk.hex(),16)
-                addr = inf.privatekey_to_ETH_address(pvk_int)
+                addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)
                 if addr in inf.bf:
                     print('-------------------------- Found --------------------------',end='\n')
-                    res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+addr +' | BIP ETH'
+                    res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+addr +' | BIP ETH/ETC'
                     print(res)
                     save_rezult(res)
                     if inf.mail == 'yes':
@@ -258,22 +226,21 @@ def re44(in_,mnemo,seed,re_path,code):
         for nom3 in range(2):#in/out
             for nom in range(2000):
                 patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
-                pk_c = in_.get_pubkey_from_path(patchs)
-                pk_uc = PublicKey(pk_c).format(False)
-                bip44_h160_c = CryptoUtils.Hash160(pk_c).hex()
-                bip44_h160_uc = CryptoUtils.Hash160(pk_uc).hex()
-                if (code =="0") and (inf.puzle==True):
-                    if bip44_h160_c in inf.list30:
-                        print('-------------------------- Found --------------------------',end='\n')
-                        bip_addr_c = P2PKH.ToAddress(pk_c,net_addr_ver=b"\x00")
-                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+bip_addr_c+' | BIP 44 / BTC PAZZLE !!!!!!!!!!!!!'
-                        save_rezult(res)
-                        if inf.mail == 'yes':
-                            send_email(res)
-                        rez = True
+                pvk = in_.get_privkey_from_path(patchs)
+                pvk_int = int(pvk.hex(),16)
+                bip44_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int).hex()
+                bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int).hex()
                 if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
                     print('-------------------------- Found --------------------------',end='\n')
-                    res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ bip44_h160_uc +' | BIP 44'
+                    if code=='0':
+                        h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
+                        h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
+                        addr_c = secp256k1_lib.hash_to_address(0,True,h160_c)
+                        addr_uc = secp256k1_lib.hash_to_address(0,False,h160_uc)
+                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ addr_c +' | '+bip44_h160_uc +' | '+ addr_uc +' | BIP 44'
+                        print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
+                    else:
+                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ bip44_h160_uc +' | BIP 44'
                     print(res)
                     save_rezult(res)
                     if inf.mail == 'yes':
@@ -292,6 +259,7 @@ def nnmnem(mem):
         if inf.bit < 32: rd = 32
         seed_bytes = os.urandom(rd)
     elif inf.mode =='r2':
+        mnemo:Mnemonic = Mnemonic('english')
         mnemonic = ''
         f = open('wl/english.txt','r')
         list_en = [line.strip() for line in f]
@@ -304,21 +272,60 @@ def nnmnem(mem):
                 words = words + list_en[r1]
             else:
                 words = words + list_en[r1]+' '
-        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(words)
+        seed_bytes:bytes = mnemo.to_seed(words, passphrase='')
 
     else:
         mnemo:Mnemonic = Mnemonic(mem)
         mnemonic:str = mnemo.generate(strength=inf.bit)
-        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='mnemonic')
  
     if inf.debug==1:
         mnemo = Mnemonic(mem)
         mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
         print('Debug Mnemonic : '+mnemonic)
-        seed_bytes:bytes = inf.pbkdf2_hmac_sha512_dll(mnemonic)#mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='mnemonic')
         print('Debug SEED : {}'.format(seed_bytes.hex()))
     if inf.debug==2:
         print('Debug Mnemonic : '+mnemonic)
         print('Debug SEED : {}'.format(seed_bytes.hex()))
     return mnemonic, seed_bytes
 
+def test():
+    print('-'*70,end='\n')
+    print('DEPENDENCY TESTING:')
+    if platform.system().lower().startswith('win'):
+        dllfile = 'ice_secp256k1.dll'
+        if os.path.isfile(dllfile) == True:
+            pass
+        else:
+            print('\033[1;31m File {} not found \033[0m'.format(dllfile))
+            
+    elif platform.system().lower().startswith('lin'):
+        dllfile = 'ice_secp256k1.so'
+        if os.path.isfile(dllfile) == True:
+            pass
+        else:
+            print('\033[1;31m File {} not found \033[0m'.format(dllfile))
+    else:
+        print('\033[1;31m * Unsupported Platform currently for ctypes dll method. Only [Windows and Linux] is working \033[0m')
+        sys.exit()
+    mnemo:Mnemonic = Mnemonic('english')
+    mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
+    seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='mnemonic')
+    if seed_bytes.hex() !='bd85556143de177ed9781ac3b24ba33d0bc4f8d6f34d9eaa1d9b8ab0ee3a7e84d42638b520043234bcedb4e869464b9f964e7e8dbf1588395f7a7782588ae664':
+        print('\033[1;31m ERROR: Generate mnemonic \033[0m')
+        print('\033[1;31m Please reinstall https://github.com/Noname400/mnemonic-for-hunt \033[0m')
+        sys.exit()
+    bip32 = BIP32.from_seed(seed_bytes)
+    patchs = "m/0'/0'/0"
+    pvk = bip32.get_privkey_from_path(patchs)
+    pvk_int = int(pvk.hex(),16)
+    bip_hash_c = secp256k1_lib.privatekey_to_h160(0,True,pvk_int)
+    bip_hash_uc = secp256k1_lib.privatekey_to_h160(0,False,pvk_int)
+    addr_c = secp256k1_lib.hash_to_address(0,True,bip_hash_c)
+    addr_uc = secp256k1_lib.hash_to_address(0,False,bip_hash_uc)
+    if (addr_c != '1JiG9xbyAPNfX8p4M6qxE6PwyibnqARkuq') or (addr_uc != '1EHciAwg1thir7Gvj5cbrsyf3JQbxHmWMW'):
+        print('\033[1;31m ERROR: Convert address from mnemonic')
+        print('\033[1;31m Please recopy https://github.com/iceland2k14/secp256k1 \033[0m')
+        sys.exit()
+    return True

@@ -1,24 +1,29 @@
 # #!/usr/bin/python3
 # encoding=utf8
 # -*- coding: utf-8 -*-
-import uuid
+
+#from collections import Counter
 from bloomfilter import BloomFilter
-import platform
-import os
-import sys
-import ctypes
-import smtplib, datetime, socket
+import uuid, platform, os, sys, ctypes, random, time, argparse, multiprocessing
+import smtplib, datetime, socket, hashlib
 from mnemonic import Mnemonic
-from bip_utils.utils import CryptoUtils
-from bip_utils import  P2PKH
 from multiprocessing import  Value, Lock, Process
 from bip32 import BIP32
-from coincurve import PublicKey
-import time, argparse
-import multiprocessing
-import colorama
-import random
-colorama.init()
+from colorama import Fore, Back, Style,init
+import secp256k1_lib
+init()
+
+
+class Counter(object):
+    def __init__(self, initval=0):
+        self.val = Value(ctypes.c_int, initval)
+        self.lock = Lock()
+    def increment(self):
+        with self.lock:
+            self.val.value += 1
+    def value(self):
+        with self.lock:
+            return self.val.value
 
 class sockets:
     server:str = "188.225.86.188" # iP server statistic
@@ -57,50 +62,16 @@ class inf:
         sys.exit()
     ###############################################################################
     #==============================================================================
-    ice.privatekey_to_ETH_address.argtypes = [ctypes.c_char_p] # pvk
-    ice.privatekey_to_ETH_address.restype = ctypes.c_void_p
-    ice.privatekey_to_h160.argtypes = [ctypes.c_int, ctypes.c_bool, ctypes.c_char_p, ctypes.c_char_p]  # 012,comp,pvk,ret
-    ice.pbkdf2_hmac_sha512_dll.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int] # ret, words, len
-    #==============================================================================
-    ice.free_memory.argtypes = [ctypes.c_void_p] # pointer
-    #==============================================================================
-    ice.init_secp256_lib()
-    #==============================================================================
-    ###############################################################################
 
-    def privatekey_to_ETH_address(pvk_int):
-        ''' Privatekey Integer value passed to function. Output is 20 bytes ETH address lowercase with 0x'''
-        pass_int_value = hex(pvk_int)[2:].encode('utf8')
-        res = inf.ice.privatekey_to_ETH_address(pass_int_value)
-        addr = (ctypes.cast(res, ctypes.c_char_p).value).decode('utf8')
-        inf.ice.free_memory(res)
-        return '0x'+addr
-    #==============================================================================
-    def pbkdf2_hmac_sha512_dll(words):
-        seed_bytes = (b'\x00') * 64
-    #    words = 'good push broken people salad bar mad squirrel joy dismiss merge jeans token wear boring manual doll near sniff turtle sunset lend invest foil'
-        inf.ice.pbkdf2_hmac_sha512_dll(seed_bytes, words.encode("utf-8"), len(words))
-        return seed_bytes
-    def _privatekey_to_h160(addr_type, iscompressed, pvk_int):
-        # type = 0 [p2pkh],  1 [p2sh],  2 [bech32]
-        pass_int_value = hex(pvk_int)[2:].encode('utf8')
-        print(pass_int_value)
-        res = (b'\x00') * 20
-        inf.ice.privatekey_to_h160(addr_type, iscompressed, pass_int_value, res)
-        return res
-    def privatekey_to_h160(addr_type, iscompressed, pvk_int):
-        res = inf._privatekey_to_h160(addr_type, iscompressed, pvk_int)
-        return bytes(bytearray(res))
-    #==============================================================================
-    version:str = " * Pulsar v4.4.1 multiT Hash160 * "
+    version:str = " * Pulsar v4.6.0 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_lang:list = ['english','japanese','spanish','chinese_simplified']
     bip:str = "32"
     count:int = 1
     th:int = 1 #number of processes
+    th_run:int = 0
     db_bf:str = ""
-    db_puzle:str = ""
-    puzle = False
+    sleep = 3
     work_time = 0.0
     mode:str = ""
     mode_text:str = ""
@@ -113,7 +84,6 @@ class inf:
     dt_now:str = ""
     uid:uuid
     bf:BloomFilter
-    list30:list = []
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]
     l44:list = ["0"]#["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]

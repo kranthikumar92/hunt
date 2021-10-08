@@ -97,7 +97,7 @@ https://drive.google.com/drive/folders/1ILhIERsWHTvQ1-HwgzQLyKm3G7VPzgjY?usp=sha
 * Smooth start 5 sec
 * Send mail: Off
 ----------------------------------------------------------------------
-Mnemonic: 112 | Total keys 3200 | Speed 1981 key/s | Found 0
+Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0
     
 
 ### Благодарность за мою работу:  

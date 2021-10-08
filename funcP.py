@@ -66,34 +66,6 @@ def save_rezult(text:str):
         finally:
             f_rez.close()
 
-def send_stat(speed,total,found):
-    b=b','
-    uid = str(inf.uid).encode('utf-8')
-    name = email.desc.encode('utf-8')
-    mode = str(inf.bip).encode('utf-8')
-    thread = str(inf.th).encode('utf-8')
-    speed = str(speed).encode('utf-8')
-    total = str(total).encode('utf-8')
-    found = str(found).encode('utf-8')
-    time_t = datetime.datetime.now()
-    time_b = time_t.strftime("%y/%m/%d %H:%M").encode('utf-8')
-    ver = inf.version
-    work = b'Worker online'
-    
-    client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        client_sock.connect((sockets.server, sockets.port))
-        client_sock.sendall(uid+b+name+b+mode+b+thread+b+speed+b+total+b+found+b+time_b+b+work)
-    except (UnboundLocalError, ConnectionResetError, ConnectionError) as msg:
-        print("\033[1;31m \nSocket creation error. Send Statictic Stop! \033[0m")
-        inf.sockets_nom += 1
-        if inf.sockets_nom >= 3:
-            inf.sockets = 'no'
-    else:
-        data = client_sock.recv(1024)
-        client_sock.close()
-        return data
-
 def b32(mnemo, seed, counter):
     bip32 = BIP32.from_seed(seed)
     for path in inf.l32:

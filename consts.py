@@ -2,7 +2,6 @@
 # encoding=utf8
 # -*- coding: utf-8 -*-
 
-#from collections import Counter
 from bloomfilter import BloomFilter
 import uuid, platform, os, sys, ctypes, random, time, argparse, multiprocessing
 import smtplib, datetime, socket, hashlib
@@ -24,10 +23,6 @@ class Counter(object):
     def value(self):
         with self.lock:
             return self.val.value
-
-class sockets:
-    server:str = "188.225.86.188" # iP server statistic
-    port:int = 9009 # port serverstatistic
 
 class email:
     host:str = "smtp.timeweb.ru" # SMTP server
@@ -71,6 +66,7 @@ class inf:
     th:int = 1 #number of processes
     th_run:int = 0
     db_bf:str = ""
+    dt_now:str = ""
     sleep = 3
     work_time = 0.0
     mode:str = ""
@@ -79,10 +75,6 @@ class inf:
     debug:bool = False
     mail:str = ""
     mail_nom:str = 0
-    sockets:str = ""
-    sockets_nom:int = 0
-    dt_now:str = ""
-    uid:uuid
     bf:BloomFilter
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]

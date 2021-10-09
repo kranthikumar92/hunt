@@ -8,7 +8,7 @@ from consts import *
 
 def createParser ():
     parser = argparse.ArgumentParser(description='Hunt to Mnemonic')
-    parser.add_argument ('-b', '--bip', action='store', type=str, help='32, 44, ETH default bip32', default='32')
+    parser.add_argument ('-b', '--bip', action='store', type=str, help='32, 44, ETH, BTC default bip32', default='32')
     parser.add_argument ('-db', '--database', action='store', type=str, help='File BF', default='')
     parser.add_argument ('-th', '--threading', action='store', type=int, help='threading', default='1')
     parser.add_argument ('-m', '--mode', action='store', type=str, help='mode s or r', default='s')
@@ -41,6 +41,7 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep,  counter, tr):
                 if bip == "32" : b32(mnemonic,seed_bytes,counter)
                 if bip == "44" : b44(mnemonic,seed_bytes,counter)
                 if bip == "ETH": bETH(mnemonic,seed_bytes,counter)
+                if bip == "BTC": bBTC(mnemonic,seed_bytes,counter)
             st = time.time() - start_time
             speed = int((inf.count/st)*tr.value())
             total = inf.count*ind*tr.value()
@@ -63,7 +64,7 @@ if __name__ == "__main__":
     else:
         print('\033[32m TEST: ERROR \033[0m')
 
-    if inf.bip in ('32', '44', 'ETH'):
+    if inf.bip in ('32', '44', 'ETH', 'BTC'):
         pass
     else:
         print('\033[1;31m Wrong BIP selected \033[0m')

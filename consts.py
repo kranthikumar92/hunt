@@ -58,7 +58,7 @@ class inf:
     ###############################################################################
     #==============================================================================
 
-    version:str = " * Pulsar v4.6.0 multiT Hash160 * "
+    version:str = " * Pulsar v4.6.3 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_lang:list = ['english','japanese','spanish','chinese_simplified']
     bip:str = "32"
@@ -76,6 +76,7 @@ class inf:
     mail:str = ""
     mail_nom:str = 0
     bf:BloomFilter
+    lbtc:list = ['44','49']
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]
     l44:list = ["0"]#["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]

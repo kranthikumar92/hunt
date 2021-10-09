@@ -140,6 +140,36 @@ def b44(mnemo, seed, counter):
                             print("\033[32m \n Finish Rescan... \n \033[0m")
                     inf.count = inf.count + 2
 
+def bBTC(mnemo, seed, counter):
+    pur = 0
+    w = BIP32.from_seed(seed)
+    for bip_ in inf.lbtc:
+        if bip_ == "44": pur = 0
+        else: pur = 1
+        for p in inf.l44:
+            for nom2 in range(2):#accaunt
+                for nom3 in range(2):#in/out
+                    for nom in range(20):
+                        patchs = "m/"+bip_+"'/"+p+"'/"+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
+                        pvk = w.get_privkey_from_path(patchs)
+                        pvk_int = int(pvk.hex(),16)
+                        bip44_h160_c = secp256k1_lib.privatekey_to_h160(pur, True, pvk_int).hex()
+                        bip44_h160_uc = secp256k1_lib.privatekey_to_h160(pur, False, pvk_int).hex()
+                        if inf.debug > 0 :
+                            if p=='0':
+                                h160_c = secp256k1_lib.privatekey_to_h160(pur, True, pvk_int)
+                                h160_uc = secp256k1_lib.privatekey_to_h160(pur, False, pvk_int)
+                                addr_c = secp256k1_lib.hash_to_address(pur,True,h160_c)
+                                addr_uc = secp256k1_lib.hash_to_address(pur,False,h160_uc)
+                                print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
+                            else: print("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c,bip44_h160_uc))
+                        if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
+                            if inf.debug < 1:
+                                print("\033[32m \n Init Rescan... \n \033[0m")
+                                save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
+                                if reBTC(w,mnemo,seed,"m/"+bip_+"'/"+p+"'/",p,bip_): counter.increment()
+                                print("\033[32m \n Finish Rescan... \n \033[0m")
+                        inf.count = inf.count + 2
 
 def re32(in_,mnemo,seed,re_path):
     rez = False
@@ -209,6 +239,37 @@ def re44(in_,mnemo,seed,re_path,code):
                         h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
                         addr_c = secp256k1_lib.hash_to_address(0,True,h160_c)
                         addr_uc = secp256k1_lib.hash_to_address(0,False,h160_uc)
+                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ addr_c +' | '+bip44_h160_uc +' | '+ addr_uc +' | BIP 44'
+                        print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
+                    else:
+                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ bip44_h160_uc +' | BIP 44'
+                    print(res)
+                    save_rezult(res)
+                    if inf.mail == 'yes':
+                        send_email(res)
+                    rez = True
+                print("Scan: {}".format(scan),end='\r')
+                scan +=1
+    return rez
+
+def reBTC(in_,mnemo,seed,re_path,code,pure):
+    rez = False
+    scan=0
+    for nom2 in range(10):#accaunt
+        for nom3 in range(2):#in/out
+            for nom in range(2000):
+                patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
+                pvk = in_.get_privkey_from_path(patchs)
+                pvk_int = int(pvk.hex(),16)
+                bip44_h160_c = secp256k1_lib.privatekey_to_h160(pure, True, pvk_int).hex()
+                bip44_h160_uc = secp256k1_lib.privatekey_to_h160(pure, False, pvk_int).hex()
+                if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
+                    print('-------------------------- Found --------------------------',end='\n')
+                    if code=='0':
+                        h160_c = secp256k1_lib.privatekey_to_h160(pure, True, pvk_int)
+                        h160_uc = secp256k1_lib.privatekey_to_h160(pure, False, pvk_int)
+                        addr_c = secp256k1_lib.hash_to_address(pure,True,h160_c)
+                        addr_uc = secp256k1_lib.hash_to_address(pure,False,h160_uc)
                         res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+bip44_h160_c +' | '+ addr_c +' | '+bip44_h160_uc +' | '+ addr_uc +' | BIP 44'
                         print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
                     else:

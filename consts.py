@@ -34,30 +34,6 @@ class email:
     desc:str = ""
 
 class inf:
-    ###############################################################################
-    #==============================================================================
-    if platform.system().lower().startswith('win'):
-        dllfile = 'ice_secp256k1.dll'
-        if os.path.isfile(dllfile) == True:
-            pathdll = os.path.realpath(dllfile)
-            ice = ctypes.CDLL(pathdll)
-        else:
-            print('File {} not found'.format(dllfile))
-        
-    elif platform.system().lower().startswith('lin'):
-        dllfile = 'ice_secp256k1.so'
-        if os.path.isfile(dllfile) == True:
-            pathdll = os.path.realpath(dllfile)
-            ice = ctypes.CDLL(pathdll)
-        else:
-            print('File {} not found'.format(dllfile))
-        
-    else:
-        print('[-] Unsupported Platform currently for ctypes dll method. Only [Windows and Linux] is working')
-        sys.exit()
-    ###############################################################################
-    #==============================================================================
-
     version:str = " * Pulsar v4.6.3 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_lang:list = ['english','japanese','spanish','chinese_simplified']

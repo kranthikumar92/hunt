@@ -41,7 +41,9 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep,  counter, tr):
                 if bip == "32" : b32(mnemonic,seed_bytes,counter)
                 if bip == "44" : b44(mnemonic,seed_bytes,counter)
                 if bip == "ETH": bETH(mnemonic,seed_bytes,counter)
-                if bip == "BTC": bBTC(mnemonic,seed_bytes,counter)
+                if bip == "BTC": 
+                    bBTC(mnemonic,seed_bytes,counter)
+                    b32(mnemonic,seed_bytes,counter)
             st = time.time() - start_time
             speed = int((inf.count/st)*tr.value())
             total = inf.count*ind*tr.value()

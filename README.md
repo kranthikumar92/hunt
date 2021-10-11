@@ -30,7 +30,10 @@ Brute Force Bitcoin address и не только Биткоин адресов
 ### Установка в ручную:
     pip install simplebloomfilter  
     pip install bitarray==1.9.2  
-    https://github.com/Noname400/python-mnemonic  
+    https://github.com/Noname400/mnemonic-for-hunt  
+    cd mnemonic-for-hunt  
+    python setup.py install  
+    Pip install colorama  
     sudo pip3 install bip32   
   
 #### Создаем HASH160 из Адресов:  

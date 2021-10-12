@@ -174,7 +174,7 @@ def bBTC(mnemo, seed, counter):
 def re32(in_,mnemo,seed,re_path):
     rez = False
     scan = 0
-    for num1 in range(10):
+    for num1 in range(50):
         for t in inf.l32_:
             for num2 in range(2000):
                 for t1 in inf.l32_:
@@ -202,9 +202,9 @@ def re32(in_,mnemo,seed,re_path):
 def reETH(in_,mnemo,seed,re_path):
     rez = False
     scan=0
-    for nom2 in range(100):#accaunt
+    for nom2 in range(50):#accaunt
         for nom3 in range(2):#in/out
-            for nom in range(10000):
+            for nom in range(2000):
                 patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
                 pvk = in_.get_privkey_from_path(patchs)
                 pvk_int = int(pvk.hex(),16)
@@ -224,7 +224,7 @@ def reETH(in_,mnemo,seed,re_path):
 def re44(in_,mnemo,seed,re_path,code):
     rez = False
     scan=0
-    for nom2 in range(10):#accaunt
+    for nom2 in range(50):#accaunt
         for nom3 in range(2):#in/out
             for nom in range(2000):
                 patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)

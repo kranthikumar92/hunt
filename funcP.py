@@ -1,11 +1,7 @@
 # #!/usr/bin/python3
 # encoding=utf8
 # -*- coding: utf-8 -*-
-from os import write
-from time import sleep
 from consts import *
-from multiprocessing import  Value, Lock, Process
-
 
 def load_BF(load, tr1):
     try:
@@ -15,7 +11,7 @@ def load_BF(load, tr1):
         sys.exit()
     else:
         n_int = int(multiprocessing.current_process().name)
-        sleep(inf.sleep*n_int)
+        time.sleep(inf.sleep*n_int)
         inf.bf = BloomFilter.load(fp)
         tr1.increment()
         return tr1.value()
@@ -41,13 +37,20 @@ def send_email(text):
         if inf.mail_nom >= 3:
             inf.mail = 'no'
     else:
-        server.login(email.from_addr, email.password)
         try:
-            server.sendmail(email.from_addr, email.to_addr, BODY)
-        except UnicodeError:
-            print('\033[1;31m \n[*] Error Encode UTF-8 \033[0m')
+            server.login(email.from_addr, email.password)
+        except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
+            print("\033[1;31m \n[*] could not connect to the mail server \033[0m")
+            inf.mail_nom += 1
+            if inf.mail_nom >= 3:
+                inf.mail = 'no'
         else:
-            server.quit()
+            try:
+                server.sendmail(email.from_addr, email.to_addr, BODY)
+            except UnicodeError:
+                print('\033[1;31m \n[*] Error Encode UTF-8 \033[0m')
+            else:
+                server.quit()
 
 def save_rezult(text:str):
     current_date = datetime.datetime.now()
@@ -199,9 +202,9 @@ def re32(in_,mnemo,seed,re_path):
 def reETH(in_,mnemo,seed,re_path):
     rez = False
     scan=0
-    for nom2 in range(10):#accaunt
+    for nom2 in range(100):#accaunt
         for nom3 in range(2):#in/out
-            for nom in range(2000):
+            for nom in range(10000):
                 patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
                 pvk = in_.get_privkey_from_path(patchs)
                 pvk_int = int(pvk.hex(),16)

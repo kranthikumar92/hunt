@@ -1,7 +1,6 @@
 # #!/usr/bin/python3
 # encoding=utf8
 # -*- coding: utf-8 -*-
-
 from funcP import *
 from consts import *
 
@@ -30,7 +29,6 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep,  counter, tr):
     inf.th = th
     inf.sleep = sleep
     ind:int = 1
-    soc_count = 0
     load_BF(inf.db_bf, tr)
     try:
         while True:
@@ -51,7 +49,6 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep,  counter, tr):
             if multiprocessing.current_process().name == '0':
                 print('\033[1;33m> Mnemonic: {:d} | Total keys {:d} | Speed {:d} key/s | Found {:d} \033[0m'.format(mm, total,speed, counter.value()),flush=True,end='\r')
             ind +=1
-            soc_count += 1
     except KeyboardInterrupt:
         print('\n'+'Interrupted by the user.')
         sys.exit()
@@ -96,8 +93,8 @@ if __name__ == "__main__":
         sys.exit()
 
     if inf.th > multiprocessing.cpu_count():
-        print('The specified number of processes exceeds the allowed')
-        print('FIXED for the allowed number of processes')
+        print('\033[1;31mThe specified number of processes exceeds the allowed\033[0m')
+        print('\033[1;31mFIXED for the allowed number of processes\033[0m')
         inf.th = multiprocessing.cpu_count()
 
     print('-'*70,end='\n')

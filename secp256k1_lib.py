@@ -270,7 +270,7 @@ def pubkey_to_ETH_address(pubkey_bytes):
     res = ice.pubkeyxy_to_ETH_address(xy)
     addr = (ctypes.cast(res, ctypes.c_char_p).value).decode('utf8')
     ice.free_memory(res)
-    return '0x'+addr
+    return addr
 #==============================================================================
 def privatekey_to_ETH_address(pvk_int):
     ''' Privatekey Integer value passed to function. Output is 20 bytes ETH address lowercase with 0x'''
@@ -278,7 +278,7 @@ def privatekey_to_ETH_address(pvk_int):
     res = ice.privatekey_to_ETH_address(pass_int_value)
     addr = (ctypes.cast(res, ctypes.c_char_p).value).decode('utf8')
     ice.free_memory(res)
-    return '0x'+addr
+    return addr
 #==============================================================================
 def privatekey_group_to_ETH_address(pvk_int, m):
     ''' Starting Privatekey Integer value passed to function as pvk_int.

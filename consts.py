@@ -3,12 +3,12 @@
 # -*- coding: utf-8 -*-
 
 from bloomfilter import BloomFilter
-import uuid, platform, os, sys, ctypes, random, time, argparse, multiprocessing
+import platform, os, sys, ctypes, random, time, argparse, multiprocessing
 import smtplib, datetime, socket, hashlib
 from mnemonic import Mnemonic
 from multiprocessing import  Value, Lock, Process
 from bip32 import BIP32
-from colorama import Fore, Back, Style,init
+from colorama import Fore, Back, Style, init
 import secp256k1_lib
 init()
 

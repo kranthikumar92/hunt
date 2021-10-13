@@ -88,6 +88,10 @@ def b32(mnemo, seed, counter):
                             addr_uc = secp256k1_lib.hash_to_address(0,False,h160_uc)
                             print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c,addr_c,bip32_h160_uc,addr_uc))
                         if (bip32_h160_c in inf.bf) or (bip32_h160_uc in inf.bf):
+                            if inf.debug > 0:
+                                fdbg = open('dbg32.txt','a')
+                                fdbg.write("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c,addr_c,bip32_h160_uc,addr_uc))
+                                fdbg.close()
                             if inf.debug < 1:
                                 print("\033[32m \n Init Rescan... \n \033[0m")
                                 save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
@@ -108,6 +112,10 @@ def bETH(mnemo, seed, counter):
                     if inf.debug > 0:
                         print("{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
                     if addr in inf.bf:
+                        if inf.debug >0:
+                            fdbg = open('dbgETH.txt','a')
+                            fdbg.write("{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
+                            fdbg.close()
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
                             save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
@@ -136,6 +144,15 @@ def b44(mnemo, seed, counter):
                         else:
                             print("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c,bip44_h160_uc))
                     if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
+                        if inf.debug >0:
+                            if p=='0':
+                                fdbg = open('dbg44_btc.txt','a')
+                                fdbg.write("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
+                                fdbg.close()
+                            else:
+                                fdbg = open('dbg44_other.txt','a')
+                                fdbg.write("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c,bip44_h160_uc))
+                                fdbg.close()
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
                             save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))
@@ -164,6 +181,10 @@ def bBTC(mnemo, seed, counter):
                         addr_uc = secp256k1_lib.hash_to_address(pur,False,h160_uc)
                         print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
                     if (bip44_h160_c in inf.bf) or (bip44_h160_uc in inf.bf):
+                        if inf.debug >0:
+                            fdbg = open('dbgBTC.txt','a')
+                            fdbg.write("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c,addr_c,bip44_h160_uc,addr_uc))
+                            fdbg.close()
                         if inf.debug < 1:
                             print("\033[32m \n Init Rescan... \n \033[0m")
                             save_rezult("Init Rescan |"+mnemo+"|"+str(seed.hex()))

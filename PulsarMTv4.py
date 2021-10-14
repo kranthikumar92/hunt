@@ -81,9 +81,9 @@ if __name__ == "__main__":
         if (inf.mode == 's'):
             inf.mode_text = 'Standart'
         elif (inf.mode == 'r1'):
-            inf.mode_text = 'Random'
+            inf.mode_text = 'Random SEED R1'
         elif (inf.mode == 'r2'):
-            inf.mode_text = 'Random test'
+            inf.mode_text = 'Random Mnemonic R2'
     else:
         print('\033[1;31m Wrong mode selected')
         sys.exit()

@@ -314,16 +314,13 @@ def nnmnem(mem):
         mnemonic = ''
         f = open('wl/english.txt','r')
         list_en = [line.strip() for line in f]
-        #print(list_en)
-        words = ''
         for wi in (range(12)):
             r1 = random.randint(0, 2047)
-            #print(r1)
             if wi == 11:
-                words = words + list_en[r1]
+                mnemonic = mnemonic + list_en[r1]
             else:
-                words = words + list_en[r1]+' '
-        seed_bytes:bytes = mnemo.to_seed(words, passphrase='')
+                mnemonic = mnemonic + list_en[r1]+' '
+        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
 
     else:
         mnemo:Mnemonic = Mnemonic(mem)

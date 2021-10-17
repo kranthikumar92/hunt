@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     if inf.mail !='yes': inf.mail='no'
 
-    if inf.bit in (128, 160, 192, 224, 256):
+    if inf.bit in (32, 64, 96, 128, 160, 192, 224, 256):
         pass          
     else:
         print('\033[1;31m Wrong words selected \033[0m')

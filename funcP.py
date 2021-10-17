@@ -310,13 +310,21 @@ def nnmnem(mem):
         if inf.bit < 32: rd = 32
         seed_bytes = os.urandom(rd)
     elif inf.mode =='r2':
+        if inf.bit == 32: bit = 3
+        if inf.bit == 64: bit = 6
+        if inf.bit == 96: bit = 9
+        if inf.bit == 128: bit = 12
+        if inf.bit == 160: bit = 15
+        if inf.bit == 192: bit = 18
+        if inf.bit == 224: bit = 21
+        if inf.bit == 256: bit = 24
         mnemo:Mnemonic = Mnemonic('english')
         mnemonic = ''
         f = open('wl/english.txt','r')
         list_en = [line.strip() for line in f]
-        for wi in (range(12)):
+        for wi in (range(bit)):
             r1 = random.randint(0, 2047)
-            if wi == 11:
+            if wi == bit-1:
                 mnemonic = mnemonic + list_en[r1]
             else:
                 mnemonic = mnemonic + list_en[r1]+' '

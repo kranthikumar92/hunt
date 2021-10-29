@@ -14,25 +14,25 @@ Brute Force Bitcoin address и не только Биткоин адресов
 
 Что реализовано:  
 #### создание BIP39 Mnemonic для 10 языков. Возможно использовать все сразу или какие-то отдельно 
--english
--chinese_simplified
--chinese_traditional
--french
--italian
--spanish
--czech
--korean
--japanese
--portuguese
-(список языков редактируйте в файле consts.py)
-Все возможные комбинации мнемоник. если надо больше вложений, аккаунтов и т.д. несложно добавить.
-3 случайных режима
-    R1 - режим генерации SEED случайным образом, он не зависит от языка
-    R2 - режим по генерации мнемоники без подсчета чексуммы
-    GAME - это режим для веселухи Ж-) в папке лежит файл game_en.txt в нем 3000 самых используемых английских слов, программа случайным образом выбирает количество слов от 1 до 25 и затем случайно выбирает слова
-4 варианта поиска (BIP32, BIP44, ETH, BTC)
-    - Режим BTC ищет только по BTC но во всех вариациях (BIP32, BIP44, BIP49)
-    Режим BIP84 и выше делать не буду, этими кошельками пользуются люди.
+    -english
+    -chinese_simplified
+    -chinese_traditional
+    -french
+    -italian
+    -spanish
+    -czech
+    -korean
+    -japanese
+    -portuguese
+    (список языков редактируйте в файле consts.py)
+    Все возможные комбинации мнемоник. если надо больше вложений, аккаунтов и т.д. несложно добавить.
+    3 случайных режима
+        R1 - режим генерации SEED случайным образом, он не зависит от языка
+        R2 - режим по генерации мнемоники без подсчета чексуммы
+        GAME - это режим для веселухи Ж-) в папке лежит файл game_en.txt в нем 3000 самых используемых английских слов, программа случайным образом выбирает количество слов от 1 до 25 и затем случайно выбирает слова
+    4 варианта поиска (BIP32, BIP44, ETH, BTC)
+        - Режим BTC ищет только по BTC но во всех вариациях (BIP32, BIP44, BIP49)
+        Режим BIP84 и выше делать не буду, этими кошельками пользуются люди.
 
 #### Установка в ручную:
     pip install simplebloomfilter
@@ -44,19 +44,19 @@ Brute Force Bitcoin address и не только Биткоин адресов
     pip install bip32
   
 #### Создаем HASH160 из Адресов:  
-python addr_to_h160.py <in file> <out file>
-  in file - текстовый файл с адресами (один адрес на одну срочку)  
-  out file - файл hash160  
+    python addr_to_h160.py <in file> <out file>
+      in file - текстовый файл с адресами (один адрес на одну срочку)  
+      out file - файл hash160  
   
 #### Создайте BloobFilter (BF create\Cbloom.py)
-python create_bloom.py <in file> <out file>  
-  in file - текстовый файл с hash160 (один hash на одну срочку)  
-  out file - файл блюм фильтра  
+    python create_bloom.py <in file> <out file>  
+      in file - текстовый файл с hash160 (один hash на одну срочку)  
+      out file - файл блюм фильтра  
   
 #### Работа со списком слов   
-  Сейчас реализовано работа со словами (3, 6, 9, 12, 15, 18, 21, 24) 
-  в битах количество слов 32, 64, 96, 128, 160, 192, 224, 256 (-bit)
-  например надо искать по 12 словам (-bit 128)
+    Сейчас реализовано работа со словами (3, 6, 9, 12, 15, 18, 21, 24) 
+    в битах количество слов 32, 64, 96, 128, 160, 192, 224, 256 (-bit)
+    например надо искать по 12 словам (-bit 128)
   
 #### Ключи использования  (Проверьте свои БАТНИКИ, аргументы для запуска изменились)
     python -B PulsarMTv4.py -b 44 -db BF\btc_without_0.bf -th 3 -des source -m s -bit 128 -sl 5 -em -bal -dbg 0
@@ -91,19 +91,19 @@ https://gz.blockchair.com/
 https://drive.google.com/drive/folders/1oBMNxqwyYqp6Dx1q5j6erajf9wahGAda?usp=sharing (базы с адресами)
 https://drive.google.com/drive/folders/1ILhIERsWHTvQ1-HwgzQLyKm3G7VPzgjY?usp=sharing (готовые блюм фильтры)
 
-----------------------------------------------------------------------
-* Version:  * Pulsar v4.6.0 multiT Hash160 *
-* Total kernel of CPU: 4
-* Used kernel: 3
-* Mode Search: BIP-44 Standart
-* Database Bloom Filter: BF\btc_without_0.bf
-* Languages at work: ['english', 'japanese', 'spanish', 'chinese_simplified']
-* Work BIT: 128
-* Description client: source
-* Smooth start 5 sec
-* Send mail: Off
-----------------------------------------------------------------------
-Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0
+    ----------------------------------------------------------------------
+    * Version:  * Pulsar v4.6.0 multiT Hash160 *
+    * Total kernel of CPU: 4
+    * Used kernel: 3
+    * Mode Search: BIP-44 Standart
+    * Database Bloom Filter: BF\btc_without_0.bf
+    * Languages at work: ['english', 'japanese', 'spanish', 'chinese_simplified']
+    * Work BIT: 128
+    * Description client: source
+    * Smooth start 5 sec
+    * Send mail: Off
+    ----------------------------------------------------------------------
+    Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0
     
 
 #### Благодарность за мою работу:  

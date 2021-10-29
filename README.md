@@ -30,6 +30,7 @@ Brute Force Bitcoin address и не только Биткоин адресов
         R1 - режим генерации SEED случайным образом, он не зависит от языка
         R2 - режим по генерации мнемоники без подсчета чексуммы
         GAME - это режим для веселухи Ж-) в папке лежит файл game_en.txt в нем 3000 самых используемых английских слов, программа случайным образом выбирает количество слов от 1 до 25 и затем случайно выбирает слова
+        CUSTOM - режим для самостоятельных переборов и словарей
     4 варианта поиска (BIP32, BIP44, ETH, BTC)
         - Режим BTC ищет только по BTC но во всех вариациях (BIP32, BIP44, BIP49)
         Режим BIP84 и выше делать не буду, этими кошельками пользуются люди.
@@ -73,6 +74,16 @@ Brute Force Bitcoin address и не только Биткоин адресов
     -dbg это отладочная информация, при указании данного параметра программа будет показывать что и как она формирует, можно будет проверить по ссылкам выше. режима 2 (-dbg 0,1,2)
          Режим 1: вам скорее всего не пригодится так как вы не добавили в свою базу отладочные адреса (если хотите я их вам дам)
          Режим 2: этот режим отображает всю информацию которая генерируется программой. Нужна для того что бы проверить правильно ли генерируются адреса.
+    Режим пользовательских словарей:
+    -m custom выбор режим пользовательского словаря (-m custom)
+    -cd путь до пользовательского файла (-cd DB/my.txt)
+    -cw количество слов для генерации (-cw 6)
+    -cl язык словаря (-cl english) (english,chinese_simplified,chinese_traditional,french,italian,spanish,czech,korean,japanese,portuguese)
+    Обычный режим:
+    python -B PulsarMTv4.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m s -bit 128 -sl 5 -dbg 0 -em -bal
+    Режим пользователя:
+    python -B PulsarMTv4.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m custom -cd wl\custom.txt -cw 6 -cl english -sl 5 -dbg 0 -em -bal
+
 
     
 #### Не забудьте настроить параметры своей почты для отправки найденных мнемоник  
@@ -91,26 +102,26 @@ https://gz.blockchair.com/
 https://drive.google.com/drive/folders/1oBMNxqwyYqp6Dx1q5j6erajf9wahGAda?usp=sharing (базы с адресами)
 https://drive.google.com/drive/folders/1ILhIERsWHTvQ1-HwgzQLyKm3G7VPzgjY?usp=sharing (готовые блюм фильтры)
 
-E:\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b 44 -db BF\btc_without_0.bf -th 1 -des test -m game -bit 128 -sl 5 -dbg 2 -em -bal  
-    ----------------------------------------------------------------------  
-    Thank you very much: @iceland2k14 for his libraries!  
-    ----------------------------------------------------------------------  
-    DEPENDENCY TESTING:  
-    TEST: OK!  
-    ----------------------------------------------------------------------  
-    * Version:  * Pulsar v4.7.0 multiT Hash160 *  
-    * Total kernel of CPU: 6  
-    * Used kernel: 1  
-    * Mode Search: BIP-44 Game words  
-    * Database Bloom Filter: BF\btc_without_0.bf  
-    * Languages at work: ['english', 'japanese', 'spanish', 'chinese_simplified']   
-    * Work BIT: 128  
-    * Description client: test  
-    * Smooth start 5 sec  
-    * Send mail: Off  
-    * Check balance BTC: Off  
-    ----------------------------------------------------------------------  
-    Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0  
+E:\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b 44 -db BF\btc_without_0.bf -th 1 -des test -m game -bit 128 -sl 5 -dbg 2 -em -bal
+    ----------------------------------------------------------------------
+    Thank you very much: @iceland2k14 for his libraries!
+    ----------------------------------------------------------------------
+    DEPENDENCY TESTING:
+    TEST: OK!
+    ----------------------------------------------------------------------
+    * Version:  * Pulsar v4.7.0 multiT Hash160 *
+    * Total kernel of CPU: 6
+    * Used kernel: 1
+    * Mode Search: BIP-44 Game words
+    * Database Bloom Filter: BF\btc_without_0.bf
+    * Languages at work: ['english', 'japanese', 'spanish', 'chinese_simplified']
+    * Work BIT: 128
+    * Description client: test
+    * Smooth start 5 sec
+    * Send mail: Off
+    * Check balance BTC: Off
+    ----------------------------------------------------------------------
+    Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0
     
 
 #### Благодарность за мою работу:  

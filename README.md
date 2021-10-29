@@ -102,26 +102,26 @@ https://gz.blockchair.com/
 https://drive.google.com/drive/folders/1oBMNxqwyYqp6Dx1q5j6erajf9wahGAda?usp=sharing (базы с адресами)
 https://drive.google.com/drive/folders/1ILhIERsWHTvQ1-HwgzQLyKm3G7VPzgjY?usp=sharing (готовые блюм фильтры)
 
-E:\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b 44 -db BF\btc_without_0.bf -th 1 -des test -m game -bit 128 -sl 5 -dbg 2 -em -bal
-    ----------------------------------------------------------------------
-    Thank you very much: @iceland2k14 for his libraries!
-    ----------------------------------------------------------------------
-    DEPENDENCY TESTING:
-    TEST: OK!
-    ----------------------------------------------------------------------
-    * Version:  * Pulsar v4.7.0 multiT Hash160 *
-    * Total kernel of CPU: 6
-    * Used kernel: 1
-    * Mode Search: BIP-44 Game words
-    * Database Bloom Filter: BF\btc_without_0.bf
-    * Languages at work: ['english', 'japanese', 'spanish', 'chinese_simplified']
-    * Work BIT: 128
-    * Description client: test
-    * Smooth start 5 sec
-    * Send mail: Off
-    * Check balance BTC: Off
-    ----------------------------------------------------------------------
-    Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0
+E:\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b 44 -db BF\btc_without_0.bf -th 1 -des test -m game -bit 128 -sl 5 -dbg 2 -em -bal  
+    ----------------------------------------------------------------------  
+    Thank you very much: @iceland2k14 for his libraries!  
+    ----------------------------------------------------------------------  
+    DEPENDENCY TESTING:  
+    TEST: OK!  
+    ----------------------------------------------------------------------  
+    * Version:  * Pulsar v4.7.0 multiT Hash160 *  
+    * Total kernel of CPU: 6  
+    * Used kernel: 1  
+    * Mode Search: BIP-44 Game words  
+    * Database Bloom Filter: BF\btc_without_0.bf  
+    * Languages at work: ['english', 'japanese', 'spanish', 'chinese_simplified']  
+    * Work BIT: 128  
+    * Description client: test  
+    * Smooth start 5 sec  
+    * Send mail: Off  
+    * Check balance BTC: Off  
+    ----------------------------------------------------------------------  
+    Mnemonic: 112 | Total keys 3200 | Speed 5581 key/s | Found 0  
     
 
 #### Благодарность за мою работу:  

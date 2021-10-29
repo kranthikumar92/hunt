@@ -1,2 +1,3 @@
-python -B PulsarMTv4.py -b 44 -db BF\btc_without_0.bf -th 1 -des source -m r2 -bit 96 -sl 5 -em no -dbg 2
+python -B PulsarMTv4.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m custom -cd wl\custom.txt -cw 6 -cl english -sl 5 -dbg 2 -em -bal
+rem python -B PulsarMTv4.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m game -bit 128 -sl 5 -dbg 2
 pause

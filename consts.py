@@ -8,6 +8,7 @@ import smtplib, datetime, socket, hashlib
 from mnemonic import Mnemonic
 from multiprocessing import  Value, Lock, Process
 from bip32 import BIP32
+import requests
 from colorama import Fore, Back, Style, init
 import secp256k1_lib
 init()
@@ -34,24 +35,47 @@ class email:
     desc:str = ""
 
 class inf:
-    version:str = " * Pulsar v4.6.3 multiT Hash160 * "
+    def load_r2():
+        f = open('wl/r2_en.txt','r')
+        l = [line.strip() for line in f]
+        f.close()
+        return l
+    def load_game():    
+        f = open('wl/game_en.txt','r')
+        l = [line.strip() for line in f]
+        f.close()
+        return l
+    def load_custom(custom_file):    
+        f = open(custom_file,'r')
+        l = [line.strip() for line in f]
+        f.close()
+        return l
+    version:str = " * Pulsar v4.7.0 multiT Hash160 * "
     #mnemonic_lang = ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_lang:list = ['english','japanese','spanish','chinese_simplified']
+    balance:bool = False
+    bal_err:int = 0
     bip:str = "32"
     count:int = 1
     th:int = 1 #number of processes
     th_run:int = 0
     db_bf:str = ""
     dt_now:str = ""
-    sleep = 3
-    work_time = 0.0
+    sleep:int = 3
+    work_time:float = 0.0
     mode:str = ""
     mode_text:str = ""
     bit:int = 128
     debug:bool = False
-    mail:str = ""
-    mail_nom:str = 0
+    mail:bool = False
+    mail_err:str = 0
     bf:BloomFilter
+    custom_dir:str = ''
+    custom_words:int = 6
+    custom_lang:str = ''
+    r2_list:list = []
+    game_list:list = []
+    custom_list:list = []
     lbtc:list = ['44','49']
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]

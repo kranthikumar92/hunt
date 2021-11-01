@@ -1,26 +1,53 @@
 # #!/usr/bin/python3
 # encoding=utf8
 # -*- coding: utf-8 -*-
+"""
+@author: Noname400
+"""
+
 from random import randint
 from consts import *
 
 def get_balance(address):
-    time.sleep(0.3) 
-    try:
-        response = requests.get("https://rest.bitcoin.com/v2/address/details/" + str(address))
-        return float(response.json()['balance']) 
-    except:
-        if inf.bal_err < 3:
-            inf.bal_err +=1
-        else:
-            inf.balance = False
-        return -1
+    time.sleep(1) 
+    if inf.bip == 'ETH':
+        try:
+            response = requests.get(inf.ETH_bal_server[1] + '0x'+address)
+            return int(response.json()['result'])
+        except:
+            return -1
+    else:
+        try:
+            if inf.bal_srv_count == 0:
+                response = requests.get(inf.bal_server[inf.bal_srv_count] + str(address))
+                return int(response.json()['n_tx']), float(response.json()['balance'])
+            elif inf.bal_srv_count == 1:
+                response = requests.get(inf.bal_server[inf.bal_srv_count] + str(address))
+                return int(response.json()['txApperances']), float(response.json()['balance'])
+            elif inf.bal_srv_count == 2:
+                response = requests.get(inf.bal_server[inf.bal_srv_count] + str(address))
+                return int(response.json()['data']['total_txs']), float(response.json()['data']['balance'])
+            elif inf.bal_srv_count == 3:
+                response = requests.get(inf.bal_server[inf.bal_srv_count] + str(address))
+                return int(response.json()['n_tx']), float(response.json()['final_balance'])
+        except:
+            if inf.bal_err < 10:
+                inf.bal_err += 1
+            else:
+                if inf.bal_srv_count < 3:
+                    inf.bal_srv_count += 1
+                else:
+                    inf.bal_srv_count = 0
+            inf.bal_all_err += 1
+            if inf.bal_all_err == 40:
+                inf.balance = False
+            return -1
 
 def load_BF(load, tr1):
     try:
         fp = open(load, 'rb')
     except FileNotFoundError:
-        print('\033[1;31m \n'+'File: '+ load + ' not found. \033[0m')
+        print('\033[1;31m\n[E] File: '+ load + ' not found. \033[0m')
         sys.exit()
     else:
         n_int = int(multiprocessing.current_process().name)
@@ -28,7 +55,6 @@ def load_BF(load, tr1):
         inf.bf = BloomFilter.load(fp)
         tr1.increment()
         return tr1.value()
-
 
 def send_email(text):
     subject = ''
@@ -40,12 +66,12 @@ def send_email(text):
     try:
         server = smtplib.SMTP(email.host,email.port)
     except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
-        print("\033[1;31m \n[*] could not connect to the mail server \033[0m")
+        print("\033[1;31m \n[E] could not connect to the mail server \033[0m")
         inf.mail_err += 1
         if inf.mail_err >= 3:
             inf.mail = False
     except ConnectionRefusedError:
-        print("\033[1;31m \n[*] could not connect to the mail server \033[0m")
+        print("\033[1;31m \n[E] could not connect to the mail server \033[0m")
         inf.mail_err += 1
         if inf.mail_err >= 3:
             inf.mail = False
@@ -53,7 +79,7 @@ def send_email(text):
         try:
             server.login(email.from_addr, email.password)
         except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
-            print("\033[1;31m \n[*] could not connect to the mail server \033[0m")
+            print("\033[1;31m \n[E] could not connect to the mail server \033[0m")
             inf.mail_err += 1
             if inf.mail_err >= 3:
                 inf.mail = False
@@ -61,7 +87,7 @@ def send_email(text):
             try:
                 server.sendmail(email.from_addr, email.to_addr, BODY)
             except UnicodeError:
-                print('\033[1;31m \n[*] Error Encode UTF-8 \033[0m')
+                print('\033[1;31m \n[E] Error Encode UTF-8 \033[0m')
             else:
                 server.quit()
 
@@ -72,13 +98,13 @@ def save_rezult(name_file,text:str):
     try:
         f_rez = open(name_file, 'a', encoding='utf-8')
     except FileNotFoundError:
-        print('\n'+'file '+name_file+' not found. \033[0m')
+        print('\n[E] file '+name_file+' not found. \033[0m')
     else:
         try:
             tf:str = text+'\n'
             f_rez.write(tf)
         except UnicodeError:
-            print('\033[1;31m \n'+'Error Encode UTF-8 \033[0m')
+            print('\033[1;31m\n[E] Error Encode UTF-8 \033[0m')
         finally:
             f_rez.close()
 
@@ -97,29 +123,44 @@ def b32(mnemo, seed, counter):
                         if inf.debug > 0:
                             addr_c = secp256k1_lib.hash_to_address(0, True, bip32_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
-                            print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c.hex(),addr_c,bip32_h160_uc.hex(),addr_uc))
+                            addr_cs = secp256k1_lib.hash_to_address(1, True, bip32_h160_c)
+                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
                         if (bip32_h160_c.hex() in inf.bf) or (bip32_h160_uc.hex() in inf.bf):
                             if inf.debug > 0:
-                                save_rezult('dbg32.txt',"{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip32_h160_c.hex(),addr_c,bip32_h160_uc.hex(),addr_uc))
+                                save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
                             if inf.debug < 1:
-                                print(f'Found address | {addr_c} | {addr_uc}')
+                                addr_c = secp256k1_lib.hash_to_address(0, True, bip32_h160_c)
+                                addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
+                                addr_cs = secp256k1_lib.hash_to_address(1, True, bip32_h160_c)
                                 if inf.balance:
-                                    if (get_balance(addr_c) > 0.00000000) or (get_balance(addr_uc) > 0.00000000):
-                                        print(f'Found address in balance| {addr_c} | {addr_uc}')
-                                        print("\033[32m \n Init Rescan... \n \033[0m")
-                                        save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                                        if re32(bip32,mnemo,seed,path): counter.increment()
-                                        print("\033[32m \n Finish Rescan... \n \033[0m")
-                                        save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
+                                    tx1, b1 = get_balance(addr_c)
+                                    tx2, b2 = get_balance(addr_uc)
+                                    tx3, b3 = get_balance(addr_cs)
+                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0):
+                                        print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
+                                    print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
+                                    if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000):
+                                        print(f'\n[W] Found address in balance | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                        save_rezult('found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | {addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                        if inf.mail:
+                                            send_email(f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')    
+                                        counter.increment()
                                     else:
-                                        continue
-                                print(f'Found address in balance| {addr_c} | {addr_uc}')
-                                print("\033[32m \n Init Rescan... \n \033[0m")
-                                save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                                if re32(bip32,mnemo,seed,path): counter.increment()
-                                print("\033[32m \n Finish Rescan... \n \033[0m")
-                                save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
-                        inf.count = inf.count + 2
+                                        if (b1 < 0) or (b2 < 0) or (b3 < 0): 
+                                            print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                            save_rezult(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                            if inf.mail:
+                                                send_email(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                            counter.increment()
+                                        print('[W] Found address balance 0.0')
+                                        #continue
+                                else:
+                                    print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                    save_rezult(f'found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                    if inf.mail:
+                                        send_email(f'found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                    counter.increment()
+                        inf.count = inf.count + 3
 
 def bETH(mnemo, seed, counter):
     w = BIP32.from_seed(seed)
@@ -132,16 +173,34 @@ def bETH(mnemo, seed, counter):
                     pvk_int = int(pvk.hex(),16)
                     addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)
                     if inf.debug > 0:
-                        print("{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
+                        print(f"path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}")
                     if addr in inf.bf:
-                        if inf.debug >0:
-                            save_rezult('dbgETH.txt',"{} | {} | {} | {}".format(patchs,mnemo,seed.hex(),addr))
+                        if inf.debug > 0:
+                            save_rezult('dbgETH.txt',f"path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}")
                         if inf.debug < 1:
-                            print("\033[32m \n Init Rescan... \n \033[0m")
-                            save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                            if reETH(w,mnemo,seed,"m/44'/"+p+"'/"): counter.increment()
-                            print("\033[32m \n Finish Rescan... \n \033[0m")
-                            save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
+                            if inf.balance:
+                                b1 = get_balance(addr)
+                                print(f'\n[W] Found address | 0x{addr}: {b1}')
+                                if (b1 > 0):
+                                    save_rezult('found.txt',f'path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr} | BIP ETH/ETC')
+                                    if inf.mail:
+                                        send_email(f'found.txt',f'path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr} | BIP ETH/ETC')
+                                    counter.increment()
+                                else:
+                                    if (b1 < 0): 
+                                        print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | {addr}')
+                                        save_rezult(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr: 0x{addr} | BIP ETH/ETC')
+                                        if inf.mail:
+                                            send_email(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr: 0x{addr} | BIP ETH/ETC')
+                                        counter.increment()
+                                    print('[W] Found address balance 0.0')
+
+                            else:
+                                print(f'\n[W] Found address | path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}')
+                                save_rezult('found.txt',f'path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr} | BIP ETH/ETC')
+                                if inf.mail:
+                                    send_email(f'path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()} | SEED:{seed.hex()} | addr: 0x{addr} | BIP ETH/ETC')
+                                counter.increment()
                     inf.count = inf.count + 1
 
 def b44(mnemo, seed, counter):
@@ -157,37 +216,57 @@ def b44(mnemo, seed, counter):
                     bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
                     if inf.debug > 0 :
                         if p=='0':
-                            addr_c = secp256k1_lib.hash_to_address(0,True,bip44_h160_c)
-                            addr_uc = secp256k1_lib.hash_to_address(0,False,bip44_h160_uc)
-                            print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c.hex(),addr_c,bip44_h160_uc.hex(),addr_uc))
+                            addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                            addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
+                            addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
+                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
                         else:
-                            print("{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c.hex(),bip44_h160_uc.hex()))
+                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c} | HASH160 uncompress:{bip44_h160_uc}')
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
-                        if inf.debug >0:
+                        if inf.debug > 0:
                             if p=='0':
-                                save_rezult('dbg44_btc.txt',"{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c.hex(),addr_c,bip44_h160_uc.hex(),addr_uc))
+                                save_rezult('dbg44_btc.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}")
                             else:
-                                save_rezult('dbg44_other.txt',"{} | {} | {} | {} | {}".format(patchs,mnemo,str(seed.hex()),bip44_h160_c.hex(),bip44_h160_uc.hex()))
+                                save_rezult('dbg44_other.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c} | HASH160 uncompress:{bip44_h160_uc}")
                         if inf.debug < 1:
-                            print(f'Found address | {addr_c} | {addr_uc}')
                             if p=='0':
+                                addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                                addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
+                                addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
                                 if inf.balance:
-                                    if (get_balance(addr_c) > 0.00000000) or (get_balance(addr_uc) > 0.00000000):
-                                        print(f'Found address in balance| {addr_c} | {addr_uc}')
-                                        print("\033[32m \n Init Rescan... \n \033[0m")
-                                        save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                                        if re32(w,mnemo,seed,patchs): counter.increment()
-                                        print("\033[32m \n Finish Rescan... \n \033[0m")
-                                        save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
+                                    tx1, b1 = get_balance(addr_c)
+                                    tx2, b2 = get_balance(addr_uc)
+                                    tx3, b3 = get_balance(addr_cs)
+                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0):
+                                        print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
+                                    print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
+                                    if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000):
+                                        print(f'\n[W] Found address in balance | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                        save_rezult('found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')
+                                        if inf.mail:
+                                            send_email(f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')    
+                                        counter.increment()
                                     else:
-                                        continue
-                            print(f'Found address in balance| {addr_c} | {addr_uc}')
-                            print("\033[32m \n Init Rescan... \n \033[0m")
-                            save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                            if re32(w,mnemo,seed,patchs): counter.increment()
-                            print("\033[32m \n Finish Rescan... \n \033[0m")
-                            save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
-                    inf.count = inf.count + 2
+                                        if (b1 < 0) or (b2 < 0) or (b3 < 0): 
+                                            print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs}')
+                                            save_rezult(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 44')
+                                            if inf.mail:
+                                                send_email(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 44')
+                                            counter.increment()
+                                        print('[W] Found address balance 0.0')
+                                else:
+                                    print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                    save_rezult(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')
+                                    if inf.mail:
+                                        send_email(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')
+                                    counter.increment()
+                            else:
+                                print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()}')
+                                save_rezult(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()} | BIP 44')
+                                if inf.mail:
+                                    send_email(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()} | BIP 44')
+                                counter.increment()
+                    inf.count = inf.count + 3
 
 def bBTC(mnemo, seed, counter):
     pur = 0
@@ -203,136 +282,46 @@ def bBTC(mnemo, seed, counter):
                     pvk_int = int(pvk.hex(),16)
                     bip44_h160_c = secp256k1_lib.privatekey_to_h160(pur, True, pvk_int)
                     bip44_h160_uc = secp256k1_lib.privatekey_to_h160(pur, False, pvk_int)
-                    if inf.debug > 0 :
-                        addr_c = secp256k1_lib.hash_to_address(pur, True, bip44_h160_c)
-                        addr_uc = secp256k1_lib.hash_to_address(pur, False, bip44_h160_uc)
-                        print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c.hex(),addr_c,bip44_h160_uc.hex(),addr_uc))
-                    if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
-                        if inf.debug >0:
-                            save_rezult('dbgBTC.txt',"{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c.hex(),addr_c,bip44_h160_uc.hex(),addr_uc))
-                        if inf.debug < 1:
-                                print(f'Found address | {addr_c} | {addr_uc}')
-                                if inf.balance:
-                                    if (get_balance(addr_c) > 0.00000000) or (get_balance(addr_uc) > 0.00000000):
-                                        print(f'Found address in balance| {addr_c} | {addr_uc}')
-                                        print("\033[32m \n Init Rescan... \n \033[0m")
-                                        save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                                        if re32(w,mnemo,seed,patchs): counter.increment()
-                                        print("\033[32m \n Finish Rescan... \n \033[0m")
-                                        save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
-                                    else:
-                                        continue
-                                print(f'Found address in balance| {addr_c} | {addr_uc}')
-                                print("\033[32m \n Init Rescan... \n \033[0m")
-                                save_rezult('log.txt',"Init Rescan |"+mnemo+"|"+str(seed.hex()))
-                                if re32(w,mnemo,seed,patchs): counter.increment()
-                                print("\033[32m \n Finish Rescan... \n \033[0m")
-                                save_rezult('log.txt',"Finish Rescan |"+mnemo+"|"+str(seed.hex()))
-                    inf.count = inf.count + 2
-
-def re32(in_,mnemo,seed,re_path):
-    rez = False
-    scan = 0
-    for num1 in range(50):
-        for t in inf.l32_:
-            for num2 in range(2000):
-                for t1 in inf.l32_:
-                    patchs = re_path+str(num1)+t+"/"+str(num2)+t1
-                    pvk = in_.get_privkey_from_path(patchs)
-                    pvk_int = int(pvk.hex(),16)
-                    bip32_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
-                    bip32_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
-                    if (bip32_h160_c.hex() in inf.bf) or (bip32_h160_uc.hex() in inf.bf):
-                        print('\n-------------------------- Found --------------------------')
-                        bip_addr_c = secp256k1_lib.privatekey_to_address(0, True, bip32_h160_c)
-                        bip_addr_uc = secp256k1_lib.privatekey_to_address(0, False, bip32_h160_uc)
-                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+str(bip32_h160_c.hex()) +' | '+ bip_addr_c +' | '+str(bip32_h160_uc.hex()) +' | '+ bip_addr_uc +' | BIP 32'
-                        print(res)
-                        save_rezult('found.txt',res)
-                        if inf.mail:
-                            send_email(res)
-                        rez = True
-                    print("Scan: {}".format(scan),end='\r')
-                    scan +=1
-    return rez
-
-def reETH(in_,mnemo,seed,re_path):
-    rez = False
-    scan=0
-    for nom2 in range(50):#accaunt
-        for nom3 in range(2):#in/out
-            for nom in range(2000):
-                patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
-                pvk = in_.get_privkey_from_path(patchs)
-                pvk_int = int(pvk.hex(),16)
-                addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)
-                if addr in inf.bf:
-                    print('-------------------------- Found --------------------------',end='\n')
-                    res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+addr +' | BIP ETH/ETC'
-                    print(res)
-                    save_rezult('found.txt',res)
-                    if inf.mail:
-                        send_email(res)
-                    rez = True
-                print("Scan: {}".format(scan),end='\r')
-                scan +=1
-    return rez
-
-def re44(in_,mnemo,seed,re_path,code):
-    rez = False
-    scan=0
-    for nom2 in range(50):#accaunt
-        for nom3 in range(2):#in/out
-            for nom in range(2000):
-                patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
-                pvk = in_.get_privkey_from_path(patchs)
-                pvk_int = int(pvk.hex(),16)
-                bip44_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
-                bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
-                if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
-                    print('-------------------------- Found --------------------------',end='\n')
-                    if code=='0':
+                    if inf.debug > 0:
                         addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
                         addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+str(bip44_h160_c.hex()) +' | '+ addr_c +' | '+str(bip44_h160_uc.hex()) +' | '+ addr_uc +' | BIP 44'
-                        print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c.hex(),addr_c,bip44_h160_uc.hex(),addr_uc))
-                    else:
-                        res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+str(bip44_h160_c.hex()) +' | '+ str(bip44_h160_uc.hex()) +' | BIP 44'
-                    print(res)
-                    save_rezult('found.txt',res)
-                    if inf.mail:
-                        send_email(res)
-                    rez = True
-                print("Scan: {}".format(scan),end='\r')
-                scan +=1
-    return rez
-
-def reBTC(in_,mnemo,seed,re_path):
-    rez = False
-    scan=0
-    for nom2 in range(10):#accaunt
-        for nom3 in range(2):#in/out
-            for nom in range(2000):
-                patchs = re_path+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
-                pvk = in_.get_privkey_from_path(patchs)
-                pvk_int = int(pvk.hex(),16)
-                bip44_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
-                bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
-                if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
-                    print('-------------------------- Found --------------------------',end='\n')
-                    addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
-                    addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                    res = patchs+' | '+mnemo+' | '+str(seed.hex())+' | '+str(bip44_h160_c.hex()) +' | '+ addr_c +' | '+str(bip44_h160_uc.hex()) +' | '+ addr_uc +' | BIP 44'
-                    print("{} | {} | {} | {} | {} | {} | {}".format(patchs,mnemo,seed.hex(),bip44_h160_c.hex(),addr_c,bip44_h160_uc.hex(),addr_uc))
-                    print(res)
-                    save_rezult('found.txt',res)
-                    if inf.mail:
-                        send_email(res)
-                    rez = True
-                print("Scan: {}".format(scan),end='\r')
-                scan +=1
-    return rez
-
+                        addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
+                        print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                    if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
+                        if inf.debug > 0:
+                            save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                        if inf.debug < 1:
+                            addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                            addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
+                            addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
+                            if inf.balance:
+                                tx1, b1 = get_balance(addr_c)
+                                tx2, b2 = get_balance(addr_uc)
+                                tx3, b3 = get_balance(addr_cs)
+                                if (tx1 > 0) or (tx2 > 0) or (tx3 > 0):
+                                    print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
+                                print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
+                                if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000):
+                                    print(f'\n[W] Found address in balance | mnem:{mnemo} | {seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                    save_rezult('found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                    if inf.mail:
+                                        send_email(f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')    
+                                    counter.increment()
+                                else:
+                                    if (b1 < 0) or (b2 < 0) or (b3 < 0): 
+                                        print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs}')
+                                        save_rezult(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                        if inf.mail:
+                                            send_email(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                        counter.increment()
+                                    print('[W] Found address balance 0.0')
+                            else:
+                                print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs}')
+                                save_rezult(f'found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                if inf.mail:
+                                    send_email(f'found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                counter.increment()
+                    inf.count = inf.count + 3
 
 def nnmnem(mem):
     if inf.mode == 'r1':

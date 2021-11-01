@@ -1,12 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""
+@author: Noname400
+"""
+
 import sys
 import base58
 import codecs
 
 def convert(file_in,file_out):
-    print("===========File input -> " + file_in)
-    print("===========File output -> " + file_out)
+    print("[I] File input -> " + file_in)
+    print("[I] File output -> " + file_out)
     i = 0
     line_10 = 100000
     ii = 0
@@ -16,14 +20,14 @@ def convert(file_in,file_out):
     while True:
         adr58 = f.readline().strip()
         if not adr58:
-            print('Finish!')
+            print('[F] Finish!')
             f.close()
             fw.close()
             sys.exit()
         count += 1
 
         if count == line_10:
-            print("skip: {} | pass line: {} | total: {}".format(ii,i,count),end='\r')
+            print("> skip: {} | pass line: {} | total: {}".format(ii,i,count),end='\r')
             line_10 +=10000
 
         try:

@@ -1,6 +1,10 @@
 # #!/usr/bin/python3
 # encoding=utf8
 # -*- coding: utf-8 -*-
+"""
+@author: Noname400
+"""
+
 from funcP import *
 from consts import *
 
@@ -25,6 +29,7 @@ def createParser ():
         parser.parse_args().customdir, parser.parse_args().customword, parser.parse_args().customlang
 
 def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwords, clang, counter, tr):
+    inf.bip = bip
     inf.db_bf = db_bf
     inf.mode = mode
     email.desc = desc
@@ -48,10 +53,10 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
             start_time = time.time()
             for mem in inf.mnemonic_lang:
                 mnemonic, seed_bytes = nnmnem(mem)
-                if bip == "32" : b32(mnemonic,seed_bytes,counter)
-                if bip == "44" : b44(mnemonic,seed_bytes,counter)
-                if bip == "ETH": bETH(mnemonic,seed_bytes,counter)
-                if bip == "BTC": 
+                if inf.bip == "32" : b32(mnemonic,seed_bytes,counter)
+                if inf.bip == "44" : b44(mnemonic,seed_bytes,counter)
+                if inf.bip == "ETH": bETH(mnemonic,seed_bytes,counter)
+                if inf.bip == "BTC": 
                     bBTC(mnemonic,seed_bytes,counter)
                     b32(mnemonic,seed_bytes,counter)
             st = time.time() - start_time
@@ -62,7 +67,7 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
                 print('\033[1;33m> Mnemonic: {:d} | Total keys {:d} | Speed {:d} key/s | Found {:d} \033[0m'.format(mm, total,speed, counter.value()),flush=True,end='\r')
             ind +=1
     except KeyboardInterrupt:
-        print('\n'+'Interrupted by the user.')
+        print('\n[EXIT] Interrupted by the user.')
         sys.exit()
 
 if __name__ == "__main__":
@@ -71,20 +76,20 @@ if __name__ == "__main__":
     print(Fore.GREEN+Style.BRIGHT+'Thank you very much: @iceland2k14 for his libraries!\033[0m')
 
     if test():
-        print('\033[32m TEST: OK! \033[0m')
+        print('\033[32m[I] TEST: OK! \033[0m')
     else:
-        print('\033[32m TEST: ERROR \033[0m')
+        print('\033[32m[E] TEST: ERROR \033[0m')
 
     if inf.bip in ('32', '44', 'ETH', 'BTC'):
         pass
     else:
-        print('\033[1;31m Wrong BIP selected \033[0m')
+        print('\033[1;31m[E] Wrong BIP selected \033[0m')
         sys.exit()
 
     if inf.bit in (32, 64, 96, 128, 160, 192, 224, 256):
         pass          
     else:
-        print('\033[1;31m Wrong words selected \033[0m')
+        print('\033[1;31m[E] Wrong words selected \033[0m')
         sys.exit()
 
     if inf.mode in ('s', 'r1', 'r2', 'game', 'custom'):
@@ -97,39 +102,41 @@ if __name__ == "__main__":
         elif (inf.mode == 'game'):
             inf.mode_text = 'Game words'
         elif (inf.mode == 'custom'):
+            if inf.custom_dir == '':
+                print('[E] NOT custom file')
+                sys.exit()
             inf.mode_text = 'Custom words'
     else:
-        print('\033[1;31m Wrong mode selected')
+        print('\033[1;31m[E] Wrong mode selected')
         sys.exit()
 
     if inf.th < 1:
-        print('\033[1;31m The number of processes must be greater than 0 \033[0m')
+        print('\033[1;31m[E] The number of processes must be greater than 0 \033[0m')
         sys.exit()
 
     if inf.th > multiprocessing.cpu_count():
-        print('\033[1;31mThe specified number of processes exceeds the allowed\033[0m')
-        print('\033[1;31mFIXED for the allowed number of processes\033[0m')
+        print('\033[1;31m[I] The specified number of processes exceeds the allowed\033[0m')
+        print('\033[1;31m[I] FIXED for the allowed number of processes\033[0m')
         inf.th = multiprocessing.cpu_count()
 
     print('-'*70,end='\n')
-    print('* Version: {} '.format(inf.version))
-    print('* Total kernel of CPU: {} '.format(multiprocessing.cpu_count()))
-    print('* Used kernel: {} '.format(inf.th))
-    print('* Mode Search: BIP-{} {} '.format (inf.bip, inf.mode_text))
-    print('* Database Bloom Filter: {} '.format (inf.db_bf))
-    if inf.custom_dir != '': print('* Сustom dictionary: {} '.format (inf.custom_dir))
-    if inf.custom_dir != '': print('* Сustom words: {} '.format (inf.custom_words))
-    if inf.custom_dir != '': print('* Languages at work: {} '.format(inf.custom_lang))
-    if inf.mode == 's':
-        print('* Languages at work: {} '.format(inf.mnemonic_lang))
-    print('* Work BIT: {} '.format(inf.bit))
-    print('* Description client: {} '.format(email.desc))
-    print('* Smooth start {} sec'.format(inf.sleep))
+    print(f'[I] Version: {inf.version}')
+    print(f'[I] Total kernel of CPU: {multiprocessing.cpu_count()}')
+    print(f'[I] Used kernel: {inf.th}')
+    print(f'[I] Mode Search: BIP-{inf.bip} {inf.mode_text}')
+    print(f'[I] Database Bloom Filter: {inf.db_bf}')
+    if inf.custom_dir != '': print(f'[I] Сustom dictionary: {inf.custom_dir}')
+    if inf.custom_dir != '': print(f'[I] Сustom words: {inf.custom_words}')
+    if inf.custom_dir != '': print(f'[I] Languages at work: {inf.custom_lang}')
+    if inf.mode == 's': print(f'[I] Languages at work: {inf.mnemonic_lang}')
+    print(f'[I] Work BIT: {inf.bit}')
+    print(f'[I] Description client: {email.desc}')
+    print(f'[I] Smooth start {inf.sleep} sec')
 
-    if inf.mail: print('* Send mail: On')
-    else: print('* Send mail: Off')
-    if inf.balance: print('* Check balance BTC: On')
-    else: print('* Check balance BTC: Off')
+    if inf.mail: print('[I] Send mail: On')
+    else: print('[I] Send mail: Off')
+    if inf.balance: print('[I] Check balance BTC: On')
+    else: print('[I] Check balance: Off')
     print('-'*70,end='\n')
     counter = Counter(0)
     tr = Counter(0)
@@ -138,12 +145,12 @@ if __name__ == "__main__":
         procs = [Process(target=run, name= str(i), args=(inf.bip, inf.db_bf, inf.mode, email.desc, inf.bit, inf.debug, inf.mail, inf.th, 
                                                          inf.sleep, inf.balance, inf.custom_dir, inf.custom_words, inf.custom_lang, counter, tr,)) for i in range(inf.th)]
     except KeyboardInterrupt:
-        print('\n'+'Interrupted by the user.')
+        print('\n[EXIT] Interrupted by the user.')
         sys.exit()
     try:
         for p in procs: p.start()
         for p in procs: p.join()
     except KeyboardInterrupt:
-        print('\n'+'Interrupted by the user.')
+        print('\n[EXIT] Interrupted by the user.')
         sys.exit()
     

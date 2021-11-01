@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""
+@author: Noname400
+"""
+
 from bloomfilter import BloomFilter
 import sys
 
@@ -23,33 +27,33 @@ def add_to_bf(file, nom, bf_filter):
 
 
 def bloom_filter():
-    print("========== Bloom Filter START==========")
-    print("===========File input -> " + file_txt)
-    print("===========File output -> " + file_bf)
+    print("[I] Bloom Filter START")
+    print("[I] File input -> " + file_txt)
+    print("[I] File output -> " + file_bf)
     bf = BloomFilter(size=line_count, fp_prob=1e-12)
 
-    print("========== ADD Bloom Filter ==========")
+    print("[I] ADD Bloom Filter")
     add_to_bf(file_txt, line_count, bf)
 
     # Print several statistics of the filter
-    print("========== Bloom Filter Statistic ==========")
+    print("[I] Bloom Filter Statistic")
     print(
-        "+ Capacity: {} item(s)".format(bf.size),
-        "+ Number of inserted items: {}".format(len(bf)),
-        "+ Filter size: {} bit(s)".format(bf.filter_size),
-        "+ False Positive probability: {}".format(bf.fp_prob),
-        "+ Number of hash functions: {}".format(bf.num_hashes),
-        "+ Input file: {}".format(file_txt),
-        "+ Output file: {}".format(file_bf),
+        "[+] Capacity: {} item(s)".format(bf.size),
+        "[+] Number of inserted items: {}".format(len(bf)),
+        "[+] Filter size: {} bit(s)".format(bf.filter_size),
+        "[+] False Positive probability: {}".format(bf.fp_prob),
+        "[+] Number of hash functions: {}".format(bf.num_hashes),
+        "[+] Input file: {}".format(file_txt),
+        "[+] Output file: {}".format(file_bf),
         sep="\n",
         end="\n\n",
     )
 
     # Save to file
-    print("========== Bloom Filter Start Save File ==========")
+    print("[I] Bloom Filter Start Save File")
     with open(file_bf, "wb") as fp:
         bf.save(fp)
-    print("========== Bloom Filter END Save File ==========")
+    print("[I] Bloom Filter END Save File")
 
 
 if __name__ == "__main__":

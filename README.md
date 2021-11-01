@@ -102,25 +102,25 @@ https://gz.blockchair.com/
 https://drive.google.com/drive/folders/1oBMNxqwyYqp6Dx1q5j6erajf9wahGAda?usp=sharing (базы с адресами)
 https://drive.google.com/drive/folders/1ILhIERsWHTvQ1-HwgzQLyKm3G7VPzgjY?usp=sharing (готовые блюм фильтры)
 
-E:\GitHub\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b BTC -db BF\export.bf -th 3 -des test -m game -sl 5 -dbg 0 -bal
-----------------------------------------------------------------------
-Thank you very much: @iceland2k14 for his libraries!
-----------------------------------------------------------------------
-DEPENDENCY TESTING:
-[I] TEST: OK!
-----------------------------------------------------------------------
-[I] Version: * Pulsar v4.7.8 multiT Hash160 *
-[I] Total kernel of CPU: 4
-[I] Used kernel: 3
-[I] Mode Search: BIP-BTC Game words
-[I] Database Bloom Filter: BF\export.bf
-[I] Work BIT: 128
-[I] Description client: test
-[I] Smooth start 5 sec
-[I] Send mail: Off
-[I] Check balance BTC: On
-----------------------------------------------------------------------
-> Mnemonic: 105 | Total keys 151200 | Speed 10146 key/s | Found 0
+    E:\GitHub\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b BTC -db BF\export.bf -th 3 -des test -m game -sl 5 -dbg 0 -bal
+    ----------------------------------------------------------------------
+    Thank you very much: @iceland2k14 for his libraries!
+    ----------------------------------------------------------------------
+    DEPENDENCY TESTING:
+    [I] TEST: OK!
+    ----------------------------------------------------------------------
+    [I] Version: * Pulsar v4.7.8 multiT Hash160 *
+    [I] Total kernel of CPU: 4
+    [I] Used kernel: 3
+    [I] Mode Search: BIP-BTC Game words
+    [I] Database Bloom Filter: BF\export.bf
+    [I] Work BIT: 128
+    [I] Description client: test
+    [I] Smooth start 5 sec
+    [I] Send mail: Off
+    [I] Check balance BTC: On
+    ----------------------------------------------------------------------
+    > Mnemonic: 105 | Total keys 151200 | Speed 10146 key/s | Found 0
     
 
 #### Благодарность за мою работу:  

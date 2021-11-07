@@ -221,13 +221,13 @@ def b44(mnemo, seed, counter):
                             addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
                             print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
                         else:
-                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c} | HASH160 uncompress:{bip44_h160_uc}')
+                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
                         if inf.debug > 0:
                             if p=='0':
                                 save_rezult('dbg44_btc.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}")
                             else:
-                                save_rezult('dbg44_other.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c} | HASH160 uncompress:{bip44_h160_uc}")
+                                save_rezult('dbg44_other.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}")
                         if inf.debug < 1:
                             if p=='0':
                                 addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)

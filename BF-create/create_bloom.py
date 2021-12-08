@@ -30,7 +30,7 @@ def bloom_filter():
     print("[I] Bloom Filter START")
     print("[I] File input -> " + file_txt)
     print("[I] File output -> " + file_bf)
-    bf = BloomFilter(size=line_count, fp_prob=1e-12)
+    bf = BloomFilter(size=line_count, fp_prob=1e-20)
 
     print("[I] ADD Bloom Filter")
     add_to_bf(file_txt, line_count, bf)

@@ -121,46 +121,49 @@ def b32(mnemo, seed, counter):
                         bip32_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
                         bip32_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
                         if inf.debug > 0:
-                            addr_c = secp256k1_lib.hash_to_address(0, True, bip32_h160_c)
+                            addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
-                            addr_cs = secp256k1_lib.hash_to_address(1, True, bip32_h160_c)
-                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                            addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_c)
+                            addr_ucs = secp256k1_lib.hash_to_address(1, False, bip32_h160_uc)
+                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         if (bip32_h160_c.hex() in inf.bf) or (bip32_h160_uc.hex() in inf.bf):
                             if inf.debug > 0:
-                                save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                                save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                             if inf.debug < 1:
-                                addr_c = secp256k1_lib.hash_to_address(0, True, bip32_h160_c)
+                                addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
                                 addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
-                                addr_cs = secp256k1_lib.hash_to_address(1, True, bip32_h160_c)
+                                addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_c)
+                                addr_ucs = secp256k1_lib.hash_to_address(1, False, bip32_h160_uc)
                                 if inf.balance:
                                     tx1, b1 = get_balance(addr_c)
                                     tx2, b2 = get_balance(addr_uc)
                                     tx3, b3 = get_balance(addr_cs)
-                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0):
-                                        print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
-                                    print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
-                                    if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000):
-                                        print(f'\n[W] Found address in balance | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
-                                        save_rezult('found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | {addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                    tx4, b4 = get_balance(addr_ucs)
+                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
+                                        print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_ucs}:{b4}')
+                                    print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_ucs}:{b4}')
+                                    if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000) or (b4 > 0.00000000):
+                                        print(f'\n[W] Found address in balance | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                        save_rezult('found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | {addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 32')
                                         if inf.mail:
-                                            send_email(f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')    
+                                            send_email(f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 32')    
                                         counter.increment()
                                     else:
-                                        if (b1 < 0) or (b2 < 0) or (b3 < 0): 
-                                            print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
-                                            save_rezult(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                        if (b1 < 0) or (b2 < 0) or (b3 < 0) or (b4 < 0): 
+                                            print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                            save_rezult(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 32')
                                             if inf.mail:
-                                                send_email(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                                send_email(f'log.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 32')
                                             counter.increment()
                                         print('[W] Found address balance 0.0')
                                         #continue
                                 else:
-                                    print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
-                                    save_rezult(f'found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                    print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                    save_rezult(f'found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 32')
                                     if inf.mail:
-                                        send_email(f'found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 32')
+                                        send_email(f'found.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 32')
                                     counter.increment()
-                        inf.count = inf.count + 3
+                        inf.count = inf.count + 4
 
 def bETH(mnemo, seed, counter):
     w = BIP32.from_seed(seed)
@@ -216,49 +219,52 @@ def b44(mnemo, seed, counter):
                     bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
                     if inf.debug > 0 :
                         if p=='0':
-                            addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                            addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                            addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
-                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                            addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
+                            addr_ucs = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
+                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         else:
                             print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
                         if inf.debug > 0:
                             if p=='0':
-                                save_rezult('dbg44_btc.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}")
+                                save_rezult('dbg44_btc.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}")
                             else:
                                 save_rezult('dbg44_other.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}")
                         if inf.debug < 1:
                             if p=='0':
-                                addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                                addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                                 addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                                addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
+                                addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
+                                addr_ucs = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
                                 if inf.balance:
                                     tx1, b1 = get_balance(addr_c)
                                     tx2, b2 = get_balance(addr_uc)
                                     tx3, b3 = get_balance(addr_cs)
-                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0):
-                                        print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
-                                    print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
-                                    if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000):
-                                        print(f'\n[W] Found address in balance | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
-                                        save_rezult('found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')
+                                    tx4, b4 = get_balance(addr_ucs)
+                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
+                                        print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_ucs}:{b4}')
+                                    print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_ucs}:{b4}')
+                                    if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000) or (b4 > 0.00000000):
+                                        print(f'\n[W] Found address in balance | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                        save_rezult('found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 44')
                                         if inf.mail:
-                                            send_email(f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')    
+                                            send_email(f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 44')    
                                         counter.increment()
                                     else:
-                                        if (b1 < 0) or (b2 < 0) or (b3 < 0): 
-                                            print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs}')
-                                            save_rezult(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 44')
+                                        if (b1 < 0) or (b2 < 0) or (b3 < 0) or (b4 < 0): 
+                                            print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs}')
+                                            save_rezult(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BIP 44')
                                             if inf.mail:
-                                                send_email(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 44')
+                                                send_email(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BIP 44')
                                             counter.increment()
                                         print('[W] Found address balance 0.0')
                                 else:
-                                    print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
-                                    save_rezult(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')
+                                    print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                    save_rezult(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 44')
                                     if inf.mail:
-                                        send_email(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | BIP 44')
+                                        send_email(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs} | BIP 44')
                                     counter.increment()
                             else:
                                 print(f'\n[W] Found address | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()}')
@@ -266,14 +272,14 @@ def b44(mnemo, seed, counter):
                                 if inf.mail:
                                     send_email(f'found.txt',f'{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()} | BIP 44')
                                 counter.increment()
-                    inf.count = inf.count + 3
+                    inf.count = inf.count + 4
 
 def bBTC(mnemo, seed, counter):
     pur = 0
     w = BIP32.from_seed(seed)
     for bip_ in inf.lbtc:
-        if bip_ == "44": pur = 0
-        else: pur = 1
+        if bip_ == "49": pur = 1
+        else: pur = 0
         for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
                 for nom in range(20):
@@ -281,47 +287,51 @@ def bBTC(mnemo, seed, counter):
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
                     bip44_h160_c = secp256k1_lib.privatekey_to_h160(pur, True, pvk_int)
-                    bip44_h160_uc = secp256k1_lib.privatekey_to_h160(pur, False, pvk_int)
+                    bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
                     if inf.debug > 0:
-                        addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                        addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                         addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                        addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
-                        print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                        addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
+                        addr_ucs = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
+                        print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                        print(bip_,bip44_h160_c.hex(),bip44_h160_uc.hex())
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
                         if inf.debug > 0:
-                            save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
+                            save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         if inf.debug < 1:
-                            addr_c = secp256k1_lib.hash_to_address(0, True, bip44_h160_c)
+                            addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                            addr_cs = secp256k1_lib.hash_to_address(1, True, bip44_h160_c)
+                            addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
+                            addr_ucs = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
                             if inf.balance:
                                 tx1, b1 = get_balance(addr_c)
                                 tx2, b2 = get_balance(addr_uc)
                                 tx3, b3 = get_balance(addr_cs)
-                                if (tx1 > 0) or (tx2 > 0) or (tx3 > 0):
-                                    print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
-                                print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3}')
-                                if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000):
-                                    print(f'\n[W] Found address in balance | mnem:{mnemo} | {seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs}')
-                                    save_rezult('found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                tx4, b4 = get_balance(addr_ucs)
+                                if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
+                                    print(f'\n[W] Found transaction! | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_ucs}:{b4}')
+                                print(f'\n[W] Found address | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_ucs}:{b4}')
+                                if (b1 > 0.00000000) or (b2 > 0.00000000) or (b3 > 0.00000000) or (b4 > 0.00000000):
+                                    print(f'\n[W] Found address in balance | mnem:{mnemo} | {seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                    save_rezult('found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BTC mode')
                                     if inf.mail:
-                                        send_email(f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')    
+                                        send_email(f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BTC mode')    
                                     counter.increment()
                                 else:
-                                    if (b1 < 0) or (b2 < 0) or (b3 < 0): 
-                                        print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs}')
-                                        save_rezult(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                    if (b1 < 0) or (b2 < 0) or (b3 < 0) or (b4 < 0): 
+                                        print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs}')
+                                        save_rezult(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BTC mode')
                                         if inf.mail:
-                                            send_email(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                            send_email(f'log.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BTC mode')
                                         counter.increment()
                                     print('[W] Found address balance 0.0')
                             else:
-                                print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs}')
-                                save_rezult(f'found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                print(f'\n[W] Found address | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs}')
+                                save_rezult(f'found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BTC mode')
                                 if inf.mail:
-                                    send_email(f'found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | BIP 32')
+                                    send_email(f'found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_ucs} | BTC mode')
                                 counter.increment()
-                    inf.count = inf.count + 3
+                    inf.count = inf.count + 4
 
 def nnmnem(mem):
     if inf.mode == 'r1':

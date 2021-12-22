@@ -21,7 +21,8 @@ def add_to_bf(file, nom, bf_filter):
             print("Total line ->" + str(line_10), end='\r')
             line_10 += 100000
         text = f.readline().strip()
-        bf_filter.add(text.lower())
+        if text[:2] == '0x': bf_filter.add(text.lower()[2:])
+        else: bf_filter.add(text.lower())
         i += 1
     f.close()
 

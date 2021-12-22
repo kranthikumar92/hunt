@@ -7,7 +7,7 @@
 
 from bloomfilter import BloomFilter
 import platform, os, sys, ctypes, random, time, argparse, multiprocessing
-import smtplib, datetime, socket, hashlib
+import smtplib, datetime, socket, hashlib, secrets
 from mnemonic import Mnemonic
 from multiprocessing import  Value, Lock, Process
 from bip32 import BIP32
@@ -33,8 +33,8 @@ class email:
     port:int = 25
     password:str = 'you password HERE'
     subject:str = '--- Find Mnemonic ---'
-    to_addr:str = 'info@quadrotech.ru'
-    from_addr:str = 'info@quadrotech.ru'
+    to_addr:str = 'hunt@quadrotech.ru'
+    from_addr:str = 'hunt@quadrotech.ru'
     desc:str = ''
 
 class inf:
@@ -53,7 +53,7 @@ class inf:
         l = [line.strip() for line in f]
         f.close()
         return l
-    version:str = '* Pulsar v4.7.11 multiT Hash160 *'
+    version:str = '* Pulsar v4.8.0 multiT Hash160 *'
     mnemonic_lang:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     balance:bool = False
     bal_err:int = 0

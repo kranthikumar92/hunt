@@ -12,7 +12,7 @@ def get_balance(address):
     time.sleep(1) 
     if inf.bip == 'ETH':
         try:
-            response = requests.get(inf.ETH_bal_server[1] + '0x'+address)
+            response = requests.get(inf.ETH_bal_server[1] + '0x' + address)
             return int(response.json()['result'])
         except:
             return -1
@@ -179,7 +179,7 @@ def bETH(mnemo, seed, counter):
                         print(f"path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}")
                     if addr in inf.bf:
                         if inf.debug > 0:
-                            save_rezult('dbgETH.txt',f"path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}")
+                            save_rezult('dbgETH.txt',f'path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}')
                         if inf.debug < 1:
                             if inf.balance:
                                 b1 = get_balance(addr)
@@ -339,7 +339,8 @@ def nnmnem(mem):
         rd=32
         if inf.bit > 64: rd = 64
         if inf.bit < 32: rd = 32
-        seed_bytes = os.urandom(rd)
+        #seed_bytes = os.urandom(rd)
+        seed_bytes = secrets.token_bytes(rd)
     elif inf.mode =='r2':
         if inf.bit == 32: bit = 3
         if inf.bit == 64: bit = 6
@@ -349,7 +350,7 @@ def nnmnem(mem):
         if inf.bit == 192: bit = 18
         if inf.bit == 224: bit = 21
         if inf.bit == 256: bit = 24
-        mnemo:Mnemonic = Mnemonic('english')
+        mnemo:Mnemonic = Mnemonic(mem)
         mnemonic = ''
         for wi in (range(bit)):
             r1 = random.randint(0, len(inf.r2_list)-1)
@@ -357,9 +358,9 @@ def nnmnem(mem):
                 mnemonic = mnemonic + inf.r2_list[r1]
             else:
                 mnemonic = mnemonic + inf.r2_list[r1]+' '
-        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='mnemonic')
     elif inf.mode =='game':
-        mnemo:Mnemonic = Mnemonic('english')
+        mnemo:Mnemonic = Mnemonic(mem)
         mnemonic = ''
         rw = randint(0,25)
         for wi in (range(rw)):
@@ -368,10 +369,10 @@ def nnmnem(mem):
                 mnemonic = mnemonic + inf.game_list[r1]
             else:
                 mnemonic = mnemonic + inf.game_list[r1]+' '
-        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='mnemonic')
         
     elif inf.mode =='custom':
-        mnemo:Mnemonic = Mnemonic(inf.custom_lang)
+        mnemo:Mnemonic = Mnemonic(mem)
         mnemonic = ''
         rw = inf.custom_words
         for wi in (range(rw)):
@@ -380,7 +381,7 @@ def nnmnem(mem):
                 mnemonic = mnemonic + inf.custom_list[r1]
             else:
                 mnemonic = mnemonic + inf.custom_list[r1]+' '
-        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
+        seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='mnemonic')
     else:
         mnemo:Mnemonic = Mnemonic(mem)
         mnemonic:str = mnemo.generate(strength=inf.bit)

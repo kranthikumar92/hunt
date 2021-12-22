@@ -21,7 +21,7 @@ def add_to_bf(file, nom, bf_filter):
             print("Total line ->" + str(line_10), end='\r')
             line_10 += 100000
         text = f.readline().strip()
-        bf_filter.add(text)
+        bf_filter.add(text.lower())
         i += 1
     f.close()
 
@@ -30,7 +30,7 @@ def bloom_filter():
     print("[I] Bloom Filter START")
     print("[I] File input -> " + file_txt)
     print("[I] File output -> " + file_bf)
-    bf = BloomFilter(size=line_count, fp_prob=1e-20)
+    bf = BloomFilter(size=line_count, fp_prob=1e-12)
 
     print("[I] ADD Bloom Filter")
     add_to_bf(file_txt, line_count, bf)

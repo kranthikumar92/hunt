@@ -9,8 +9,8 @@
   https://learnmeabitcoin.com/technical/derivation-paths
 
 #### HUNT to MNEMONIC (HASH160)
-Brute Force Bitcoin address и не только Биткоин адресов
-Программа создана в первую очередь для изучения языка PYTHON! 
+Brute Force Bitcoin address не только Биткоин адресов
+Программа создана в первую очередь для изучения языка PYTHON!
 
 Что реализовано:  
 #### создание BIP39 Mnemonic для 10 языков. Возможно использовать все сразу или какие-то отдельно 
@@ -25,17 +25,23 @@ Brute Force Bitcoin address и не только Биткоин адресов
     -japanese
     -portuguese
     (список языков редактируйте в файле consts.py)
+        mnemonic_lang:list = ['english','chinese_simplified'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     Все возможные комбинации мнемоник. если надо больше вложений, аккаунтов и т.д. несложно добавить.
-    3 случайных режима
+    5 случайных режима
+        S - Стандартный режим. Он создает мнемоник согласно спецификации BIP39
         R1 - режим генерации SEED случайным образом, он не зависит от языка
         R2 - режим по генерации мнемоники без подсчета чексуммы
         GAME - это режим для веселухи Ж-) в папке лежит файл game_en.txt в нем 3000 самых используемых английских слов, программа случайным образом выбирает количество слов от 1 до 25 и затем случайно выбирает слова
+            вы можете заменить слова на свои.
         CUSTOM - режим для самостоятельных переборов и словарей
     4 варианта поиска (BIP32, BIP44, ETH, BTC)
         - Режим BTC ищет только по BTC но во всех вариациях (BIP32, BIP44, BIP49)
         Режим BIP84 и выше делать не буду, этими кошельками пользуются люди.
 
-#### Установка в ручную:
+#### Установка:
+    для установки желательно установить Microsoft build tools
+        https://aka.ms/vs/17/release/VC_redist.x64.exe
+        https://aka.ms/vs/17/release/vs_BuildTools.exe
     pip install simplebloomfilter
     pip install bitarray==1.9.2
     в папке install лежит инсталятор мнемоники
@@ -43,13 +49,17 @@ Brute Force Bitcoin address и не только Биткоин адресов
         если не хотите устонавливать пакет, то добро пожаловать в репозиторий https://github.com/Noname400/mnemonic-for-hunt
     pip install colorama
     pip install bip32
-  
-#### Создаем HASH160 из Адресов:  
+
+#### Создаем HASH160 из Адресов:
+    создание HASH160 требуется для всех адресов КРОМЕ ETH и ETC. адреса ETH и ETC сразу конверируются в блюм фильтр, без дополнительной конвертиции
     python addr_to_h160.py <in file> <out file>
       in file - текстовый файл с адресами (один адрес на одну срочку)  
       out file - файл hash160  
-  
+
 #### Создайте BloobFilter (BF create\Cbloom.py)
+    ПОМНИТЕ: адреса ETH и ETC и прочии производные должны быть без '0x'
+        0x0284A72A0fe8fCC4867fbeA622D862E4a28d0DB7 такой адрес не корректен. нужен 0284A72A0fe8fCC4867fbeA622D862E4a28d0DB7
+        на сайте https://gz.blockchair.com/ethereum/addresses/ как раз адреса без '0x' и вы можете их преобразовать сразу в блюм
     python create_bloom.py <in file> <out file>  
       in file - текстовый файл с hash160 (один hash на одну срочку)  
       out file - файл блюм фильтра  

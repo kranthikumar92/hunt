@@ -109,8 +109,7 @@ Brute Force Bitcoin address не только Биткоин адресов
 https://gz.blockchair.com/  
   
 или на моем ресурсе:  
-https://drive.google.com/drive/folders/1oBMNxqwyYqp6Dx1q5j6erajf9wahGAda?usp=sharing (базы с адресами)
-https://drive.google.com/drive/folders/1ILhIERsWHTvQ1-HwgzQLyKm3G7VPzgjY?usp=sharing (готовые блюм фильтры)
+https://drive.google.com/drive/folders/1E2rC7GSc59lAIJi_gD0O-tgGiXwcS7Wl?usp=sharing (готовые блюм фильтры)
 
     E:\GitHub\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b BTC -db BF\export.bf -th 3 -des test -m game -sl 5 -dbg 0 -bal
     ----------------------------------------------------------------------

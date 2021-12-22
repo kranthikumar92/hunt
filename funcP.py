@@ -395,7 +395,7 @@ def nnmnem(mem):
         print('Debug SEED : {}'.format(seed_bytes.hex()))
     if inf.debug==2:
         #mnemo = Mnemonic(mem)
-        print('Debug Mnemonic : '+mnemonic)
+        print('Debug Mnemonic : '+ mnemonic)
         print('Debug SEED : {}'.format(seed_bytes.hex()))
         #seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
     return mnemonic, seed_bytes

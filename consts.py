@@ -53,8 +53,8 @@ class inf:
         l = [line.strip() for line in f]
         f.close()
         return l
-    version:str = '* Pulsar v4.8.1 multiT Hash160 *'
-    mnemonic_lang:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
+    version:str = '* Pulsar v4.8.2 multiT Hash160 *'
+    mnemonic_lang:list = ['japanese'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     balance:bool = False
     bal_err:int = 0
     bip:str = '32'

@@ -41,8 +41,8 @@ Brute Force Bitcoin address не только Биткоин адресов
 #### Установка:
     для установки на windows необходимо установить Microsoft build tools
     установочный файл находится в папке install
-    ![install](https://github.com/Noname400/Hunt-to-Mnemonic/raw/main/image/inst1.jpg)
-    ![install](https://github.com/Noname400/Hunt-to-Mnemonic/raw/main/image/inst2.jpg)
+    ![install](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/inst1.jpg)
+    ![install](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/inst2.jpg)
     также в папке лежит уже готовый файл конфигурации
     как добавить его на фото выше
 

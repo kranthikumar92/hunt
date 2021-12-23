@@ -39,9 +39,13 @@ Brute Force Bitcoin address не только Биткоин адресов
         Режим BIP84 и выше делать не буду, этими кошельками пользуются люди.
 
 #### Установка:
-    для установки желательно установить Microsoft build tools
-        https://aka.ms/vs/17/release/VC_redist.x64.exe
-        https://aka.ms/vs/17/release/vs_BuildTools.exe
+    для установки на windows необходимо установить Microsoft build tools
+    установочный файл находится в папке install
+    <img> <\img>
+    <img> <\img>
+    также в папке лежит уже готовый файл конфигурации
+    как добавить его на фото выше
+
     pip install simplebloomfilter
     pip install bitarray==1.9.2
     в папке install лежит инсталятор мнемоники
@@ -49,6 +53,9 @@ Brute Force Bitcoin address не только Биткоин адресов
         если не хотите устонавливать пакет, то добро пожаловать в репозиторий https://github.com/Noname400/mnemonic-for-hunt
     pip install colorama
     pip install bip32
+    pip install requests
+
+для установки на windows необходимо установить Microsoft build tools
 
 #### Создаем HASH160 из Адресов:
     создание HASH160 требуется для всех адресов КРОМЕ ETH и ETC. адреса ETH и ETC сразу конверируются в блюм фильтр, без дополнительной конвертиции

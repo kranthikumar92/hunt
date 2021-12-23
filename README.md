@@ -38,17 +38,15 @@ Brute Force Bitcoin address не только Биткоин адресов
         - Режим BTC ищет только по BTC но во всех вариациях (BIP32, BIP44, BIP49)
         Режим BIP84 и выше делать не буду, этими кошельками пользуются люди.
 
-для установки на windows необходимо установить Microsoft build tools
+### для установки на windows необходимо установить Microsoft build tools
+
 установочный файл находится в папке install
 ![install](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/inst1.jpg)
 ![install](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/inst2.jpg)
-    также в папке лежит уже готовый файл конфигурации
-    как добавить его на фото выше
-    
+также в папке лежит уже готовый файл конфигурации
+как добавить его на фото выше
+
 #### Установка:
-
-
-
     pip install simplebloomfilter
     pip install bitarray==1.9.2
     в папке install лежит инсталятор мнемоники

@@ -54,7 +54,7 @@ class inf:
         f.close()
         return l
     version:str = '* Pulsar v4.8.2 multiT Hash160 *'
-    mnemonic_lang:list = ['japanese'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
+    mnemonic_lang:list = ['english', 'chinese_simplified'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     balance:bool = False
     bal_err:int = 0
     bip:str = '32'

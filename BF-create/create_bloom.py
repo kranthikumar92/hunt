@@ -22,7 +22,7 @@ def add_to_bf(file, nom, bf_filter):
             line_10 += 100000
         text = f.readline().strip()
         if text[:2] == '0x': bf_filter.add(text.lower()[2:])
-        else: bf_filter.add(text.lower())
+        else: bf_filter.add(text)
         i += 1
     f.close()
 

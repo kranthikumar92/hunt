@@ -31,7 +31,7 @@ def convert(file_in,file_out):
             line_10 +=10000
 
         try:
-            adr160 = base58.b58decode_check(adr58.lower()).hex()[2:]
+            adr160 = base58.b58decode_check(adr58).hex()[2:]
         except:
             ii +=1
         else:

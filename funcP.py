@@ -125,10 +125,10 @@ def b32(mnemo, seed, counter):
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
                             addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_c)
                             addr_ucs = secp256k1_lib.hash_to_address(1, False, bip32_h160_uc)
-                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                            print(f'\n[I] DEBUG: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         if (bip32_h160_c.hex() in inf.bf) or (bip32_h160_uc.hex() in inf.bf):
                             if inf.debug > 0:
-                                save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                                save_rezult('dbg32.txt',f'FOUND: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                             if inf.debug < 1:
                                 addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
                                 addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
@@ -176,10 +176,10 @@ def bETH(mnemo, seed, counter):
                     pvk_int = int(pvk.hex(),16)
                     addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)
                     if inf.debug > 0:
-                        print(f"path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}")
+                        print(f"[I] DEBUG: path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}")
                     if addr in inf.bf:
                         if inf.debug > 0:
-                            save_rezult('dbgETH.txt',f'path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}')
+                            save_rezult('dbgETH.txt',f'FOUND: path:{patchs} | mnem:{mnemo} | PVK:{pvk.hex()}| SEED:{seed.hex()} | addr: 0x{addr}')
                         if inf.debug < 1:
                             if inf.balance:
                                 b1 = get_balance(addr)
@@ -223,15 +223,15 @@ def b44(mnemo, seed, counter):
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
                             addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
                             addr_ucs = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
-                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                            print(f'\n[I] DEBUG: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         else:
-                            print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
+                            print(f'\n[I] DEBUG: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
                         if inf.debug > 0:
                             if p=='0':
-                                save_rezult('dbg44_btc.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}")
+                                save_rezult('dbg44_btc.txt',f"FOUND: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}")
                             else:
-                                save_rezult('dbg44_other.txt',f"path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}")
+                                save_rezult('dbg44_other.txt',f"FOUND: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}")
                         if inf.debug < 1:
                             if p=='0':
                                 addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
@@ -293,11 +293,11 @@ def bBTC(mnemo, seed, counter):
                         addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
                         addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
                         addr_ucs = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
-                        print(f'\n[I] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                        print(f'\n[I] DEBUG path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         print(bip_,bip44_h160_c.hex(),bip44_h160_uc.hex())
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
                         if inf.debug > 0:
-                            save_rezult('dbg32.txt',f'path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
+                            save_rezult('dbgBTC.txt',f'FOUND: path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr compress:{addr_c} | addr uncompress:{addr_uc} | addr compress Segwit:{addr_cs} | addr uncompress Segwit:{addr_ucs}')
                         if inf.debug < 1:
                             addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)

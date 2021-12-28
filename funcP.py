@@ -9,7 +9,7 @@ from random import randint
 from consts import *
 
 def get_balance(address):
-    time.sleep(1) 
+    time.sleep(10) 
     if inf.bip == 'ETH':
         try:
             response = requests.get(inf.ETH_bal_server[1] + '0x' + address)

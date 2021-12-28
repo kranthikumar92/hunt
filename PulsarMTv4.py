@@ -49,7 +49,6 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
     load_BF(inf.db_bf, tr)
     try:
         while True:
-            inf.count = 0
             start_time = time.time()
             for mem in inf.mnemonic_lang:
                 mnemonic, seed_bytes = nnmnem(mem)
@@ -65,6 +64,7 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
             mm = ind*len(inf.mnemonic_lang)*tr.value()
             if multiprocessing.current_process().name == '0':
                 print('\033[1;33m> Mnemonic: {:d} | Total keys {:d} | Speed {:d} key/s | Found {:d} \033[0m'.format(mm, total,speed, counter.value()),flush=True,end='\r')
+            inf.count = 0
             ind +=1
     except KeyboardInterrupt:
         print('\n[EXIT] Interrupted by the user.')

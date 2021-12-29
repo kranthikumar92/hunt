@@ -62,8 +62,9 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
             speed = int((inf.count/st)*tr.value())
             total = inf.count*ind*tr.value()
             mm = ind*len(inf.mnemonic_lang)*tr.value()
+            counter_ = counter.value()
             if multiprocessing.current_process().name == '0':
-                print('\033[1;33m> Mnemonic: {:d} | Total keys {:d} | Speed {:d} key/s | Found {:d} \033[0m'.format(mm, total,speed, counter.value()),flush=True,end='\r')
+                print(f'\033[1;33m> Mnemonic: {mm} | Total keys {total} | Speed {speed} key/s | Found {counter_} \033[0m',flush=True,end='\r')
             inf.count = 0
             ind +=1
     except KeyboardInterrupt:

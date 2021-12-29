@@ -171,7 +171,7 @@ def bETH(mnemo, seed, counter):
         for nom2 in range(2):#accaunt
             for nom3 in range(2):#in/out
                 for nom in range(20):
-                    patchs = "m/44'/"+p+"'/"+str(nom2)+"'/"+str(nom3)+"/"+str(nom)
+                    patchs = f"m/44'/{p}'/{nom2}'/{nom3}/{nom}"
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
                     addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)

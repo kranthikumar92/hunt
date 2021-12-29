@@ -530,7 +530,7 @@ def pubkey_to_ETH_address(pubkey_bytes):
     res = ice.pubkeyxy_to_ETH_address(xy)
     addr = (ctypes.cast(res, ctypes.c_char_p).value).decode('utf8')
     ice.free_memory(res)
-    return '0x'+addr
+    return addr
 #==============================================================================
 def _pubkey_to_ETH_address_bytes(xy):
     res = (b'\x00') * 20
@@ -549,7 +549,7 @@ def privatekey_to_ETH_address(pvk_int):
     res = ice.privatekey_to_ETH_address(pass_int_value)
     addr = (ctypes.cast(res, ctypes.c_char_p).value).decode('utf8')
     ice.free_memory(res)
-    return '0x'+addr
+    return addr
 #==============================================================================
 def _privatekey_to_ETH_address_bytes(pass_int_value):
     res = (b'\x00') * 20

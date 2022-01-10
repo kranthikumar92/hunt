@@ -49,11 +49,11 @@ Brute Force Bitcoin address не только Биткоин адресов
 #### Установка:
     pip install simplebloomfilter
     pip install bitarray==1.9.2
-    в папке install лежит инсталятор мнемоники
-    pip install mnemonic-0.20-py3-none-any.whl
-        если не хотите устонавливать пакет, то добро пожаловать в репозиторий https://github.com/Noname400/mnemonic-for-hunt
+    Кто пользовался и ранее моей программой нужно сначало удалить pip uninstall mnemonic
+    pip install mnemonic
     pip install colorama
     pip install bip32
+    pip install bitcoinlib
     pip install requests
 
 для установки на windows необходимо установить Microsoft build tools

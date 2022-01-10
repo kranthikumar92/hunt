@@ -28,7 +28,7 @@ def createParser ():
         parser.parse_args().desc, parser.parse_args().bit, parser.parse_args().debug, parser.parse_args().mail, parser.parse_args().sleep, parser.parse_args().balance, \
         parser.parse_args().customdir, parser.parse_args().customword, parser.parse_args().customlang
 
-def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwords, clang, counter, tr):
+def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwords, clang, count_nem, count, counter, tr, brain):
     inf.bip = bip
     inf.db_bf = db_bf
     inf.mode = mode
@@ -42,7 +42,12 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
     inf.custom_dir = cdir
     inf.custom_words = cwords
     inf.custom_lang = clang
+    total = 0
+    t = 0
+    tt = 0
     ind:int = 1
+    if inf.bip == 'BTC' or inf.bip == '32' or inf.bip == '44': mnemonic_lang = inf.mnemonic_BTC
+    else: mnemonic_lang = inf.mnemonic_ETH
     if inf.mode == 'r2': inf.r2_list = inf.load_r2()
     if inf.mode == 'game': inf.game_list = inf.load_game()
     if inf.mode == 'custom': inf.custom_list = inf.load_custom(inf.custom_dir)
@@ -50,29 +55,41 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, cdir, cwor
     try:
         while True:
             start_time = time.time()
-            for mem in inf.mnemonic_lang:
+            for mem in mnemonic_lang:
+                count_nem.increment()
                 mnemonic, seed_bytes = nnmnem(mem)
-                if inf.bip == "32" : b32(mnemonic,seed_bytes,counter)
-                if inf.bip == "44" : b44(mnemonic,seed_bytes,counter)
-                if inf.bip == "ETH": bETH(mnemonic,seed_bytes,counter)
+                bw(mnemonic,brain,counter)
+                bw(seed_bytes.hex(),brain,counter)
+                bw(reverse_string(mnemonic),brain,counter)
+                bw(reverse_string(seed_bytes.hex()),brain,counter)
+                if inf.bip == "32" : b32(mnemonic,seed_bytes,counter,count)
+                if inf.bip == "44" : b44(mnemonic,seed_bytes,counter,count)
+                if inf.bip == "ETH": bETH(mnemonic,seed_bytes,counter,count)
                 if inf.bip == "BTC": 
-                    bBTC(mnemonic,seed_bytes,counter)
-                    b32(mnemonic,seed_bytes,counter)
+                    bBTC(mnemonic,seed_bytes,counter,count)
+                    b32(mnemonic,seed_bytes,counter,count)
             st = time.time() - start_time
-            speed = int((inf.count/st)*tr.value())
-            total = inf.count*ind*tr.value()
-            mm = ind*len(inf.mnemonic_lang)*tr.value()
+            t = total
+            total = count.value()
+            tt = total - t
+            speed = int((tt/st))
+            mm = count_nem.value()
             counter_ = counter.value()
+            brain_ = brain.value()
+            
             if multiprocessing.current_process().name == '0':
-                print(f'\033[1;33m> Mnemonic: {mm} | Total keys {total} | Speed {speed} key/s | Found {counter_} \033[0m',flush=True,end='\r')
+                print(f'\033[1;33m> Mnemonic: {mm} | Total keys NEM: {total} | Total keys BRAIN: {brain_} | Speed {speed} key/s | Found {counter_} \033[0m',end='\r')
             inf.count = 0
             ind +=1
     except KeyboardInterrupt:
         print('\n[EXIT] Interrupted by the user.')
+        logging.info('[EXIT] Interrupted by the user.')
         sys.exit()
 
 if __name__ == "__main__":
     inf.bip, inf.db_bf, inf.th, inf.mode, email.desc, inf.bit, inf.debug, inf.mail, inf.sleep, inf.balance, inf.custom_dir, inf.custom_words, inf.custom_lang  = createParser()
+    logging.basicConfig(filename='general.log', level=logging.DEBUG, format='[%(asctime)s] - [%(name)s] - [%(levelname)s] - [%(message)s]')
+    logging.info(f'Start HUNT version {inf.version}')
     print('-'*70,end='\n')
     print(Fore.GREEN+Style.BRIGHT+'Thank you very much: @iceland2k14 for his libraries!\033[0m')
 
@@ -80,6 +97,7 @@ if __name__ == "__main__":
         print('\033[32m[I] TEST: OK! \033[0m')
     else:
         print('\033[32m[E] TEST: ERROR \033[0m')
+        sys.exit()
 
     if inf.bip in ('32', '44', 'ETH', 'BTC'):
         pass
@@ -87,7 +105,7 @@ if __name__ == "__main__":
         print('\033[1;31m[E] Wrong BIP selected \033[0m')
         sys.exit()
 
-    if inf.bit in (32, 64, 96, 128, 160, 192, 224, 256):
+    if inf.bit in (128, 160, 192, 224, 256):
         pass          
     else:
         print('\033[1;31m[E] Wrong words selected \033[0m')
@@ -129,7 +147,9 @@ if __name__ == "__main__":
     if inf.custom_dir != '': print(f'[I] Сustom dictionary: {inf.custom_dir}')
     if inf.custom_dir != '': print(f'[I] Сustom words: {inf.custom_words}')
     if inf.custom_dir != '': print(f'[I] Languages at work: {inf.custom_lang}')
-    if inf.mode == 's': print(f'[I] Languages at work: {inf.mnemonic_lang}')
+    if inf.mode == 's' and inf.bip == 'ETH': print(f'[I] Languages at work: {inf.mnemonic_ETH}')
+    else: print(f'[I] Languages at work: {inf.mnemonic_BTC}')
+    
     print(f'[I] Work BIT: {inf.bit}')
     print(f'[I] Description client: {email.desc}')
     print(f'[I] Smooth start {inf.sleep} sec')
@@ -141,17 +161,22 @@ if __name__ == "__main__":
     print('-'*70,end='\n')
     counter = Counter(0)
     tr = Counter(0)
+    brain = Counter(0)
+    count = Counter(0)
+    count_nem = Counter(0)
 
     try:
         procs = [Process(target=run, name= str(i), args=(inf.bip, inf.db_bf, inf.mode, email.desc, inf.bit, inf.debug, inf.mail, inf.th, 
-                                                         inf.sleep, inf.balance, inf.custom_dir, inf.custom_words, inf.custom_lang, counter, tr,)) for i in range(inf.th)]
+                                                         inf.sleep, inf.balance, inf.custom_dir, inf.custom_words, inf.custom_lang, count_nem, count, counter, tr, brain)) for i in range(inf.th)]
     except KeyboardInterrupt:
         print('\n[EXIT] Interrupted by the user.')
+        logging.info('[EXIT] Interrupted by the user.')
         sys.exit()
     try:
         for p in procs: p.start()
         for p in procs: p.join()
     except KeyboardInterrupt:
         print('\n[EXIT] Interrupted by the user.')
+        logging.info('[EXIT] Interrupted by the user.')
         sys.exit()
     

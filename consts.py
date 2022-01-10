@@ -7,11 +7,11 @@
 
 from bloomfilter import BloomFilter
 import platform, os, sys, ctypes, random, time, argparse, multiprocessing
-import smtplib, datetime, socket, hashlib, secrets
+import smtplib, datetime, socket, bitcoin, secrets
 from mnemonic import Mnemonic
 from multiprocessing import  Value, Lock, Process
 from bip32 import BIP32
-import requests
+import requests, logging, bitcoin
 from colorama import Fore, Back, Style, init
 import secp256k1_lib
 init()
@@ -24,6 +24,12 @@ class Counter(object):
     def increment(self):
         with self.lock:
             self.val.value += 1
+    def increment4(self):
+        with self.lock:
+            self.val.value += 4
+    def increment2(self):
+        with self.lock:
+            self.val.value += 2
     def value(self):
         with self.lock:
             return self.val.value
@@ -31,9 +37,9 @@ class Counter(object):
 class email:
     host:str = "smtp.timeweb.ru" # SMTP server
     port:int = 25
-    password:str = 'you password HERE'
+    password:str = '12qwerty34'
     subject:str = '--- Find Mnemonic ---'
-    to_addr:str = 'hunt@quadrotech.ru'
+    to_addr:str = 'Ваш адрес'
     from_addr:str = 'hunt@quadrotech.ru'
     desc:str = ''
 
@@ -53,8 +59,9 @@ class inf:
         l = [line.strip() for line in f]
         f.close()
         return l
-    version:str = '* Pulsar v4.8.5 multiT Hash160 *'
-    mnemonic_lang:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
+    version:str = '* Pulsar v4.10.2 multiT Hash160 *'
+    mnemonic_BTC:list = ['english', 'japanese', 'chinese_simplified', 'chinese_traditional', 'spanish'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
+    mnemonic_ETH:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     balance:bool = False
     bal_err:int = 0
     bip:str = '32'
@@ -64,6 +71,7 @@ class inf:
     bal_srv_count:int = 0
     bal_all_err = 0
     count:int = 1
+    count_nem = 0
     th:int = 1 #number of processes
     th_run:int = 0
     db_bf:str = ''
@@ -86,5 +94,5 @@ class inf:
     lbtc:list = ['44','49']
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]
-    l44:list = ['0'] # ["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]
-    leth:list = ['60'] #['60','61']
+    l44:list = ['0','145','236'] # ["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]
+    leth:list = ['60','61'] #['60','61']

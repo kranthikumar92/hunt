@@ -1,16 +1,19 @@
-#!/usr/bin/python
+# #!/usr/bin/python3
+# encoding=utf8
 # -*- coding: utf-8 -*-
 """
 @author: Noname400
 """
-
+from bitcoinlib.encoding import addr_base58_to_pubkeyhash,addr_bech32_to_pubkeyhash
 import sys
-import base58
-import codecs
 
 def convert(file_in,file_out):
     print("[I] File input -> " + file_in)
     print("[I] File output -> " + file_out)
+    bech = False
+    bech_ = 0
+    base = False
+    base_ = 0
     i = 0
     line_10 = 100000
     ii = 0
@@ -18,26 +21,46 @@ def convert(file_in,file_out):
     f = open(file_in,'r')
     fw = open(file_out,'a')
     while True:
-        adr58 = f.readline().strip()
-        if not adr58:
+        addr = f.readline().strip()
+        if addr[:2] == '0x' : 
+            print('адреса ETH не требуют обработки, их надо сразу подавать в БлюмФильтр \n \
+                                    но они должны быть без 0x')
+            f.close()
+            fw.close()
+            sys.exit()
+        if not addr:
             print('[F] Finish!')
             f.close()
             fw.close()
             sys.exit()
-        count += 1
 
+        count += 1
         if count == line_10:
-            print("> skip: {} | pass line: {} | total: {}".format(ii,i,count),end='\r')
-            line_10 +=10000
+            print(f"> skip: {ii} | pass line:{i} (bech32:{bech_} base58:{base_}) | total: {count}",end='\r')
+            line_10 +=100000
 
         try:
-            adr160 = base58.b58decode_check(adr58).hex()[2:]
+            if len(addr) <= 34:
+                base = True
+                res = addr_base58_to_pubkeyhash(addr, as_hex=True)
+                #print(res)
+                
+            if len(addr) > 40:
+                bech = True
+                res = addr_bech32_to_pubkeyhash(addr, as_hex=True)
+                #print(res)
         except:
+            print('ошибка в строке:',count)
             ii +=1
         else:
-            fw.write(adr160+'\n')
+            fw.write(res+'\n')
+            if base: 
+                base_ +=1
+                base = False
+            if bech: 
+                bech_ +=1
+                bech = False
             i += 1
-
 
 
 if __name__ == "__main__":

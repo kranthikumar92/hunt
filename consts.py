@@ -19,7 +19,7 @@ init()
 
 class Counter(object):
     def __init__(self, initval=0):
-        self.val = Value(ctypes.c_int, initval)
+        self.val = Value(ctypes.c_uint64, initval)
         self.lock = Lock()
     def increment(self):
         with self.lock:
@@ -91,7 +91,7 @@ class inf:
     r2_list:list = []
     game_list:list = []
     custom_list:list = []
-    lbtc:list = ['44','49']
+    lbtc:list = ['44','49','84']
     l32:list = ["m/0'/","m/44'/0'/"]
     l32_:list = ["","'"]
     l44:list = ['0','145','236'] # ["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]

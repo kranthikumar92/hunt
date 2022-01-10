@@ -24,6 +24,7 @@ def bw(text, brain, counter):
     bip44_h160_uc2 = secp256k1_lib.privatekey_to_h160(0, False, pvk_int2)
     if bip44_h160_c1 in inf.bf or bip44_h160_uc1 in inf.bf or bip44_h160_c2 in inf.bf or bip44_h160_uc2 in inf.bf:
         print(f'found: {text} {hex(pvk_int1)} {hex(pvk_int2)} {bip44_h160_c1} {bip44_h160_uc1} {bip44_h160_c2} {bip44_h160_uc2}')
+        logging.info(f'found: {text} {hex(pvk_int1)} {hex(pvk_int2)} {bip44_h160_c1} {bip44_h160_uc1} {bip44_h160_c2} {bip44_h160_uc2}')
         counter.increment()
     brain.increment4()
 
@@ -305,6 +306,7 @@ def bBTC(mnemo, seed, counter, count):
     w = BIP32.from_seed(seed)
     for bip_ in inf.lbtc:
         if bip_ == '49': pur = 1
+        if bip_ == '84': pur = 2
         else: pur = 0
         for nom2 in range(1):
             for nom3 in range(2):
@@ -318,7 +320,7 @@ def bBTC(mnemo, seed, counter, count):
                         addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                         addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
                         addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
-                        addr_cbc = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
+                        addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
                         print(f'\n[I] DEBUG path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr 1:{addr_c} | addr 2:{addr_uc} | addr 3:{addr_cs} | addr 4:{addr_cbc}')
                         print(bip_,bip44_h160_c.hex(),bip44_h160_uc.hex())
                     if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
@@ -328,7 +330,7 @@ def bBTC(mnemo, seed, counter, count):
                             addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
                             addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_c)
-                            addr_cbc = secp256k1_lib.hash_to_address(1, False, bip44_h160_uc)
+                            addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
                             print(f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc} | BTC mode')
                             save_rezult('found.txt',f'{patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc} | BTC mode')
                             if inf.balance:

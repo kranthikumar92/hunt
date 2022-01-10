@@ -19,7 +19,7 @@ def convert(file_in,file_out):
     ii = 0
     count = 0
     f = open(file_in,'r')
-    fw = open(file_out,'a')
+    fw = open(file_out,'w')
     while True:
         addr = f.readline().strip()
         if addr[:2] == '0x' : 
@@ -53,11 +53,12 @@ def convert(file_in,file_out):
             print('ошибка в строке:',count)
             ii +=1
         else:
-            fw.write(res+'\n')
             if base: 
+                fw.write(res+'\n')
                 base_ +=1
                 base = False
             if bech: 
+                fw.write(res+'\n')
                 bech_ +=1
                 bech = False
             i += 1

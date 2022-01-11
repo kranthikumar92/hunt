@@ -49,12 +49,14 @@ Brute Force Bitcoin address не только Биткоин адресов
 #### Установка:
     pip install simplebloomfilter
     pip install bitarray==1.9.2
-    Кто пользовался и ранее моей программой нужно сначало удалить pip uninstall mnemonic
+    Кто пользовался и ранее моей программой нужно сначало удалить:
+        pip uninstall mnemonic
     pip install mnemonic
     pip install colorama
     pip install bip32
     pip install bitcoinlib
     pip install requests
+    pip install bitcoin
 
 для установки на windows необходимо установить Microsoft build tools
 
@@ -73,8 +75,8 @@ Brute Force Bitcoin address не только Биткоин адресов
       out file - файл блюм фильтра  
   
 #### Работа со списком слов   
-    Сейчас реализовано работа со словами (3, 6, 9, 12, 15, 18, 21, 24) 
-    в битах количество слов 32, 64, 96, 128, 160, 192, 224, 256 (-bit)
+    Сейчас реализовано работа со словами (12, 15, 18, 21, 24) 
+    в битах количество слов 128, 160, 192, 224, 256 (-bit)
     например надо искать по 12 словам (-bit 128)
   
 #### Ключи использования  (Проверьте свои БАТНИКИ, аргументы для запуска изменились)
@@ -152,5 +154,5 @@ https://drive.google.com/drive/folders/1E2rC7GSc59lAIJi_gD0O-tgGiXwcS7Wl?usp=sha
 ![WORK](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/primer3.jpg)
 
 #### Благодарность за мою работу:  
-Bitcoin: bc1qnnamfvhrms5sldh83tsesmud8erqm95qttuvw5  
+Bitcoin: 1HUNT1nkV8My4iuMSU84uSjVxvTpvybUDD  
 Ethereum: 0xAda9515891532dbA75145c27569e7D5704DBe87f  

@@ -12,10 +12,8 @@ def reverse_string(s):
     return s[::-1]
 
 def bw(text, brain, counter):
-    #text = bytes(text, 'utf-8')
     s256 = bitcoin.sha256(text)
     sd256 = bitcoin.dbl_sha256(text)
-    #print(s256,sd256)
     pvk_int1 = int(s256,16)
     pvk_int2 = int(sd256,16)
     bip44_h160_c1 = secp256k1_lib.privatekey_to_h160(0, True, pvk_int1)

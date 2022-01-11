@@ -10,13 +10,11 @@ import sys
 def convert(file_in,file_out):
     print("[I] File input -> " + file_in)
     print("[I] File output -> " + file_out)
-    bech = False
     bech_ = 0
-    base = False
     base_ = 0
     i = 0
     line_10 = 100000
-    ii = 0
+    ii = 1
     count = 0
     f = open(file_in,'r')
     fw = open(file_out,'w')
@@ -39,29 +37,27 @@ def convert(file_in,file_out):
             print(f"> skip: {ii} | pass line:{i} (bech32:{bech_} base58:{base_}) | total: {count}",end='\r')
             line_10 +=100000
 
-        try:
-            if len(addr) <= 34:
-                base = True
+
+        if len(addr) <= 34:
+            try:
                 res = addr_base58_to_pubkeyhash(addr, as_hex=True)
-                #print(res)
-                
-            if len(addr) > 40:
-                bech = True
-                res = addr_bech32_to_pubkeyhash(addr, as_hex=True)
-                #print(res)
-        except:
-            print('ошибка в строке:',count)
-            ii +=1
-        else:
-            if base: 
+            except:
+                ii +=1
+                #print('ошибка в строке:',count)
+            else:
                 fw.write(res+'\n')
                 base_ +=1
-                base = False
-            if bech: 
+                i += 1
+        else:
+            try:
+                res = addr_bech32_to_pubkeyhash(addr, as_hex=True)
+            except:
+                ii +=1
+                #print('ошибка в строке:',count)
+            else:
                 fw.write(res+'\n')
                 bech_ +=1
-                bech = False
-            i += 1
+                i += 1
 
 
 if __name__ == "__main__":

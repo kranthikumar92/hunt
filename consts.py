@@ -59,8 +59,8 @@ class inf:
         l = [line.strip() for line in f]
         f.close()
         return l
-    version:str = '* Pulsar v4.10.2 multiT Hash160 *'
-    mnemonic_BTC:list = ['english', 'japanese', 'chinese_simplified', 'chinese_traditional', 'spanish'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
+    version:str = '* Pulsar v4.10.3 multiT Hash160 *'
+    mnemonic_BTC:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_ETH:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     balance:bool = False
     bal_err:int = 0

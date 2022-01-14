@@ -52,9 +52,6 @@ class Counter(object):
     def increment4(self):
         with self.lock:
             self.val.value += 4
-    def increment12(self):
-        with self.lock:
-            self.val.value += 12
     def increment2(self):
         with self.lock:
             self.val.value += 2

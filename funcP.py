@@ -35,7 +35,7 @@ def bw(text, brain, counter):
                 print(f'[F][Brain] {res} | {text}')
                 logger_info.info(f'[F][Brain] {res} | {text}')
                 counter.increment()
-            brain.increment12()
+            brain.increment()
 
 def get_balance(address):
     time.sleep(11) 

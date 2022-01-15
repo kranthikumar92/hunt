@@ -8,14 +8,14 @@ import logging
 from logging import Formatter
 from bloomfilter import BloomFilter
 import platform, os, sys, ctypes, random, time, argparse, multiprocessing
-import smtplib, datetime, socket, bitcoin, secrets
+import smtplib, datetime, socket, bitcoin, secrets, hashlib
 from mnemonic import Mnemonic
 from multiprocessing import  Value, Lock, Process, freeze_support, Queue
 from bip32 import BIP32
 import requests, string
 from random import randint
 from colorama import Fore, Back, Style, init
-import secp256k1_lib
+import secp256k1_lib, bitcoin
 init()
 
 current_path = os.path.dirname(os.path.realpath(__file__))

@@ -14,28 +14,27 @@ def reverse_string(s):
 def bw(text, brain, counter):
     f1 = []
     f2 = []
-    f3 = []
     no_bs = text.replace(' ', '')
     text_rev = reverse_string(text)
-    f1.append(secp256k1_lib.get_sha256(text))
-    f1.append(secp256k1_lib.get_sha256(secp256k1_lib.get_sha256(text)))
-    f1.append(secp256k1_lib.get_sha256(text_rev))
-    f1.append(secp256k1_lib.get_sha256(secp256k1_lib.get_sha256(text_rev)))
-    f1.append(secp256k1_lib.get_sha256(no_bs))
-    f1.append(secp256k1_lib.get_sha256(secp256k1_lib.get_sha256(no_bs)))
+    f1.append(bitcoin.sha256(text))
+    f1.append(bitcoin.sha256(no_bs))
+    f1.append(bitcoin.sha256(text_rev))
+    f1.append(bitcoin.dbl_sha256(text))
+    f1.append(bitcoin.dbl_sha256(no_bs))
+    f1.append(bitcoin.dbl_sha256(text_rev))
     for res in f1:
-        f2.append(secp256k1_lib.privatekey_to_h160(0, True, int.from_bytes(res, "big")).hex())
-        f2.append(secp256k1_lib.privatekey_to_h160(0, False, int.from_bytes(res, "big")).hex())
+        f2.append(secp256k1_lib.privatekey_to_h160(0, True, int(res,16)).hex())
+        f2.append(secp256k1_lib.privatekey_to_h160(0, False, int(res,16)).hex())
     for res in f2:
         if inf.debug:
             print(f'[D][BRAIN] {res} {text}')
             logger_info.info(f'[D][BRAIN] {res} {text}')
-        for res in f2:
-            if res in inf.bf:
-                print(f'[F][Brain] {res} | {text}')
-                logger_info.info(f'[F][Brain] {res} | {text}')
-                counter.increment()
-            brain.increment()
+
+        if res in inf.bf:
+            print(f'[F][Brain] {res} | {text}')
+            logger_info.info(f'[F][Brain] {res} | {text}')
+            counter.increment()
+        brain.increment()
 
 def get_balance(address):
     time.sleep(11) 

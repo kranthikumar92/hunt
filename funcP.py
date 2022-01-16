@@ -11,29 +11,61 @@ from consts import *
 def reverse_string(s):
     return s[::-1]
 
-def bw(text, brain, counter):
+def bw(text,backspace, brain, counter):
     f1 = []
     f2 = []
-    no_bs = text.replace(' ', '')
+    co = 0
+    if backspace: no_bs = text.replace(' ', '')
     text_rev = reverse_string(text)
     f1.append(bitcoin.sha256(text))
-    f1.append(bitcoin.sha256(no_bs))
+    if backspace: f1.append(bitcoin.sha256(no_bs))
     f1.append(bitcoin.sha256(text_rev))
     f1.append(bitcoin.dbl_sha256(text))
-    f1.append(bitcoin.dbl_sha256(no_bs))
+    if backspace: f1.append(bitcoin.dbl_sha256(no_bs))
     f1.append(bitcoin.dbl_sha256(text_rev))
     for res in f1:
-        f2.append(secp256k1_lib.privatekey_to_h160(0, True, int(res,16)).hex())
-        f2.append(secp256k1_lib.privatekey_to_h160(0, False, int(res,16)).hex())
+        f2.append(secp256k1_lib.privatekey_to_h160(0, True, int(res,16)))
+        f2.append(secp256k1_lib.privatekey_to_h160(0, False, int(res,16)))
     for res in f2:
-        if inf.debug:
-            print(f'[D][BRAIN] {res} {text}')
-            logger_info.info(f'[D][BRAIN] {res} {text}')
-
+        if inf.debug > 0:
+            addr_c = secp256k1_lib.hash_to_address(0, False, res)
+            addr_cs = secp256k1_lib.hash_to_address(1, False, res)
+            addr_cbc = secp256k1_lib.hash_to_address(2, False, res)
+            print(f'[D][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+            logger_info.info(f'[D][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
         if res in inf.bf:
-            print(f'[F][Brain] {res} | {text}')
-            logger_info.info(f'[F][Brain] {res} | {text}')
-            counter.increment()
+            addr_c = secp256k1_lib.hash_to_address(0, False, res)
+            addr_cs = secp256k1_lib.hash_to_address(1, False, res)
+            addr_cbc = secp256k1_lib.hash_to_address(2, False, res)
+            if inf.debug > 0:
+                print(f'[D][F][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                logger_dbg.debug(f'[D][F][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+            if inf.debug < 1:
+                if inf.balance:
+                    tx1, b1 = get_balance(addr_c)
+                    tx3, b3 = get_balance(addr_cs)
+                    tx4, b4 = get_balance(addr_cbc)
+                    if (tx1 > 0) or (tx3 > 0) or (tx4 > 0):
+                        print(f'\n[F][BRAIN] Found transaction! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c}:{b1} | {addr_cs}:{b3} | {addr_cbc}:{b4} | {text}')
+                        logger_found.info(f'[F][BRAIN] Found transaction! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c}:{b1} | {addr_cs}:{b3} | {addr_cbc}:{b4} | {text}')
+                    if (b1 > 0) or (b3 > 0) or (b4 > 0):
+                        print(f'\n[F][BRAIN] Found address in balance! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                        logger_found.info(f'[F][BRAIN] Found address in balance! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                        if inf.mail:
+                            send_email(f'[F][BRAIN PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')    
+                        counter.increment()
+                    else:
+                        print(f'\n[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                        logger_found.info(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                        if inf.mail:
+                            send_email(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                else:
+                    print(f'\n[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                    logger_found.info(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                    if inf.mail:
+                        send_email(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                    counter.increment()
+        co += 1
         brain.increment()
 
 def get_balance(address):
@@ -208,7 +240,7 @@ def bETH(mnemo, seed, counter, count):
     for p in inf.leth:
         for nom2 in range(1):#accaunt
             for nom3 in range(2):#in/out
-                for nom in range(50):
+                for nom in range(20):
                     patchs = f"m/44'/{p}'/{nom2}'/{nom3}/{nom}"
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
@@ -408,7 +440,9 @@ def nnmnem(mem):
         print(f'Debug SEED : {seed_bytes.hex()}')
         logger_dbg.debug(f'[D] Debug Mnemonic : {mnemonic}')
         logger_dbg.debug(f'[D] Debug SEED : {seed_bytes.hex()}')
-    return mnemonic, seed_bytes
+        
+    if inf.mode == 'e' : return mnemonic, seed_bytes , ran
+    else: return mnemonic, seed_bytes
 
 def test():
     print('-'*70,end='\n')

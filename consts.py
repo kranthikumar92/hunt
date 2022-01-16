@@ -91,7 +91,7 @@ class inf:
             return None
         else:
             return l
-    version:str = '* Pulsar v4.10.8 multiT Hash160 *'
+    version:str = '* Pulsar v4.10.10 multiT Hash160 *'
     mnemonic_BTC:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_ETH:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     balance:bool = False
@@ -126,6 +126,6 @@ class inf:
     custom_list:list = []
     lbtc:list = ['44','49','84']
     l32:list = ["m/0'/","m/44'/0'/"]
-    l32_:list = ["","'"]
+    l32_:list = ["","'"]#"","'"
     l44:list = ['0','145','236'] # ["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]
     leth:list = ['60','61'] #['60','61']

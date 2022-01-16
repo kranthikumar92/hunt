@@ -59,10 +59,12 @@ def run(bip, db_bf, mode, desc, bit, debug, mail, th, sleep, balance, mbrain, cd
             start_time = time.time()
             for mem in mnemonic_lang:
                 count_nem.increment()
-                mnemonic, seed_bytes = nnmnem(mem)
+                if inf.mode == 'e' : mnemonic, seed_bytes, rnd = nnmnem(mem)
+                else: mnemonic, seed_bytes = nnmnem(mem)
                 if inf.brain:
-                    bw(mnemonic,brain,counter)
-                    bw(seed_bytes.hex(),brain,counter)
+                    bw(mnemonic, False, brain, counter)
+                    bw(seed_bytes.hex(), True, brain, counter)
+                    if inf.mode == 'e' : bw(rnd, True, brain, counter)
                 if inf.bip == "32" : b32(mnemonic,seed_bytes,counter,count)
                 if inf.bip == "44" : b44(mnemonic,seed_bytes,counter,count)
                 if inf.bip == "ETH": bETH(mnemonic,seed_bytes,counter,count)

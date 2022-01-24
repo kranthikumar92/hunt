@@ -1,3 +1,2 @@
-python -B PulsarMTv4.py -b ETH -db BF\eth.bf -th 3 -des test -m e -sl 5 -brain
-pause
+python -B PulsarMTv5.py -b ETH -dbeth BF\eth.bf -th 3 -des test -m e -sl 5 -brain -em -telegram
 pause

@@ -1,20 +1,57 @@
-# #!/usr/bin/python3
-# encoding=utf8
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 @author: Noname400
 """
 
+from time import sleep
 from consts import *
 
+def send_telegram(text: str):
+    try:
+        requests.get('https://api.telegram.org/bot{}/sendMessage'.format(telegram.token), params=dict(
+        chat_id=telegram.channel_id,
+        text=text))
+        sleep(20)
+    except:
+        print(f'{red}[E] Error send telegram.')
+        logger_err.error(f'[E] Error send telegram.')
+        if inf.telegram_err > 3 : 
+            inf.telegram == False
+            return
+        else: 
+            inf.telegram_err += 1
+            sleep(10)
+            return send_telegram(text)
 
+def convert_int(cou:int):
+    if cou < 1000:
+        res = cou
+        return res,'hash'
+    if cou >= 1000 and cou < 1000000:
+        res = cou/1000
+        return res, 'Khash'
+    if cou >= 1000000 and cou < 1000000000:
+        res = cou/1000000
+        return res, 'Mhash'
+    if cou >= 1000000000 and cou < 1000000000000:
+        res = cou/1000000000
+        return res, 'Ghash'
+    if cou >= 1000000000000 and cou < 1000000000000000:
+        res = cou/1000000000000
+        return res, 'Thash'
+    if cou >= 1000000000000000 and cou < 1000000000000000000:
+        res = cou/1000000000000000
+        return res, 'Phash'
+    
 def reverse_string(s):
     return s[::-1]
 
-def bw(text,backspace, brain, counter):
+def bw(text, backspace, fc):
     f1 = []
     f2 = []
     co = 0
+    co_count = 0
     if backspace: no_bs = text.replace(' ', '')
     text_rev = reverse_string(text)
     f1.append(bitcoin.sha256(text))
@@ -29,48 +66,52 @@ def bw(text,backspace, brain, counter):
     for res in f2:
         if inf.debug > 0:
             addr_c = secp256k1_lib.hash_to_address(0, False, res)
-            addr_cs = secp256k1_lib.hash_to_address(1, False, res)
             addr_cbc = secp256k1_lib.hash_to_address(2, False, res)
-            print(f'[D][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-            logger_info.info(f'[D][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-        if res in inf.bf:
+            print(f'[D][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+            logger_dbg.debug(f'[D][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+        if res in inf.bf_btc:
             addr_c = secp256k1_lib.hash_to_address(0, False, res)
-            addr_cs = secp256k1_lib.hash_to_address(1, False, res)
             addr_cbc = secp256k1_lib.hash_to_address(2, False, res)
             if inf.debug > 0:
-                print(f'[D][F][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-                logger_dbg.debug(f'[D][F][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                print(f'[D][F][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                logger_dbg.debug(f'[D][F][BRAIN] PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
             if inf.debug < 1:
                 if inf.balance:
-                    tx1, b1 = get_balance(addr_c)
-                    tx3, b3 = get_balance(addr_cs)
-                    tx4, b4 = get_balance(addr_cbc)
-                    if (tx1 > 0) or (tx3 > 0) or (tx4 > 0):
-                        print(f'\n[F][BRAIN] Found transaction! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c}:{b1} | {addr_cs}:{b3} | {addr_cbc}:{b4} | {text}')
-                        logger_found.info(f'[F][BRAIN] Found transaction! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c}:{b1} | {addr_cs}:{b3} | {addr_cbc}:{b4} | {text}')
-                    if (b1 > 0) or (b3 > 0) or (b4 > 0):
-                        print(f'\n[F][BRAIN] Found address in balance! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-                        logger_found.info(f'[F][BRAIN] Found address in balance! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                    tx1, b1 = get_balance(addr_c,'BTC')
+                    tx4, b4 = get_balance(addr_cbc,'BTC')
+                    if (tx1 > 0) or (tx4 > 0):
+                        print(f'\n[F][BRAIN] Found transaction! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c}:{b1} | {addr_cbc}:{b4} | {text}')
+                        logger_found.info(f'[F][BRAIN] Found transaction! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c}:{b1} | {addr_cbc}:{b4} | {text}')
+                    if (b1 > 0) or (b4 > 0):
+                        print(f'\n[F][BRAIN] Found address in balance! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                        logger_found.info(f'[F][BRAIN] Found address in balance! PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
                         if inf.mail:
-                            send_email(f'[F][BRAIN PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')    
-                        counter.increment()
+                            send_email(f'[F][BRAIN PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                        if inf.telegram:
+                            send_telegram(f'[F][BRAIN PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')  
+                        fc.increment(1)
                     else:
-                        print(f'\n[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-                        logger_found.info(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                        print(f'\n[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                        logger_found.info(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
                         if inf.mail:
-                            send_email(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                            send_email(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                        if inf.telegram:
+                            send_telegram(f'[F][BRAIN] Found address balance 0.0 PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
                 else:
-                    print(f'\n[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-                    logger_found.info(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
+                    print(f'\n[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                    logger_found.info(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
                     if inf.mail:
-                        send_email(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cs} | {addr_cbc} | {text}')
-                    counter.increment()
+                        send_email(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                    if inf.telegram:
+                        send_telegram(f'[F][BRAIN] Found address PVK:{f1[co//2]} | HASH160:{res.hex()} | {addr_c} | {addr_cbc} | {text}')
+                    fc.increment(1)
         co += 1
-        brain.increment()
+        co_count += 2
+    return co_count
 
-def get_balance(address):
+def get_balance(address,cyr):
     time.sleep(11) 
-    if inf.bip == 'ETH':
+    if cyr == 'ETH':
         try:
             response = requests.get(inf.ETH_bal_server[1] + '0x' + address)
             return int(response.json()['result'])
@@ -107,18 +148,17 @@ def get_balance(address):
                 inf.balance = False
             return -1
 
-def load_BF(load, tr):
+def load_BF(load):
     try:
         fp = open(load, 'rb')
     except FileNotFoundError:
-        print(f'\033[1;31m\n[E] File: {load} not found. \033[0m')
+        print(f'{red}[E] File: {load} not found.')
         logger_err.error(f'[E] File: {load} not found.')
         sys.exit()
     else:
         n_int = int(multiprocessing.current_process().name)
-        time.sleep(inf.sleep*n_int)
-        inf.bf = BloomFilter.load(fp)
-        tr.increment()
+        time.sleep(inf.delay*n_int)
+        return BloomFilter.load(fp)    
 
 def send_email(text):
     subject = ''
@@ -130,13 +170,13 @@ def send_email(text):
     try:
         server = smtplib.SMTP(email.host,email.port)
     except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
-        print("\033[1;31m \n[E] could not connect to the mail server \033[0m")
+        print(f'{red} \n[E] could not connect to the mail server')
         logger_err.error('[E] could not connect to the mail server')
         inf.mail_err += 1
         if inf.mail_err >= 3:
             inf.mail = False
     except ConnectionRefusedError:
-        print("\033[1;31m \n[E] could not connect to the mail server \033[0m")
+        print(f'{red} \n[E] could not connect to the mail server')
         logger_err.error('[E] could not connect to the mail server')
         inf.mail_err += 1
         if inf.mail_err >= 3:
@@ -145,7 +185,7 @@ def send_email(text):
         try:
             server.login(email.from_addr, email.password)
         except (smtplib.SMTPAuthenticationError) or (OSError,ConnectionRefusedError):
-            print("\033[1;31m \n[E] could not connect to the mail server \033[0m")
+            print(f'{red}\n[E] could not connect to the mail server')
             logger_err.error('[E] could not connect to the mail server')
             inf.mail_err += 1
             if inf.mail_err >= 3:
@@ -154,31 +194,83 @@ def send_email(text):
             try:
                 server.sendmail(email.from_addr, email.to_addr, BODY)
             except UnicodeError:
-                print('\033[1;31m \n[E] Error Encode UTF-8 \033[0m')
+                print(f'{red}\n[E] Error Encode UTF-8')
                 logger_err.error('[E] Error Encode UTF-8')
             else:
                 server.quit()
 
-def save_rezult(name_file,text:str):
-    current_date = datetime.datetime.now()
-    inf.dt_now = current_date.strftime('%m/%d/%y %H:%M:%S')
-    text = inf.dt_now+' | '+ text
-    try:
-        f_rez = open(name_file, 'a', encoding='utf-8')
-    except FileNotFoundError:
-        print(f'\n[E] file {name_file} not found. \033[0m')
-        logger_err.error(f'[E] file {name_file} not found.')
-    else:
-        try:
-            tf:str = text+'\n'
-            f_rez.write(tf)
-        except UnicodeError:
-            print('\033[1;31m\n[E] Error Encode UTF-8 \033[0m')
-            logger_err.error('[E] Error Encode UTF-8')
-        finally:
-            f_rez.close()
+def brnd(fc):
+    group_size = 10000
+    co = 0
+    pvk_int = int(secrets.token_hex(32),16)
+    P = secp256k1_lib.scalar_multiplication(pvk_int)
+    current_pvk = pvk_int + 1
+    Pv = secp256k1_lib.point_sequential_increment(group_size, P)
+    for tmp in range(group_size):
+        #----------------------------------------------------------------    
+        bip32_h160_cs = secp256k1_lib.pubkey_to_h160(1, True, Pv[tmp*65:tmp*65+65])
+        bip32_h160_c = secp256k1_lib.pubkey_to_h160(0, True, Pv[tmp*65:tmp*65+65])
+        bip32_h160_uc = secp256k1_lib.pubkey_to_h160(0, False, Pv[tmp*65:tmp*65+65])
+        if inf.debug > 0:
+            addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
+            addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
+            addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_cs)
+            addr_cbc = secp256k1_lib.hash_to_address(2, False, bip32_h160_c)
+            print(f'[D][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+            print(f'[D][Mode RND] {bip32_h160_uc.hex()} | {bip32_h160_c.hex()} | {bip32_h160_cs.hex()}')
+            logger_dbg.debug(f'[D][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+            logger_dbg.debug(f'[D][Mode RND] {bip32_h160_uc.hex()} | {bip32_h160_c.hex()} | {bip32_h160_cs.hex()}')
+        if (bip32_h160_c.hex() in inf.bf_btc) or (bip32_h160_uc.hex() in inf.bf_btc) or (bip32_h160_cs.hex() in inf.bf_btc):
+            if inf.debug > 0:
+                if inf.telegram:
+                    send_telegram(f'[D][F][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                if inf.mail:
+                    send_email(f'[D][F][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                print(f'[D][F][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                logger_found.info(f'[D][F][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                logger_dbg.debug(f'[D][Mode RND] {bip32_h160_uc.hex()} | {bip32_h160_c.hex()}, {bip32_h160_cs.hex()}')
+            if inf.debug < 1:
+                addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
+                addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
+                addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_cs)
+                addr_cbc = secp256k1_lib.hash_to_address(2, False, bip32_h160_c)
+                if inf.balance:
+                    tx1, b1 = get_balance(addr_c,'BTC')
+                    tx2, b2 = get_balance(addr_uc,'BTC')
+                    tx3, b3 = get_balance(addr_cs,'BTC')
+                    tx4, b4 = get_balance(addr_cbc,'BTC')
+                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
+                        print(f'\n[F][Mode RND] Found transaction! (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                        logger_found.info(f'[F][Mode RND] Found transaction! (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                    if (b1 > 0) or (b2 > 0) or (b3 > 0) or (b4 > 0):
+                        print(f'\n[F][Mode RND] Found address in balance! (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                        logger_found.info(f'[F][Mode RND] Found address in balance! (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                        if inf.telegram:
+                            send_telegram(f'[F][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
+                        if inf.mail:
+                            send_email(f'[F][Mode RND] (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
+                        fc.increment(1)
+                    else:
+                        print(f'\n[F][Mode RND] Found address balance 0.0 (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                        logger_found.info(f'[F][Mode RND] Found address balance 0.0 (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                        if inf.telegram:
+                            send_telegram(f'[F][Mode RND] Found address balance 0.0 (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                        if inf.mail:
+                            send_email(f'[F][Mode RND] Found address balance 0.0 (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                else:
+                    print(f'\n[F][Mode RND] Found address (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                    logger_found.info(f'[F][Mode RND] Found address (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                    if inf.telegram:
+                        send_telegram(f'[F][Mode RND] Found address (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                    if inf.mail:
+                        send_email(f'[F][Mode RND] Found address (PG:{tmp}) | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                    fc.increment(1)
+        co += 3
+    return co
 
-def b32(mnemo, seed, counter, count):
+def b32(seed, fc):
+    co = 0
+    group_size = 100
     bip32 = BIP32.from_seed(seed)
     for path in inf.l32:
         for num1 in range(1):
@@ -188,54 +280,75 @@ def b32(mnemo, seed, counter, count):
                         patchs = f"{path}{num1}{t}/{num2}{t1}"
                         pvk = bip32.get_privkey_from_path(patchs)
                         pvk_int = int(pvk.hex(),16)
-                        bip32_h160_cs = secp256k1_lib.privatekey_to_h160(1, True, pvk_int)
-                        bip32_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
-                        bip32_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
-                        if inf.debug > 0:
-                            addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
-                            addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
-                            addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_cs)
-                            addr_cbc = secp256k1_lib.hash_to_address(2, False, bip32_h160_c)
+                        pvk_int = pvk_int - 1
+                        P = secp256k1_lib.scalar_multiplication(pvk_int)
+                        current_pvk = pvk_int + 1
+                        Pv = secp256k1_lib.point_sequential_increment(group_size, P)
+                        for tmp in range(group_size):
+                        #----------------------------------------------------------------    
+                            bip32_h160_cs = secp256k1_lib.pubkey_to_h160(1, True, Pv[tmp*65:tmp*65+65])
+                            bip32_h160_c = secp256k1_lib.pubkey_to_h160(0, True, Pv[tmp*65:tmp*65+65])
+                            bip32_h160_uc = secp256k1_lib.pubkey_to_h160(0, False, Pv[tmp*65:tmp*65+65])
                             if inf.debug > 0:
-                                print(f'\n[D][Mode 32] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                logger_dbg.debug(f'\n[D][Mode 32] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                        if (bip32_h160_c.hex() in inf.bf) or (bip32_h160_uc.hex() in inf.bf):
-                            if inf.debug > 0:
-                                print(f'[D][F][Mode 32] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                logger_dbg.debug(f'[D][F][Mode 32] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                            if inf.debug < 1:
                                 addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
                                 addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
                                 addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_cs)
                                 addr_cbc = secp256k1_lib.hash_to_address(2, False, bip32_h160_c)
-                                if inf.balance:
-                                    tx1, b1 = get_balance(addr_c)
-                                    tx2, b2 = get_balance(addr_uc)
-                                    tx3, b3 = get_balance(addr_cs)
-                                    tx4, b4 = get_balance(addr_cbc)
-                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
-                                        print(f'\n[F][Mode 32] Found transaction! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_cbc}:{b4}')
-                                        logger_found.info(f'[F][Mode 32] Found transaction! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_cbc}:{b4}')
-                                    if (b1 > 0) or (b2 > 0) or (b3 > 0) or (b4 > 0):
-                                        print(f'\n[F][Mode 32] Found address in balance! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        logger_found.info(f'[F][Mode 32] Found address in balance! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        if inf.mail:
-                                            send_email(f'[F][Mode 32] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
-                                        counter.increment()
-                                    else:
-                                        print(f'\n[F][Mode 32] Found address balance 0.0 {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        logger_found.info(f'[F][Mode 32] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        if inf.mail:
-                                            send_email(f'[F][Mode 32] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                else:
-                                    print(f'\n[F][Mode 32] Found address {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    logger_found.info(f'[F][Mode 32] Found address {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                print(f'[D][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                print(f'[D][Mode 32] {bip32_h160_uc.hex()} | {bip32_h160_c.hex()} | {bip32_h160_cs.hex()}')
+                                logger_dbg.debug(f'[D][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                logger_dbg.debug(f'[D][Mode 32] {bip32_h160_uc.hex()} | {bip32_h160_c.hex()} | {bip32_h160_cs.hex()}')
+                            if (bip32_h160_c.hex() in inf.bf_btc) or (bip32_h160_uc.hex() in inf.bf_btc) or (bip32_h160_cs.hex() in inf.bf_btc):
+                                if inf.debug > 0:
+                                    if inf.telegram:
+                                        send_telegram(f'[D][F][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
                                     if inf.mail:
-                                        send_email(f'[F][Mode 32] Found address {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    counter.increment()
-                        count.increment4()
+                                        send_email(f'[D][F][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    print(f'[D][F][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    logger_found.info(f'[D][F][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    logger_dbg.debug(f'[D][Mode 32] {bip32_h160_uc.hex()} | {bip32_h160_c.hex()}, {bip32_h160_cs.hex()}')
+                                if inf.debug < 1:
+                                    addr_c = secp256k1_lib.hash_to_address(0, False, bip32_h160_c)
+                                    addr_uc = secp256k1_lib.hash_to_address(0, False, bip32_h160_uc)
+                                    addr_cs = secp256k1_lib.hash_to_address(1, False, bip32_h160_cs)
+                                    addr_cbc = secp256k1_lib.hash_to_address(2, False, bip32_h160_c)
+                                    if inf.balance:
+                                        tx1, b1 = get_balance(addr_c,'BTC')
+                                        tx2, b2 = get_balance(addr_uc,'BTC')
+                                        tx3, b3 = get_balance(addr_cs,'BTC')
+                                        tx4, b4 = get_balance(addr_cbc,'BTC')
+                                        if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
+                                            print(f'\n[F][Mode 32] Found transaction! {patchs}(PG:{tmp}) | | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                            logger_found.info(f'[F][Mode 32] Found transaction! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if (b1 > 0) or (b2 > 0) or (b3 > 0) or (b4 > 0):
+                                            print(f'\n[F][Mode 32] Found address in balance! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                            logger_found.info(f'[F][Mode 32] Found address in balance! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                            if inf.telegram:
+                                                send_telegram(f'[F][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
+                                            if inf.mail:
+                                                send_email(f'[F][Mode 32] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
+                                            fc.increment(1)
+                                        else:
+                                            print(f'\n[F][Mode 32] Found address balance 0.0 {patchs}(PG:{tmp}) | | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                            logger_found.info(f'[F][Mode 32] Found address balance 0.0 {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                            if inf.telegram:
+                                                send_telegram(f'[F][Mode 32] Found address balance 0.0 {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                            if inf.mail:
+                                                send_email(f'[F][Mode 32] Found address balance 0.0 {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    else:
+                                        print(f'\n[F][Mode 32] Found address {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        logger_found.info(f'[F][Mode 32] Found address {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if inf.telegram:
+                                            send_telegram(f'[F][Mode 32] Found address {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if inf.mail:
+                                            send_email(f'[F][Mode 32] Found address {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        fc.increment(1)
+                            co += 3
+    return co
 
-def bETH(mnemo, seed, counter, count):
+def bETH(seed, fc):
+    co = 0
+    group_size = 150
     w = BIP32.from_seed(seed)
     for p in inf.leth:
         for nom2 in range(1):#accaunt
@@ -244,36 +357,51 @@ def bETH(mnemo, seed, counter, count):
                     patchs = f"m/44'/{p}'/{nom2}'/{nom3}/{nom}"
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
-                    addr = secp256k1_lib.privatekey_to_ETH_address(pvk_int)
-                    if inf.debug > 0:
-                        print(f"[D][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}")
-                        logger_dbg.debug(f"[D][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}")
-                    if addr in inf.bf:
+                    pvk_int = pvk_int - 1
+                    P = secp256k1_lib.scalar_multiplication(pvk_int)
+                    Pv = secp256k1_lib.point_sequential_increment(group_size, P)
+                    current_pvk = pvk_int + 1
+                    for t in range(group_size):
+                        addr = secp256k1_lib.pubkey_to_ETH_address(Pv[t*65:t*65+65])
                         if inf.debug > 0:
-                            print(f'[D][F][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}')
-                            logger_dbg.debug(f'[D][F][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}')
-                        if inf.debug < 1:
-                            if inf.balance:
-                                b1 = get_balance(addr)
-                                if (b1 > 0):
-                                    logger_found.info(f'[F][Mode ETH] Found address in balance! {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}')
-                                    if inf.mail:
-                                        send_email(f'[F][Mode ETH] Found address in balance! {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}')
-                                    counter.increment()
+                            print(f'[D][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                            logger_dbg.debug(f'[D][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                        if addr in inf.bf_eth:
+                            if inf.debug > 0:
+                                print(f'[D][F][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                logger_found.info(f'[D][F][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                            if inf.debug < 1:
+                                if inf.balance:
+                                    b1 = get_balance(addr,'ETH')
+                                    if (b1 > 0):
+                                        print(f'[F][Mode ETH] Found address in balance! {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        logger_found.info(f'[F][Mode ETH] Found address in balance! {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        if inf.telegram:
+                                            send_telegram(f'[F][Mode ETH] Found address in balance! {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        if inf.mail:
+                                            send_email(f'[F][Mode ETH] Found address in balance! {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        fc.increment(1)
+                                    else:
+                                        print(f'\n[F][Mode ETH] Found address balance 0.0: {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        logger_found.info(f'[F][Mode ETH] Found address balance 0.0 {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        if inf.telegram:
+                                            send_telegram(f'[F][Mode ETH] Found address balance 0.0 {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                        if inf.mail:
+                                            send_email(f'[F][Mode ETH] Found address balance 0.0 {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
                                 else:
-                                    print(f'\n[F][Mode ETH] Found address balance 0.0: {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr}')
-                                    logger_found.info(f'[F][Mode ETH] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | addr: 0x{addr}')
+                                    print(f'\n[F][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                    logger_found.info(f'[F][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                    if inf.telegram:
+                                        send_telegram(f'[F][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
                                     if inf.mail:
-                                        send_email(f'[F][Mode ETH] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | addr: 0x{addr}')
-                            else:
-                                print(f'\n[F][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}')
-                                logger_found.info(f'[F][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()}| {seed.hex()} | addr: 0x{addr}')
-                                if inf.mail:
-                                    send_email(f'[F][Mode ETH] {patchs} | {mnemo} | PVK:{pvk.hex()} | {seed.hex()} | addr: 0x{addr}')
-                                counter.increment()
-                    count.increment()
+                                        send_email(f'[F][Mode ETH] {patchs}(PG:{t}) | PVK:{hex(current_pvk+t)[2:]} | addr:0x{addr}')
+                                    fc.increment(1)
+                        co += 1
+    return co
 
-def b44(mnemo, seed, counter, count):
+def b44(seed, fc):
+    co = 0
+    group_size = 100
     w = BIP32.from_seed(seed)
     for p in inf.l44:
         for nom2 in range(1):#accaunt
@@ -282,68 +410,34 @@ def b44(mnemo, seed, counter, count):
                     patchs = f"m/44'/{p}'/{nom2}'/{nom3}/{nom}"
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
-                    bip44_h160_cs = secp256k1_lib.privatekey_to_h160(1, True, pvk_int)
-                    bip44_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
-                    bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
-                    if inf.debug > 0 :
-                        if p=='0':
-                            addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
-                            addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                            addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_cs)
-                            addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
-                            logger_dbg.debug(f'[D][P:{multiprocessing.current_process().name}] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                            logger_dbg.debug(f'[D] {bip44_h160_c.hex()}, {bip44_h160_uc.hex()}')
-                            print(f'\n[D][P:{multiprocessing.current_process().name}] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                            print(f'[D] {bip44_h160_c.hex()},{bip44_h160_uc.hex()}')
-                        else:
-                            logger_dbg.debug(f'[D][P:{multiprocessing.current_process().name}] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
-                            print(f'\n[D] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
-                    if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
-                        if inf.debug > 0:
-                            if p=='0':
-                                logger_dbg.debug(f'[D][F][P:{multiprocessing.current_process().name}] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | addr 1:{addr_c} | addr 2:{addr_uc} | addr 3:{addr_cs} | addr 4:{addr_cbc}')
-                            else:
-                                logger_dbg.debug(f'[D][F][P:{multiprocessing.current_process().name}] path:{patchs} | mnem:{mnemo} | SEED:{seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}')
-                        if inf.debug < 1:
-                            if p=='0':
-                                addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
-                                addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                                addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_cs)
-                                addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
-                                if inf.balance:
-                                    tx1, b1 = get_balance(addr_c)
-                                    tx2, b2 = get_balance(addr_uc)
-                                    tx3, b3 = get_balance(addr_cs)
-                                    tx4, b4 = get_balance(addr_cbc)
-                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
-                                        print(f'\n[F][Mode 44 BTC] Found transaction! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_cbc}:{b4}')
-                                        logger_found.info(f'\n[F][Mode 44 BTC] Found transaction! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_cbc}:{b4}')
-                                    if (b1 > 0) or (b2 > 0) or (b3 > 0) or (b4 > 0):
-                                        print(f'\n[F][Mode 44 BTC] Found address in balance! {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        logger_found.info(f'[F][Mode 44 BTC] Found address in balance! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        if inf.mail:
-                                            send_email(f'[F][Mode 44 BTC] Found address in balance! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
-                                        counter.increment()
-                                    else:
-                                        print(f'\n[F][Mode 44 BTC] Found address balance 0.0 {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        logger_found.info(f'[F][Mode 44 BTC] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                        if inf.mail:
-                                            send_email(f'[F][Mode 44 BTC] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                else:
-                                    print(f'\n[F][Mode 44 BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    logger_found.info(f'[F][Mode 44 BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    if inf.mail:
-                                        send_email(f'[F][Mode 44 BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    counter.increment()
-                            else:
-                                print(f"[F][Mode 44 not BTC address] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | HASH160 compress:{bip44_h160_c.hex()} | HASH160 uncompress:{bip44_h160_uc.hex()}")
-                                logger_found.info(f'[F][Mode 44 not BTC address] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()}')
+                    pvk_int = pvk_int - 1
+                    P = secp256k1_lib.scalar_multiplication(pvk_int)
+                    current_pvk = pvk_int + 1
+                    Pv = secp256k1_lib.point_sequential_increment(group_size, P)
+                    for tmp in range(group_size):
+                        bip44_h160_cs = secp256k1_lib.pubkey_to_h160(1, True, Pv[tmp*65:tmp*65+65])
+                        bip44_h160_c = secp256k1_lib.pubkey_to_h160(0, True, Pv[tmp*65:tmp*65+65])
+                        bip44_h160_uc = secp256k1_lib.pubkey_to_h160(0, False, Pv[tmp*65:tmp*65+65])  
+                        if inf.debug > 0 :
+                                logger_dbg.debug(f'[D][P:{multiprocessing.current_process().name}] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
+                                print(f'\n[D] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
+                        if (bip44_h160_c.hex() in inf.bf_btc) or (bip44_h160_uc.hex() in inf.bf_btc) or (bip44_h160_cs.hex() in inf.bf_btc):
+                            if inf.debug > 0:
+                                logger_found.info(f'[D][F][P:{multiprocessing.current_process().name}] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
+                            if inf.debug < 1:
+                                print(f'\n[F][Mode 44 BTC] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
+                                logger_found.info(f'[F][Mode 44 BTC] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
+                                if inf.telegram:
+                                    send_telegram(f'[F][Mode 44 BTC] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
                                 if inf.mail:
-                                    send_email(f'[F][Mode 44 not BTC address] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | Hash160 compress:{bip44_h160_c.hex()} | Hash160 uncompress:{bip44_h160_uc.hex()}')
-                                counter.increment()
-                    count.increment4()
+                                    send_email(f'[F][Mode 44 BTC] {patchs} | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | HASH160:{bip44_h160_c.hex()} | HASH160:{bip44_h160_uc.hex()} | HASH160:{bip44_h160_cs.hex()}')
+                                fc.increment(1)
+                        co += 3
+    return co
 
-def bBTC(mnemo, seed, counter, count):
+def bBTC(seed, fc):
+    co = 0
+    group_size = 100
     w = BIP32.from_seed(seed)
     for bip_ in inf.lbtc:
         for nom2 in range(1):
@@ -352,52 +446,70 @@ def bBTC(mnemo, seed, counter, count):
                     patchs = f"m/{bip_}'/0'/{nom2}'/{nom3}/{nom}"
                     pvk = w.get_privkey_from_path(patchs)
                     pvk_int = int(pvk.hex(),16)
-                    bip44_h160_cs = secp256k1_lib.privatekey_to_h160(1, True, pvk_int)
-                    bip44_h160_c = secp256k1_lib.privatekey_to_h160(0, True, pvk_int)
-                    bip44_h160_uc = secp256k1_lib.privatekey_to_h160(0, False, pvk_int)
-                    if inf.debug > 0:
-                        addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
-                        addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
-                        addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_cs)
-                        addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
-                        print(f'\n[D][Mode BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                        print(bip_,bip44_h160_c.hex(),bip44_h160_uc.hex())
-                        logger_dbg.debug(f'[D][Mode BTC][P:{multiprocessing.current_process().name}] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                        logger_dbg.debug(f'[D][Mode BTC] bip:{bip_}, {bip44_h160_c.hex()}, {bip44_h160_uc.hex()}')
-                    if (bip44_h160_c.hex() in inf.bf) or (bip44_h160_uc.hex() in inf.bf):
+                    pvk_int = pvk_int - 1
+                    P = secp256k1_lib.scalar_multiplication(pvk_int)
+                    current_pvk = pvk_int + 1
+                    Pv = secp256k1_lib.point_sequential_increment(group_size, P)
+                    for tmp in range(group_size):
+                        bip44_h160_cs = secp256k1_lib.pubkey_to_h160(1, True, Pv[tmp*65:tmp*65+65])
+                        bip44_h160_c = secp256k1_lib.pubkey_to_h160(0, True, Pv[tmp*65:tmp*65+65])
+                        bip44_h160_uc = secp256k1_lib.pubkey_to_h160(0, False, Pv[tmp*65:tmp*65+65])                        
                         if inf.debug > 0:
-                            logger_dbg.debug(f'[D][F][Mode BTC][P:{multiprocessing.current_process().name}] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                        if inf.debug < 1:
+                        #----------------------------------------------------------------    
                             addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
                             addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
                             addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_cs)
                             addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
-                            if inf.balance:
-                                tx1, b1 = get_balance(addr_c)
-                                tx2, b2 = get_balance(addr_uc)
-                                tx3, b3 = get_balance(addr_cs)
-                                tx4, b4 = get_balance(addr_cbc)
-                                if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
-                                    print(f'[F][Mode BTC] Found transaction! {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_cbc}:{b4}')
-                                    logger_found.info(f'[F][Mode BTC] Found transaction! {addr_c}:{b1} | {addr_uc}:{b2} | {addr_cs}:{b3} | {addr_cbc}:{b4}')
-                                if (b1 > 0) or (b2 > 0) or (b3 > 0) or (b4 > 0):
-                                    print(f'\n[F][Mode BTC] Found balance! {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    logger_found.info(f'[F][Mode BTC] Found balance! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    if inf.mail:
-                                        send_email(f'[F][Mode BTC] Found balance! {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
-                                    counter.increment()
-                                else:
-                                    print(f'\n[F False][Mode BTC] Found address balance 0.0  {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    logger_found.info(f'[F False][Mode BTC] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                    if inf.mail:
-                                        send_email(f'[F False][Mode BTC] Found address balance 0.0 {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                            else:
-                                print(f'\n[F][Mode BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                logger_found.info(f'[F][Mode BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                            print(f'\n[D][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                            print(f'[D][Mode BTC] {bip_,bip44_h160_c.hex()} | {bip44_h160_uc.hex()} | {bip_,bip44_h160_cs.hex()}')
+                            logger_dbg.debug(f'[D][Mode BTC][P:{multiprocessing.current_process().name}] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                            logger_dbg.debug(f'[D][Mode BTC] {bip_,bip44_h160_c.hex()} | {bip44_h160_uc.hex()} | {bip_,bip44_h160_cs.hex()}')
+                        if (bip44_h160_c.hex() in inf.bf_btc) or (bip44_h160_uc.hex() in inf.bf_btc) or (bip44_h160_cs.hex() in inf.bf_btc):
+                            if inf.debug > 0:
+                                if inf.telegram:
+                                    send_telegram(f'[D][F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
                                 if inf.mail:
-                                    send_email(f'[F][Mode BTC] {patchs} | {mnemo} | {seed.hex()} | PVK:{pvk.hex()} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
-                                counter.increment()
-                    count.increment4()
+                                    send_email(f'[D][F][Mode BTC] {patchs}(PG:{tmp}) | | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                print(f'[D][F][Mode BTC][P:{multiprocessing.current_process().name}] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                logger_found.info(f'[D][F][Mode BTC][P:{multiprocessing.current_process().name}] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                            if inf.debug < 1:
+                                addr_c = secp256k1_lib.hash_to_address(0, False, bip44_h160_c)
+                                addr_uc = secp256k1_lib.hash_to_address(0, False, bip44_h160_uc)
+                                addr_cs = secp256k1_lib.hash_to_address(1, False, bip44_h160_cs)
+                                addr_cbc = secp256k1_lib.hash_to_address(2, False, bip44_h160_c)
+                                if inf.balance:
+                                    tx1, b1 = get_balance(addr_c,'BTC')
+                                    tx2, b2 = get_balance(addr_uc,'BTC')
+                                    tx3, b3 = get_balance(addr_cs,'BTC')
+                                    tx4, b4 = get_balance(addr_cbc,'BTC')
+                                    if (tx1 > 0) or (tx2 > 0) or (tx3 > 0) or (tx4 > 0):
+                                        print(f'[F][Mode BTC] Found transaction! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        logger_found.info(f'[F][Mode BTC] Found transaction! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    if (b1 > 0) or (b2 > 0) or (b3 > 0) or (b4 > 0):
+                                        print(f'\n[F][Mode BTC] Found balance! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        logger_found.info(f'[F][Mode BTC] Found balance! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if inf.telegram:
+                                            send_telegram(f'[F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if inf.mail:
+                                            send_email(f'[F][Mode BTC] Found balance! {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')    
+                                        fc.increment(1)
+                                    else:
+                                        print(f'\n[F False][Mode BTC] Found address balance 0.0  {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        logger_found.info(f'[F False][Mode BTC] Found address balance 0.0 {patchs} | {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if inf.telegram:
+                                            send_telegram(f'[F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                        if inf.mail:
+                                            send_email(f'[F False][Mode BTC] Found address balance 0.0 {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                else:
+                                    print(f'\n[F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    logger_found.info(f'[F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    if inf.telegram:
+                                        send_telegram(f'[F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    if inf.mail:
+                                        send_email(f'[F][Mode BTC] {patchs}(PG:{tmp}) | {seed.hex()} | PVK:{hex(current_pvk+tmp)[2:]} | {addr_c} | {addr_uc} | {addr_cs} | {addr_cbc}')
+                                    fc.increment(1)
+                        co += 3
+    return co
 
 def nnmnem(mem):
     if inf.mode == 'e':
@@ -414,13 +526,13 @@ def nnmnem(mem):
         mnemonic = ''
         mnemo:Mnemonic = Mnemonic(mem)
         rw = randint(1,25)
-        mnemonic = ' '.join(random.choice(inf.game_list) for i in range(rw))
+        mnemonic = ' '.join(choice(inf.game_list) for i in range(rw))
         seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
     elif inf.mode =='c':
         mnemonic = ''
         mnemo:Mnemonic = Mnemonic(mem)
         rw = inf.custom_words
-        mnemonic = ' '.join(random.choice(inf.custom_list) for i in range(rw))
+        mnemonic = ' '.join(choice(inf.custom_list) for i in range(rw))
         seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
     else:
         mnemo:Mnemonic = Mnemonic(mem)
@@ -452,7 +564,7 @@ def test():
         if os.path.isfile(dllfile) == True:
             pass
         else:
-            print(f'\033[1;31m File {dllfile} not found \033[0m')
+            print(f'{red} File {dllfile} not found')
             logger_err.error(f'File {dllfile} not found')
             
             
@@ -461,22 +573,22 @@ def test():
         if os.path.isfile(dllfile) == True:
             pass
         else:
-            print('\033[1;31m File {} not found \033[0m'.format(dllfile))
+            print(f'{red} File {dllfile} not found')
             logger_err.error(f'File {dllfile} not found')
     else:
-        print('\033[1;31m * Unsupported Platform currently for ctypes dll method. Only [Windows and Linux] is working \033[0m')
+        print(f'{red} * Unsupported Platform currently for ctypes dll method. Only [Windows and Linux] is working')
         logger_err.error(f'* Unsupported Platform currently for ctypes dll method. Only [Windows and Linux] is working')
         
-        sys.exit()
+        exit
     mnemo:Mnemonic = Mnemonic('english')
     mnemonic = 'world evolve cry outer garden common differ jump few diet cliff lumber'
     seed_bytes:bytes = mnemo.to_seed(mnemonic, passphrase='')
     if seed_bytes.hex() !='bd85556143de177ed9781ac3b24ba33d0bc4f8d6f34d9eaa1d9b8ab0ee3a7e84d42638b520043234bcedb4e869464b9f964e7e8dbf1588395f7a7782588ae664':
-        print('\033[1;31m ERROR: Generate mnemonic \033[0m')
-        print('\033[1;31m Please reinstall https://github.com/trezor/python-mnemonic \033[0m')
+        print(f'{red} ERROR: Generate mnemonic')
+        print(f'{red} Please reinstall https://github.com/trezor/python-mnemonic')
         logger_err.error(f'ERROR: Generate mnemonic')
         logger_err.error(f'Please reinstall https://github.com/trezor/python-mnemonic')
-        sys.exit()
+        exit
     bip32 = BIP32.from_seed(seed_bytes)
     patchs = "m/0'/0'/0"
     pvk = bip32.get_privkey_from_path(patchs)
@@ -486,9 +598,9 @@ def test():
     addr_c = secp256k1_lib.hash_to_address(0,True,bip_hash_c)
     addr_uc = secp256k1_lib.hash_to_address(0,False,bip_hash_uc)
     if (addr_c != '1JiG9xbyAPNfX8p4M6qxE6PwyibnqARkuq') or (addr_uc != '1EHciAwg1thir7Gvj5cbrsyf3JQbxHmWMW'):
-        print('\033[1;31m ERROR: Convert address from mnemonic')
-        print('\033[1;31m Please recopy https://github.com/iceland2k14/secp256k1 \033[0m')
+        print(f'{red} ERROR: Convert address from mnemonic')
+        print(f'{red} Please recopy https://github.com/iceland2k14/secp256k1')
         logger_err.error(f'ERROR: Convert address from mnemonic')
         logger_err.error(f'Please recopy https://github.com/iceland2k14/secp256k1')
-        sys.exit()
+        exit
     return True

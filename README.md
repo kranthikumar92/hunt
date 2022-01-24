@@ -1,9 +1,11 @@
 #### Огромное спасибо iceland2k14 за его работу
 
-#### Изменения от 13.01.22
+#### Изменения от 18.01.22
     Код переведен полностью на систему логирования
     Изменены режимы поиска, смотрите внимательно описание
     Добавлен поиск по BrainWallet. (-brain) Проверяется генерированая мнемоника и seed, а также их перевернутые значения.
+    Добавлена поддержка отправки сообщений в телеграм
+    Добавлен новый режим -combo (использовать только тем у кого достаточно памяти.) ведет поиск одновременно по ETH и BTC
 
 
 #### Ресурсы для проверки работы
@@ -15,7 +17,7 @@
   https://learnmeabitcoin.com/technical/derivation-paths
 
 #### HUNT to MNEMONIC (HASH160)
-Brute Force Bitcoin address не только Биткоин адресов
+Brute Force crypto address
 Программа создана в первую очередь для изучения языка PYTHON!
 
 Что реализовано:  
@@ -86,10 +88,11 @@ Brute Force Bitcoin address не только Биткоин адресов
     например надо искать по 12 словам (-bit 128)
   
 #### Ключи использования  (Проверьте свои БАТНИКИ, аргументы для запуска изменились)
-    python -B PulsarMTv4.py -b 44 -db BF\btc.bf -th 3 -des source -m s -bit 128 -sl 5 -em -bal -dbg 0
+    python -B PulsarMTv5.py -b BTC -db BF\btc.bf -th 3 -des source -m s -bit 128 -sl 5 -em -bal
   
-    -b Режим поиска (BIP32, BIP44, ETH, BTC)  (-b 32,44,ETH,BTC)
-    -db расположение файла ФлюмФильтра (-db BF/work.bf)
+    -b Режим поиска (BIP32, BIP44, ETH, BTC, combo)  (-b BTC)
+    -dbbtc расположение файла ФлюмФильтра для BTC (-db BF/work.bf)
+    -dbeth расположение файла ФлюмФильтра для ETH (-db BF/eth.bf)
     -th количество процесов запущеных для поиска (-th 2)
     -des описание вашей машины. Чаще всего нужно при отправке почты, если нашелся адрес. если у вас работает только одна машина на поиск то параметр можно не указывать (-des locale)
     -m режим формирования мнемоники (-m s, e, c, g) выбор за вами . (-m e)
@@ -98,10 +101,11 @@ Brute Force Bitcoin address не только Биткоин адресов
         Режим 'c' - пользовательский режим, читайте ниже
         Режим 'g' - игровой режим. в папке wl лежит файл game.txt (можете заменить на свой) из него формируется фраза со случайными словами и случайным количеством слов.
     -bit битность мнемоники (12 слов это 128 бит) смотрите выше "Работа со списком слов" (-bit 128)
-    -em контроль отправки электроной почты при нахождении мнемоники (-em)
+    -em контроль отправки электроной почты при нахождении мнемоники (-em) (незабудьте указать настройки в файле consts.py)
     -sl задержка по пуску блюм фильтра (у кого много ядер, рекомендую!) (-sl 5)
     -bal проверка баланса при нахождении. если балан 0 то рескан не делается (-bal)
-    -brain включение функции BRAINWALLET (вычесление приватного ключа из мнемоника и сида в разных интерпритациях)
+    -brain включение функции BRAINWALLET (вычесление приватного ключа из мнемоника и сида в разных интерпритациях). В режиме ETH поиск по BRAIWALLET не будет работат.
+    -telegram включение функции отправки сообщения о нахождении ключа в телеграм (-telegram) (незабудьте указать настройки в файле consts.py)
     -dbg это отладочная информация, при указании данного параметра программа будет показывать что и как она формирует, можно будет проверить по ссылкам выше. режима 2 (-dbg 0,1,2)
          Режим 1: вам скорее всего не пригодится так как вы не добавили в свою базу отладочные адреса (если хотите я их вам дам)
          Режим 2: этот режим отображает всю информацию которая генерируется программой. Нужна для того что бы проверить правильно ли генерируются адреса.
@@ -111,9 +115,9 @@ Brute Force Bitcoin address не только Биткоин адресов
     -cw количество слов для генерации (-cw 6)
     -cl язык словаря (-cl english) (english,chinese_simplified,chinese_traditional,french,italian,spanish,czech,korean,japanese,portuguese)
     Обычный режим:
-    python -B PulsarMTv4.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m s -bit 128 -sl 5 -dbg 0 -em -bal
+    python -B PulsarMTv5.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m s -bit 128 -sl 5 -dbg 0 -em -bal
     Режим пользователя:
-    python -B PulsarMTv4.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m c -cd wl\custom.txt -cw 6 -cl english -sl 5 -dbg 0 -em -bal
+    python -B PulsarMTv5.py -b BTC -db BF\btc_without_0.bf -th 1 -des test -m c -cd wl\custom.txt -cw 6 -cl english -sl 5 -dbg 0 -em -bal
 
 
     
@@ -132,38 +136,38 @@ https://gz.blockchair.com/
 или на моем ресурсе:  
 https://drive.google.com/drive/folders/1E2rC7GSc59lAIJi_gD0O-tgGiXwcS7Wl?usp=sharing (готовые блюм фильтры)
 
-    E:\GitHub\Hunt-to-Mnemonic>python -B PulsarMTv4.py -b BTC -db BF\export.bf -th 3 -des test -m game -sl 5 -dbg 0 -bal
+    E:\GitHub\Hunt-to-Mnemonic>python -B PulsarMTv5.py -b combo -dbbtc BF\btc.bf -dbeth BF\eth.bf -th 3 -des test -m e -sl 5 -brain -em -telegram
     ----------------------------------------------------------------------
     Thank you very much: @iceland2k14 for his libraries!
     ----------------------------------------------------------------------
     DEPENDENCY TESTING:
     [I] TEST: OK!
     ----------------------------------------------------------------------
-    [I] Version: * Pulsar v4.7.8 multiT Hash160 *
+    [I] Version: * Pulsar v5.2.2 multiT Hash160 *
     [I] Total kernel of CPU: 4
     [I] Used kernel: 3
-    [I] Mode Search: BIP-BTC Game words
-    [I] Database Bloom Filter: BF\export.bf
+    [I] Mode Search: BIP-combo Mnemonic from Entropy
+    [I] Bloom Filter ETH: BF\eth.bf
+    [I] Bloom Filter BTC: BF\btc.bf
+    [I] Languages at work ETH: ['english']
+    [I] Languages at work BTC: ['english', 'japanese', 'chinese_simplified', 'chinese_traditional']
     [I] Work BIT: 128
     [I] Description client: test
     [I] Smooth start 5 sec
-    [I] Send mail: Off
-    [I] Check balance BTC: On
+    [I] Send mail: On
+    [I] Check balance: Off
+    [I] WrainWallet: On
+    [I] Telegram: On
+    [I] Random check hash: On
     ----------------------------------------------------------------------
-    > Mnemonic: 165 | Total keys 237600 | Speed 10409 key/s | Found 0
-    [W] Found address | 1BAcuhXVLq7x3Fi8twkWf24jyX5XNjXUqj:0.0 | 1AFifimawizUKRcWsaurJrDnub7SA9TZJZ:0.0 | 3BrdqF1vtjSL8RQa23R75eRg83NEwLfxJA:0.0
-    [W] Found address balance 0.0
-    > Mnemonic: 813 | Total keys 1170720 | Speed 9652 key/s | Found 0
-    [W] Found address | 145XnMUwJ9N682VJeKZH3oZGKuE4LwAHTD:0.0 | 1Mc3xpX3GxJ97fdXbx4qHeYMSixFsPpZew:0.0 | 34mYhtyNr3gUDCBjmRDsURvCURWmvXhWeJ:0.0
-    [W] Found address balance 0.0
-    > Mnemonic: 903 | Total keys 1300320 | Speed 6256 key/s | Found 0
+    > Cores:3 | Mnemonic: 3853 | Hash MNEM: 485.45 Mhash | Hash BRAIN: 246.59 Khash | 228.87 Khash | Found: 0
     
-### Живые примеры работы:
+### Живые примеры работы: (Пока не актуальны. собираю новые)
 
 ![WORK](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/primer1.jpg)
 ![WORK](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/primer2.jpg)
 ![WORK](https://github.com/Noname400/Hunt-to-Mnemonic/blob/main/image/primer3.jpg)
 
 #### Благодарность за мою работу:  
-Bitcoin: 1HUNT1nkV8My4iuMSU84uSjVxvTpvybUDD  
+Bitcoin: 1NoName1LLKRfLmoh9jawLWrf6t185bC7v  
 Ethereum: 0xAda9515891532dbA75145c27569e7D5704DBe87f  

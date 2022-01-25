@@ -10,8 +10,8 @@ import sys
 def convert(file_in,file_out):
     print("[I] File input -> " + file_in)
     print("[I] File output -> " + file_out)
-    bech_ = 0
-    base_ = 0
+    bech_ = 1
+    base_ = 1
     i = 0
     line_10 = 100000
     ii = 1

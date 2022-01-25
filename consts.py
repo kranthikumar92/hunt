@@ -8,6 +8,7 @@
 import argparse
 import ctypes
 import datetime
+from time import sleep
 import logging
 import multiprocessing
 import os
@@ -21,7 +22,6 @@ import time
 from logging import Formatter
 from multiprocessing import Lock, Process, Value
 from random import choice, randint
-
 import bitcoin
 import requests
 from bip32 import BIP32

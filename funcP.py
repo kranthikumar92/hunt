@@ -4,7 +4,6 @@
 @author: Noname400
 """
 
-from time import sleep
 from consts import *
 
 def send_telegram(text: str):

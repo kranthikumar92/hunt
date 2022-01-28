@@ -6,6 +6,24 @@
 
 from consts import *
 
+def generate_private_key():
+    curve = ecdsa.curves.SECP256k1
+    se = random_secret_exponent(curve.order)
+    from_secret_exponent = ecdsa.keys.SigningKey.from_secret_exponent
+    return int(from_secret_exponent(se, curve, hashlib.sha256).to_string().hex(),16)
+
+def random_secret_exponent(curve_order):
+    while True:
+        bytes = secrets.token_bytes(32)
+        random_hex = hexlify(bytes)
+        random_int = int(random_hex, 16)
+        if random_int >= 1 and random_int < curve_order:
+            return random_int
+        
+        else:
+            curve = ecdsa.curves.SECP256k1 
+            random_secret_exponent(curve.order)
+
 def send_telegram(text: str):
     try:
         requests.get('https://api.telegram.org/bot{}/sendMessage'.format(telegram.token), params=dict(
@@ -199,9 +217,9 @@ def send_email(text):
                 server.quit()
 
 def brnd(fc):
-    group_size = 10000
+    group_size = 15000
     co = 0
-    pvk_int = int(secrets.token_hex(32),16)
+    pvk_int = generate_private_key()#int(secrets.token_hex(32),16)
     P = secp256k1_lib.scalar_multiplication(pvk_int)
     current_pvk = pvk_int + 1
     Pv = secp256k1_lib.point_sequential_increment(group_size, P)

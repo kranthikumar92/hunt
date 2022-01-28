@@ -18,6 +18,9 @@ import smtplib
 import socket
 import string
 import sys
+from binascii import hexlify
+import ecdsa,hashlib, binascii, base58
+from ecdsa.ecdsa import digest_integer
 import time
 from logging import Formatter
 from multiprocessing import Lock, Process, Value
@@ -119,7 +122,7 @@ class inf:
             sys.exit()
         else:
             return l
-    version:str = '* Pulsar v5.2.2 multiT Hash160 *'
+    version:str = '* Pulsar v5.2.3 multiT Hash160 *'
     mnemonic_BTC:list = ['english', 'japanese', 'chinese_simplified', 'chinese_traditional'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_ETH:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     #general

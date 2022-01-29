@@ -23,12 +23,13 @@ def createParser ():
     parser.add_argument ('-bal', '--balance', action='store_true', help='check balance')
     parser.add_argument ('-brain', '--brain', action='store_true', help='check brain')
     parser.add_argument ('-telegram', '--telegram', action='store_true', help='send telegram')
+    parser.add_argument ('-rnd', '--rnd', action='store_true', help='enable rnd')
     parser.add_argument ('-cd', '--customdir', action='store', type=str, help='custom dir for mode custom', default='')
     parser.add_argument ('-cw', '--customword', action='store', type=int, help='custom words for mode custom', default='6')
     parser.add_argument ('-cl', '--customlang', action='store', type=str, help='custom lang for mode custom', default='english')
     return parser.parse_args().bip, parser.parse_args().databasebtc, parser.parse_args().databaseeth, parser.parse_args().threading, parser.parse_args().mode, \
         parser.parse_args().desc, parser.parse_args().bit, parser.parse_args().debug, parser.parse_args().mail, parser.parse_args().sleep, parser.parse_args().balance, \
-        parser.parse_args().brain, parser.parse_args().telegram, parser.parse_args().customdir, parser.parse_args().customword, parser.parse_args().customlang
+        parser.parse_args().brain, parser.parse_args().telegram, parser.parse_args().rnd, parser.parse_args().customdir, parser.parse_args().customword, parser.parse_args().customlang
 
 def run(*args):
     inf.bip = args[0]
@@ -44,14 +45,15 @@ def run(*args):
     inf.balance = args[10]
     inf.brain = args[11]
     inf.telegram = args[12]
-    inf.custom_dir = args[13]
-    inf.custom_words = args[14]
-    inf.custom_lang = args[15]
-    total_counter = args[16]
-    process_counter = args[17]
-    brain_counter = args[18]
-    found_counter = args[19]
-    mnem_counter = args[20]
+    inf.rnd = args[13]
+    inf.custom_dir = args[14]
+    inf.custom_words = args[15]
+    inf.custom_lang = args[16]
+    total_counter = args[17]
+    process_counter = args[18]
+    brain_counter = args[19]
+    found_counter = args[20]
+    mnem_counter = args[21]
     tc = 0
     ind:int = 1
     if inf.bip == 'BTC' or inf.bip == '32' or inf.bip == '44': 
@@ -81,21 +83,22 @@ def run(*args):
                 mnem_counter.increment(1)
                 if inf.mode == 'e' : mnemonic, seed_bytes, rnd = nnmnem(mem)
                 else: mnemonic, seed_bytes = nnmnem(mem)
-                if inf.bip !='ETH': total_counter.increment(brnd(found_counter))
+                if inf.rnd and inf.bip !='ETH':
+                    total_counter.increment(brnd(found_counter))
                 if inf.brain and inf.bip !='ETH':
                     brain_counter.increment(bw(mnemonic, False, found_counter))
                     brain_counter.increment(bw(seed_bytes.hex(), True, found_counter))
                     if inf.mode == 'e' : brain_counter.increment(bw(rnd, True, found_counter))
-                if inf.bip == "32" : total_counter.increment(b32(seed_bytes, found_counter))
-                if inf.bip == "44" : total_counter.increment(b44(seed_bytes, found_counter))
-                if inf.bip == "ETH": total_counter.increment(bETH(seed_bytes, found_counter))
+                if inf.bip == "32" : total_counter.increment(b32(mnemonic,seed_bytes, found_counter))
+                if inf.bip == "44" : total_counter.increment(b44(mnemonic,seed_bytes, found_counter))
+                if inf.bip == "ETH": total_counter.increment(bETH(mnemonic,seed_bytes, found_counter))
                 if inf.bip == "BTC": 
-                    total_counter.increment(b32(seed_bytes, found_counter))
-                    total_counter.increment(bBTC(seed_bytes, found_counter))
+                    total_counter.increment(b32(mnemonic,seed_bytes, found_counter))
+                    total_counter.increment(bBTC(mnemonic,seed_bytes, found_counter))
                 if inf.bip == 'combo':
-                    total_counter.increment(b32(seed_bytes, found_counter))
-                    total_counter.increment(bBTC(seed_bytes, found_counter))
-                    total_counter.increment(bETH(seed_bytes, found_counter))
+                    total_counter.increment(b32(mnemonic,seed_bytes, found_counter))
+                    total_counter.increment(bBTC(mnemonic,seed_bytes, found_counter))
+                    total_counter.increment(bETH(mnemonic,seed_bytes, found_counter))
                     
             st = time.time() - start_time
             ftc = tc
@@ -120,7 +123,7 @@ def run(*args):
 
 if __name__ == "__main__":
     inf.bip, inf.db_btc, inf.db_eth, inf.th, inf.mode, email.desc, inf.bit, inf.debug, inf.mail, inf.delay, inf.balance, \
-        inf.brain, inf.telegram, inf.custom_dir, inf.custom_words, inf.custom_lang  = createParser()
+        inf.brain, inf.telegram, inf.rnd, inf.custom_dir, inf.custom_words, inf.custom_lang  = createParser()
     print('-'*70,end='\n')
     print(f'{green}Thank you very much: @iceland2k14 for his libraries!')
 
@@ -208,7 +211,7 @@ if __name__ == "__main__":
     else: print('[I] BrainWallet: Off')
     if inf.telegram: print('[I] Telegram: On')
     else: print('[I] Telegram: Off')
-    if inf.bip != 'ETH': print('[I] Random check hash: On')
+    if inf.bip != 'ETH' and inf.rnd: print('[I] Random check hash: On')
     else: print('[I] Random check hash: off')
     print('-'*70,end='\n')
     
@@ -222,7 +225,7 @@ if __name__ == "__main__":
     try:
         for r in range(inf.th): 
             p = Process(target=run, name= str(r), args=(inf.bip, inf.db_btc, inf.db_eth, inf.mode, email.desc, inf.bit, inf.debug, inf.mail, inf.th, 
-                inf.delay, inf.balance, inf.brain, inf.telegram, inf.custom_dir, inf.custom_words, inf.custom_lang, total_counter, process_counter, brain_counter, found_counter, mnem_counter,))
+                inf.delay, inf.balance, inf.brain, inf.telegram, inf.rnd, inf.custom_dir, inf.custom_words, inf.custom_lang, total_counter, process_counter, brain_counter, found_counter, mnem_counter,))
             procs.append(p)
             p.start()
         for proc in procs: proc.join()

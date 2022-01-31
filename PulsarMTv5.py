@@ -78,17 +78,25 @@ def run(*args):
                 pass
             else:
                 process_counter.decrement(1)
-            start_time = time.time()
+            start_time = time()
             for mem in mnemonic_lang:
                 mnem_counter.increment(1)
                 if inf.mode == 'e' : mnemonic, seed_bytes, rnd = nnmnem(mem)
                 else: mnemonic, seed_bytes = nnmnem(mem)
-                if inf.rnd and inf.bip !='ETH':
-                    total_counter.increment(brnd(found_counter))
+                #rnd
+                if inf.rnd and inf.bip == 'combo':
+                    total_counter.increment(brnd('btc',found_counter))
+                    total_counter.increment(brnd('eth',found_counter))
+                elif inf.rnd and (inf.bip == 'BTC' or inf.bip == '32' or inf.bip == '44'):
+                    total_counter.increment(brnd('btc',found_counter))
+                elif inf.rnd and inf.bip == 'ETH':
+                    total_counter.increment(brnd('eth',found_counter))
+                #brain
                 if inf.brain and inf.bip !='ETH':
                     brain_counter.increment(bw(mnemonic, False, found_counter))
                     brain_counter.increment(bw(seed_bytes.hex(), True, found_counter))
                     if inf.mode == 'e' : brain_counter.increment(bw(rnd, True, found_counter))
+                #function bip
                 if inf.bip == "32" : total_counter.increment(b32(mnemonic,seed_bytes, found_counter))
                 if inf.bip == "44" : total_counter.increment(b44(mnemonic,seed_bytes, found_counter))
                 if inf.bip == "ETH": total_counter.increment(bETH(mnemonic,seed_bytes, found_counter))
@@ -100,7 +108,7 @@ def run(*args):
                     total_counter.increment(bBTC(mnemonic,seed_bytes, found_counter))
                     total_counter.increment(bETH(mnemonic,seed_bytes, found_counter))
                     
-            st = time.time() - start_time
+            st = time() - start_time
             ftc = tc
             tc = total_counter.value()
             tc_float, tc_hash = convert_int(tc)
@@ -211,7 +219,7 @@ if __name__ == "__main__":
     else: print('[I] BrainWallet: Off')
     if inf.telegram: print('[I] Telegram: On')
     else: print('[I] Telegram: Off')
-    if inf.bip != 'ETH' and inf.rnd: print('[I] Random check hash: On')
+    if inf.rnd: print('[I] Random check hash: On')
     else: print('[I] Random check hash: off')
     print('-'*70,end='\n')
     

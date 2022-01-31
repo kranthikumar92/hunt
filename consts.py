@@ -8,7 +8,7 @@
 import argparse
 import ctypes
 import datetime
-from time import sleep
+from time import sleep, time
 import logging
 import multiprocessing
 import os
@@ -21,7 +21,6 @@ import sys
 from binascii import hexlify
 import ecdsa,hashlib, binascii, base58
 from ecdsa.ecdsa import digest_integer
-import time
 from logging import Formatter
 from multiprocessing import Lock, Process, Value
 from random import randint
@@ -123,7 +122,7 @@ class inf:
             sys.exit()
         else:
             return l
-    version:str = '* Pulsar v5.2.4 multiT Hash160 *'
+    version:str = '* Pulsar v5.2.6 multiT Hash160 *'
     mnemonic_BTC:list = ['english', 'japanese', 'chinese_simplified', 'chinese_traditional'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     mnemonic_ETH:list = ['english'] # ['english', 'chinese_simplified', 'chinese_traditional', 'french', 'italian', 'spanish', 'korean','japanese','portuguese','czech']
     #general
@@ -138,7 +137,6 @@ class inf:
     l32_:list = ["","'"]#"","'"
     l44:list = ['0','145','236'] # ["0","145","236","156","177","222","192","2","3","5","7","8","20","22","28","90","133","147","2301","175","216"]
     leth:list = ['60','61'] #['60','61']
-    !!!!!!!!!!!!!!!!!!!!l32eth:list = ["m/44'/60"]
     bip:str = 'BTC'
     game_list:list = []
     rnd = False

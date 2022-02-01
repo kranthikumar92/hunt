@@ -41,25 +41,15 @@ def send_telegram(text: str):
             sleep(10)
             return send_telegram(text)
 
-def convert_int(cou:int):
-    if cou < 1000:
-        res = cou
-        return res,'hash'
-    if cou >= 1000 and cou < 1000000:
-        res = cou/1000
-        return res, 'Khash'
-    if cou >= 1000000 and cou < 1000000000:
-        res = cou/1000000
-        return res, 'Mhash'
-    if cou >= 1000000000 and cou < 1000000000000:
-        res = cou/1000000000
-        return res, 'Ghash'
-    if cou >= 1000000000000 and cou < 1000000000000000:
-        res = cou/1000000000000
-        return res, 'Thash'
-    if cou >= 1000000000000000 and cou < 1000000000000000000:
-        res = cou/1000000000000000
-        return res, 'Phash'
+def convert_int(num:int):
+    dict_suffix = {0:'Key', 1:'KKeys', 2:'MKeys', 3:'GKeys', 4:'TKeys', 5:'PKeys', 6:'EKeys'}
+    num *= 1.0
+    idx = 0
+    for ii in range(len(dict_suffix)-1):
+        if int(num/1000) > 0:
+            idx += 1
+            num /= 1000
+    return ('%.2f '%num), dict_suffix[idx]
     
 def reverse_string(s):
     return s[::-1]
@@ -626,14 +616,15 @@ def nnmnem(mem):
     else: return mnemonic, seed_bytes
 
 def test():
-    try:
-        requests.get('https://api.telegram.org/bot{}/sendMessage'.format(telegram.token), params=dict(
-        chat_id=telegram.channel_id,
-        text=f'Сommunication check. HUNT-to-mnemonic ver.{inf.version}. run client {email.desc}'
-        ))
-    except:
-        print(f'{red} check your internet connection, could not send message to telegram')
-        logger_err.error(f'check your internet connection, could not send message to telegram')
+    if inf.telegram:
+        try:
+            requests.get('https://api.telegram.org/bot{}/sendMessage'.format(telegram.token), params=dict(
+            chat_id=telegram.channel_id,
+            text=f'Сommunication check. HUNT-to-mnemonic ver.{inf.version}. run client {email.desc}'
+            ))
+        except:
+            print(f'{red} check your internet connection, could not send message to telegram')
+            logger_err.error(f'check your internet connection, could not send message to telegram')
         
     print('-'*70,end='\n')
     print('DEPENDENCY TESTING:')

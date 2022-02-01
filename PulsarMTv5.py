@@ -121,7 +121,7 @@ def run(*args):
             bc_float, bc_hash = convert_int(bc)
             pc = process_counter.value()
             if multiprocessing.current_process().name == '0':
-                print(f'{yellow}> Cores:{pc} | Mnemonic: {mc} | Hash MNEM: {tc_float:.2f} {tc_hash} | Hash BRAIN: {bc_float:.2f} {bc_hash} | {speed_float:.2f} {speed_hash} | Found: {fc}',end='\r')
+                print(f'{yellow}> Cores:{pc} | Mnemonic: {mc} | Hash MNEM: {tc_float} {tc_hash} | Hash BRAIN: {bc_float} {bc_hash} | {speed_float} {speed_hash} | Found: {fc}',end='\r')
             inf.count = 0
             ind += 1
     except(KeyboardInterrupt, SystemExit):

